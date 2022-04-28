@@ -1,13 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" href="/favicon.ico" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, ser-scalable=no, maximum-scale=1.0, minimum-scale=1.0"
+        />
+        <title>晋元数藏</title>
+        <script>
+            let pageWidth = window.innerWidth;
+            document.write(
+                `<style>html{font-size:${pageWidth / 10}px;}</style>`
+            );
+        </script>
+        <style>
+          html, body {
+            width: 100%;
+          }
+        </style>
+    </head>
+    <body>
+        <div id="app"></div>
+        <script type="module" src="/src/main.ts"></script>
+    </body>
 </html>
