@@ -12,14 +12,18 @@
     "normalize.css": "^8.0.1",
     "nprogress": "^0.2.0",
     "pinia": "^2.0.13",
+    "uuid": "^8.3.2",
+    "vant": "^3.4.8",
     "vue": "^3.2.25",
     "vue-router": "^4.0.13"
   },
   "devDependencies": {
+    "@types/uuid": "^8.3.4",
     "@vitejs/plugin-vue": "^2.3.1",
     "sass": "^1.51.0",
     "typescript": "^4.5.4",
     "vite": "^2.9.5",
+    "vite-plugin-style-import": "1.4.1",
     "vue-tsc": "^0.34.7"
   }
 }

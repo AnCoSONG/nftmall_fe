@@ -8,6 +8,7 @@ import OrientationInspector from './components/OrientationInspector.vue';
 </script>
 
 <style lang="scss">
+// global style definition
 .app-gold-text {
   color: rgb(215, 198, 101);
   background: linear-gradient(180deg, rgba(232, 227, 186, 0.81) 0%, #DBC692 100%);
