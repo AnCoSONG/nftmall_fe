@@ -2,6 +2,11 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <meta name="description" content="这里放描述符" />
+        <meta name="screen-orientation" content="portrait" />
+        <meta name="author" content="name, email@gmail.com" />
+        <meta name="keywords" content="" />
         <link rel="icon" href="/favicon.ico" />
         <meta
             name="viewport"
@@ -10,18 +15,25 @@
         <title>晋元数藏</title>
         <script>
             let pageWidth = window.innerWidth;
-            document.write(
-                `<style>html{font-size:${pageWidth / 10}px;}</style>`
-            );
+            document.querySelector("html").style.fontSize =
+                pageWidth / 10 + "px";
         </script>
-        <style>
-          html, body {
-            width: 100%;
-          }
-        </style>
     </head>
     <body>
         <div id="app"></div>
         <script type="module" src="/src/main.ts"></script>
+        <style>
+            html,
+            body,
+            #app {
+                width: 100%;
+                min-height: 100% !important;
+                height: 100%;
+            }
+
+            #app {
+                overflow: auto;
+            }
+        </style>
     </body>
 </html>

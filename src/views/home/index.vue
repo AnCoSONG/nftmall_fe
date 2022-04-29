@@ -1,5 +1,5 @@
 <template>
-    <div class="text">{{ title }}</div>
+    <div class="home">{{ title }}</div>
 </template>
 <script setup lang='ts'>
 import { useStore } from '../../stores/app';
@@ -8,7 +8,8 @@ const app = useStore()
 const { title } = storeToRefs(app)
 </script>
 <style lang="scss">
-.text {
-    font-size: px2rem(24);
+.home {
+    height: 2000px;
+    overflow: auto;
 }
 </style>

@@ -2,3 +2,5 @@ $designWidth: 414;
 @function px2rem($px) {
     @return calc($px / $designWidth) * 10 + rem;
 }
+
+$backgroundColor: #202020;
