@@ -23,6 +23,11 @@ const router = createRouter({
                 }
             ],
         },
+        {
+            path: "/login",
+            name: "login",
+            component: () => import("views/login/index.vue"),
+        },
     ],
     scrollBehavior: (to, from, savedPosition) => {
         return { left: 0, top: 0, behavior: "smooth" };
