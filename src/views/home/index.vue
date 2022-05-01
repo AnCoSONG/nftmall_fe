@@ -1,6 +1,10 @@
 <template>
     <div class="home">
-        <router-view />
+        <RouterView v-slot="{ Component }">
+            <KeepAlive>
+                <component :is="Component"></component>
+            </KeepAlive>
+        </RouterView>
         <div class="bottom-bar">
             <div class="item" v-for="item in items" :key="item.id" :data-active="route.path == item.path"
                 @click="() => router.push(item.path)">
@@ -13,13 +17,13 @@
     </div>
 </template>
 <script setup lang='ts'>
-import { useStore } from '../../stores/app';
+import { useAppStore } from '../../stores/app';
 import { px2rem } from '../../utils';
 import { storeToRefs } from 'pinia'
 import { ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { v4 } from 'uuid';
-const app = useStore()
+const app = useAppStore();
 const { title } = storeToRefs(app);
 const route = useRoute()
 const router = useRouter()
@@ -60,6 +64,7 @@ const items = ref([
         align-items: center;
         justify-content: space-around;
         flex-flow: nowrap row;
+        box-shadow: 0 px2rem(-4) px2rem(4) 0 rgba(0, 0, 0, 0.25);
 
         .item {
             display: flex;
@@ -71,6 +76,7 @@ const items = ref([
 
             &[data-active="true"] {
                 color: $glodTextColor;
+                filter: drop-shadow(0 0 px2rem(5) $glodTextColor);
             }
 
             .icon {

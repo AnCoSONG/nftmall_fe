@@ -36,6 +36,7 @@ const router = createRouter({
 
 import NProgress from "nprogress";
 import "../styles/nprogress.scss";
+import { defineAsyncComponent } from "vue";
 
 NProgress.configure({ easing: "ease", speed: 500, showSpinner: false });
 

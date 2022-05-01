@@ -1,14 +1,37 @@
 <template>
-  <OrientationInspector></OrientationInspector>
+  <EnvironmentInspector />
+  <!-- <RouterView v-slot="{ Component }">
+    <template v-if="Component">
+      <Transition mode="out-in">
+        <KeepAlive>
+          <Suspense>
+            <component :is="Component"></component>
+            <template #fallback>
+              <van-overlay :show="true">
+                <div class="app-loader">
+                  <van-loading vertical>加载中</van-loading>
+                </div>
+              </van-overlay>
+            </template>
+          </Suspense>
+        </KeepAlive>
+      </Transition>
+    </template>
+  </RouterView> -->
 </template>
 <script setup lang="ts">
-import OrientationInspector from './components/OrientationInspector.vue';
+import EnvironmentInspector from './components/EnvironmentInspector.vue';
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 </script>
 
 <style lang="scss">
 // global style definition
+#app {
+  background-color: $backgroundColor;
+  // color: $normalTextColor;
+}
+
 .app-gold-text {
   color: rgb(215, 198, 101);
   background: linear-gradient(180deg, rgba(232, 227, 186, 0.81) 0%, #DBC692 100%);
@@ -16,5 +39,14 @@ import OrientationInspector from './components/OrientationInspector.vue';
   -webkit-text-fill-color: transparent;
   background-clip: text;
   // text-fill-color: transparent;
+}
+
+.app-loader {
+  display: flex;
+  flex-flow: nowrap column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
 </style>
