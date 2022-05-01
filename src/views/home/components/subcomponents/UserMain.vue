@@ -39,7 +39,7 @@ const showAbout = () => {
 .dialog {
     .title {
         color: black !important;
-        ;
+        font-weight: bold;
     }
 
     .img {

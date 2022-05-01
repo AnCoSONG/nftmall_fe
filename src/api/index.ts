@@ -1,8 +1,8 @@
-import { useAxios, service } from "../plugins/axios";
+import { useAxios, request } from "../plugins/axios";
 
 export const fetchAnnouncements = async () => {
-    const axios = useAxios();
-    const res = await axios.get("/v1/announcement").catch((err) => {
+    // const axios = useAxios();
+    const res = await request.get("/v1/announcement").catch((err) => {
         console.log(err);
     });
     if (res) {
@@ -13,8 +13,7 @@ export const fetchAnnouncements = async () => {
 };
 
 export const fetchBanners = async () => {
-    const axios = useAxios();
-    const res = await axios.get("/v1/banner").catch((err) => {
+    const res = await request.get("/v1/banner").catch((err) => {
         console.log(err);
     });
     if (res) {
@@ -25,8 +24,8 @@ export const fetchBanners = async () => {
 };
 
 export const fetchHotProduct = async () => {
-    const axios = useAxios();
-    const res = await axios.get("/v1/product").catch((err) => {
+    // const axios = useAxios();
+    const res = await request.get("/v1/product").catch((err) => {
         console.log(err);
     });
     if (res) {
@@ -37,8 +36,8 @@ export const fetchHotProduct = async () => {
 };
 
 export const postVerification = async () => {
-    const axios = useAxios();
-    const res = await axios.post("/v1/verification").catch((err) => {
+    // const axios = useAxios();
+    const res = await request.post("/v1/verification").catch((err) => {
         console.log(err);
     });
     if (res) {

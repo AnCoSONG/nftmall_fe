@@ -105,8 +105,9 @@ const getVerification = async () => {
         })
         return;
     }
-    const res = await axios.post('/v1/verification')
-    const data = res.data;
+    // const res = await axios.post('/v1/verification')
+    // const data = res.data;
+    const data = await user.requestVerification(phone.value);
     if (data && data.code === 200) {
         Notify({
             type: 'success',

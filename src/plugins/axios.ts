@@ -2,13 +2,13 @@ import { App, inject } from "vue";
 import axios, { AxiosInstance } from "axios";
 export const axiosSymbol = Symbol();
 // console.log(import.meta.env)
-export const service = axios.create({
+export const request = axios.create({
   // baseURL: <string>import.meta.env.VITE_API_URL,
   timeout: 30000, // 请求超时时间
 });
 //todo: add interceptor
 // Add a request interceptor
-service.interceptors.request.use(
+request.interceptors.request.use(
   function (config) {
     // Do something before request is sent
     return config;
@@ -20,7 +20,7 @@ service.interceptors.request.use(
 );
 
 // Add a response interceptor
-service.interceptors.response.use(
+request.interceptors.response.use(
   function (response) {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
@@ -33,12 +33,12 @@ service.interceptors.response.use(
   }
 );
 export const vueAxios = (app: App) => {
-  app.provide(axiosSymbol, service);
+  app.provide(axiosSymbol, request);
 };
 export const useAxios = (): AxiosInstance => {
-  const service = inject<AxiosInstance>(axiosSymbol);
-  if (!service)
-    throw new Error("The axios service is not registered successfully.");
-  return service;
+  const request = inject<AxiosInstance>(axiosSymbol);
+  if (!request)
+    throw new Error("The axios injection is not registered successfully.");
+  return request;
 };
 
