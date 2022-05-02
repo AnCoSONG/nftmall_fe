@@ -1,18 +1,16 @@
 <template>
+<!-- todo: 优化list逻辑：如果是刷新就清空数据覆盖新数据，如果是加载更多就push进去 -->
     <van-pull-refresh v-model="refreshing" @refresh="onRefresh()">
         <van-list v-model:loading="loading" :finished="finished" finished-text="没有更多了" @load="onLoadMore()"
             v-if="app.hot.length > 0">
-            <ProductCard :id="item.id" :name="item.name" :preview_img="item.preview_img" :count="item.count"
-                :type="item.type" :price="item.price" :tags="item.tags" :stock_count="item.stock_count"
-                :limit="item.limit" :creator="item.creator" :sale_timestamp="item.sale_timestamp"
-                :classname="item.classname" :details="item.details" v-for="item in app.hot"></ProductCard>
+            <ProductCard :data="item" v-for="item in app.hot"></ProductCard>
         </van-list>
-        <van-empty v-else :image-size="px2rem(80)" description="这里空空如也" image="https://cdn.jsdelivr.net/npm/@vant/assets/custom-empty-image.png">
-        </van-empty>
+        <Empty v-else />
     </van-pull-refresh>
 </template>
 <script setup lang='ts'>
 import ProductCard from './ProductCard.vue';
+import Empty from '../../../../components/Empty.vue';
 import { useAppStore } from '../../../../stores/app';
 import { useAxios } from "../../../../plugins/axios"
 import { inject, ref } from 'vue';
@@ -36,21 +34,20 @@ const finished = ref(false);
 const onRefresh = async () => {
     finished.value = false;
     loading.value = true;
-    const res = await axios.get('/v1/product')
-    if (res) {
-        app.setHotProduct(res.data.data)
-    } else {
-        app.setHotProduct([])
-    }
-    loading.value = false;
-    refreshing.value = false;
+    await onLoadMore()
 }
 
 /**
  * todo: 根据生产环境情况完善加载更多
  */
 const onLoadMore = async () => {
+    
     if (finished.value) return;
+    if (refreshing.value) {
+        // 清空列表
+        app.setHotProduct([])
+        
+    }
     loading.value = true;
     const res = await axios.get('/v1/product')
     if (res) {
@@ -58,6 +55,7 @@ const onLoadMore = async () => {
     } else {
         app.setHotProduct([])
     }
+    refreshing.value = false;
     loading.value = false;
     finished.value = true;
 }

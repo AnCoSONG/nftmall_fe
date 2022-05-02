@@ -21,7 +21,10 @@ import {
     Field,
     PasswordInput,
     NumberKeyboard,
-    Checkbox
+    Checkbox,
+    Skeleton,
+    Radio,
+    RadioGroup
 } from "vant";
 
 export default function (app: App) {
@@ -46,4 +49,7 @@ export default function (app: App) {
     app.use(PasswordInput);
     app.use(NumberKeyboard);
     app.use(Checkbox);
+    app.use(Skeleton);
+    app.use(Radio);
+    app.use(RadioGroup);
 }

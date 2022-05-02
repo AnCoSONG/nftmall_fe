@@ -1,10 +1,10 @@
 <template>
-    <div class="user-main">
-        <CellItem icon="bill-o" text="我的订单"></CellItem>
-        <CellItem icon="gem-o" text="我的藏品"></CellItem>
-        <CellItem icon="send-gift-o" text="我的转赠"></CellItem>
-        <CellItem icon="service-o" text="联系客服" @click="showService = true"></CellItem>
-        <CellItem icon="info-o" text="关于商城" @click="showAbout"></CellItem>
+    <div class="user-main" >
+        <CellItem icon="bill-o" right-icon="arrow" text="我的订单" @click="routeTo('order')"></CellItem>
+        <CellItem icon="gem-o" right-icon="arrow"  text="我的藏品" @click="routeTo('collection')"></CellItem>
+        <CellItem icon="send-gift-o" right-icon="arrow"  text="我的转赠"></CellItem>
+        <CellItem icon="service-o" right-icon="arrow"  text="联系客服" @click="showService = true"></CellItem>
+        <CellItem icon="info-o" right-icon="arrow"  text="关于商城" @click="showAbout"></CellItem>
         <van-dialog class="dialog" v-model:show="showService">
             <template #title>
                 <div class="title">请添加客服微信</div>
@@ -18,9 +18,11 @@
     </div>
 </template>
 <script setup lang='ts'>
-import CellItem from './CellItem.vue';
+import CellItem from 'comps/CellItem.vue';
 import { Dialog } from 'vant'
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+const router = useRouter()
 const showService = ref(false);
 
 const showAbout = () => {
@@ -28,6 +30,10 @@ const showAbout = () => {
         title: '关于晋元数字藏品商城',
         message: '这是本商城的介绍文案'
     })
+}
+
+const routeTo = (path: string) => {
+    router.push(path)
 }
 </script>
 <style lang="scss" scoped>

@@ -1,8 +1,8 @@
 <template>
     <div class="login">
         <!-- <van-icon name="arrow-left"></van-icon> -->
-        <van-image :src="logoFff" class="logo"></van-image>
-        <div class="product-name">
+        <van-image :src="logoFff" class="logo" @click="router.push('/')"></van-image>
+        <div class="product-name" @click="router.push('/')">
             {{ app.mall_name }}
         </div>
         <div class="form phone">
@@ -123,7 +123,7 @@ const verificationBtnText = computed(() => {
     if (Date.now() - sendVerification.value > 5*60*1000) {
         return '获取验证码'
     } else {
-        return '✅'
+        return '已发送'
     }
 })
 
@@ -254,7 +254,7 @@ const login = async () => {
                 background: none;
                 outline: none;
                 border: 0px;
-                box-sizing: border;
+                box-sizing: border-box;
                 font-size: px2rem(20);
                 margin-right: px2rem(8);
             }

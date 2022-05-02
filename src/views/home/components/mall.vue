@@ -1,5 +1,5 @@
 <template>
-    <div class="mall">
+    <div class="mall outer-box">
         <Announcement></Announcement>
         <MallInfo></MallInfo>
         <BannerWrapper></BannerWrapper>
@@ -14,11 +14,7 @@ import MallMain from './subcomponents/MallMain.vue';
 </script>
 <style lang="scss" scoped>
 .mall {
-    padding: px2rem(17) px2rem(17);
-    padding-bottom: 0;
-    box-sizing: border-box;
     margin-bottom: px2rem(72);
 
-    
 }
 </style>

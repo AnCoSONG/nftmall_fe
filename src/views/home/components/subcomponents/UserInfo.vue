@@ -3,11 +3,11 @@
         <div class="basic" v-if="user.isLogin">
             <van-image :src="user.data.avatar" class="avatar" round></van-image>
             <div class="name-credit">
-                <div class="name">{{user.data.username}}</div>
-                <div class="credit">积分: {{user.data.credit}}</div>
+                <div class="name">{{ user.data.username }}</div>
+                <div class="credit">积分: {{ user.data.credit }}</div>
             </div>
             <!-- todo 用户信息详情页 -->
-            <div class="right">
+            <div class="right" @click="router.push('/account')">
                 <van-icon name="arrow" />
             </div>
             <div class="right-arrow"></div>
@@ -15,11 +15,10 @@
         <div class="basic" v-else @click="routeToLogin">请登录</div>
         <div class="address" v-show="user.isLogin">
             <div class="text">
-                区块链地址: {{user.data.chain_address}}
+                区块链地址: {{ user.data.chain_address }}
             </div>
-            <div class="copy" v-clipboard:copy="user.data.chain_address"
-    v-clipboard:success="onCopySuccess"
-    v-clipboard:error="onCopyError">
+            <div class="copy" v-clipboard:copy="user.data.chain_address" v-clipboard:success="onCopySuccess"
+                v-clipboard:error="onCopyError">
                 <van-icon :name="copySvg" />
             </div>
         </div>
@@ -27,7 +26,7 @@
 </template>
 <script setup lang='ts'>
 import { useUserStore } from '../../../../stores/user';
-import {toClipboard} from '@soerenmartius/vue3-clipboard'
+import { toClipboard } from '@soerenmartius/vue3-clipboard'
 import { Notify } from 'vant';
 import copySvg from '../../../../assets/copy.svg'
 import { useRouter } from 'vue-router';
@@ -67,8 +66,8 @@ const routeToLogin = () => {
         align-items: center;
         width: 100%;
         margin-bottom: px2rem(18);
-        color:$normalTextColor;
-        
+        color: $normalTextColor;
+
 
         .avatar {
             width: px2rem(54);
@@ -112,7 +111,7 @@ const routeToLogin = () => {
         color: $greyTextColor;
         padding: px2rem(4) px2rem(6);
         box-sizing: border-box;
-        background-color:#1b1b1b;
+        background-color: #1b1b1b;
         box-shadow: inset 0px px2rem(4) px2rem(4) rgba(0, 0, 0, .25);
 
         .text {
@@ -121,6 +120,7 @@ const routeToLogin = () => {
             overflow: hidden;
             text-overflow: ellipsis;
         }
+
         .copy {
             font-size: px2rem(16);
             line-height: px2rem(16);

@@ -1,7 +1,7 @@
 <template>
-    <div class="user">
+    <div class="user outer-box">
         <div class="top-controls">
-            <div class="setting-control">
+            <div class="setting-control" @click="router.push('/setting')">
                 <van-icon name="setting-o" color="#898989" />
             </div>
         </div>
@@ -11,8 +11,10 @@
     </div>
 </template>
 <script setup lang='ts'>
+import { useRouter } from 'vue-router';
 import UserInfo from './subcomponents/UserInfo.vue';
 import UserMain from './subcomponents/UserMain.vue'
+const router = useRouter()
 // todo: 用户态!!!
 </script>
 <style lang="scss" scoped>

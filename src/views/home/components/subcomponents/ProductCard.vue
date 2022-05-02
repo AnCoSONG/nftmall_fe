@@ -1,7 +1,7 @@
 <template>
-    <div class="product-card">
+    <div class="product-card" @click="router.push(`/product/${props.data.id}`)">
         <div class="img-wrapper">
-            <van-image :src="props.preview_img" class="img" @load="loaded=true">
+            <van-image :src="props.data.preview_img" class="img" @load="loaded=true">
                 <template v-slot:loading>
                     <div class="loader-wrapper">
                         <van-loading type="spinner" size="20" />
@@ -9,30 +9,31 @@
                 </template>
                 <template v-slot:error>加载失败</template>
             </van-image>
+            <!-- todo: 优化实现细节 -->
             <div class="product-status" v-show="loaded">
                 {{statusText}}
             </div>
             <div class="product-type" v-show="loaded">
-                {{props.type}}
+                {{props.data.type}}
             </div>
             <div class="product-creator" v-show="loaded">
-                <van-image :src="props.creator.avatar" round class="product-creator-img"></van-image>
+                <van-image :src="props.data.creator.avatar" round class="product-creator-img"></van-image>
                 <div class="product-creator-name">
-                    {{props.creator.name}}
+                    {{props.data.creator.name}}
                 </div>
             </div>
         </div>
         <div class="desc">
             <div class="info">
-                <div class="title">{{ props.name }}</div>
+                <div class="title">{{ props.data.name }}</div>
                 <div class="tags">
-                    <div class="tag" v-for="tag in props.tags">{{ tag }}</div>
+                    <Tag v-for="tag in props.data.tags" :data="tag"/>
                 </div>
             </div>
             <div class="price">
                 <span class="money-type">¥&nbsp;</span>
-                <span class="money-integral">{{ props.price.split('.')[0] }}</span>
-                <span class="money-fractional">.{{ props.price.split('.')[1] }}</span>
+                <span class="money-integral">{{ props.data.price.split('.')[0] }}</span>
+                <span class="money-fractional">.{{ props.data.price.split('.')[1] }}</span>
             </div>
         </div>
     </div>
@@ -40,34 +41,41 @@
 <script setup lang='ts'>
 import { computed } from '@vue/reactivity';
 import { ref } from 'vue';
+import Tag from '../../../../components/Tag.vue';
+import { useRouter } from 'vue-router';
+const router = useRouter();
 
-type Product = {
-    id: number | string,
-    name: string,
-    preview_img: string,
-    type: "image" | "audio" | "video" | "hybrid" | "3d" | "other",
-    classname: string,
-    count: number,
-    creator: {
-        avatar: string,
-        name: string,
-    }
-    details: Object,
-    price: string,
-    tags: string[],
-    sale_timestamp: number,
-    stock_count: number,
-    limit: number,
+// type Product = {
+//     id: number | string,
+//     name: string,
+//     preview_img: string,
+//     type: "image" | "audio" | "video" | "hybrid" | "3d" | "other",
+//     classname: string,
+//     count: number,
+//     creator: {
+//         avatar: string,
+//         name: string,
+//     }
+//     details: Object,
+//     price: string,
+//     tags: string[],
+//     sale_timestamp: number,
+//     stock_count: number,
+//     limit: number,
+// }
+
+type PropType = {
+    data: Product
 }
-const props = defineProps<Product>()
+const props = defineProps<PropType>()
 
 const loaded = ref(false)
 
 const statusText = computed(() => {
-    if (props.stock_count === 0) {
+    if (props.data.stock_count === 0) {
         return '已售罄'
     }
-    const diff = props.sale_timestamp - Date.now()
+    const diff = props.data.sale_timestamp - Date.now()
     if (diff < 0) {
         return '热销中'
     } else if (diff > 24 * 60 * 60 * 1000){
@@ -80,10 +88,11 @@ const statusText = computed(() => {
 <style lang="scss" scoped>
 .product-card {
     width: 100%;
-    background-color: $boxBgColorLight;
+    background-color: $boxBgColor;
     border-radius: px2rem(8);
     overflow: hidden;
     margin-bottom: px2rem(36);
+    box-shadow: 0 px2rem(4) px2rem(4) rgba(0, 0, 0, .25);
 
     &:last-child {
         margin-bottom: 0;
@@ -194,19 +203,9 @@ const statusText = computed(() => {
                 margin-top: px2rem(12);
                 font-size: px2rem(12);
                 display: flex;
-                flex-flow: nowrap row;
+                flex-flow: wrap row;
                 justify-content: flex-start;
                 align-items: center;
-
-                .tag {
-                    margin-right: px2rem(8);
-                    padding: px2rem(2);
-                    border-radius: px2rem(2);
-                    // background-color: $glodTextColor;
-                    background: linear-gradient(94.63deg, #E8D9A6 14.59%, #DBC782 92.35%);
-                    color: black;
-                    // color: $normalTextColor;
-                }
             }
         }
 

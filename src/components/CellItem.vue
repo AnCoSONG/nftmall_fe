@@ -1,12 +1,15 @@
 <template>
 <!-- todo: optim this implementation -->
-    <div class="cell-btn" @click="() => prop.onClick?prop.onClick():false">
+    <div class="cell-btn">
         <div class="icon" v-show="prop.icon != null">
             <van-icon :name="prop.icon"></van-icon>
         </div>
         <div class="text">{{prop.text}}</div>
+        <!-- todo：增强右侧，可以显示其他图案 -->
         <div class="right">
-            <van-icon name="arrow"></van-icon>
+            <slot name="value"></slot>
+            <div class="value" v-show="prop.value !== null">{{prop.value}}</div>
+            <van-icon class="right-icon" :name="prop.rightIcon" v-show="prop.rightIcon != null"></van-icon>
         </div>
     </div>
 </template>
@@ -14,7 +17,8 @@
 type Prop = {
     text: string,
     icon?: string,
-    onClick?: Function
+    rightIcon?: string,
+    value?: string,
 }
 const prop = defineProps<Prop>()
 </script>
@@ -52,7 +56,17 @@ const prop = defineProps<Prop>()
     }
 
     .right {
+        max-width: px2rem(160);
         font-size: px2rem(16);
+        color: $greyTextColor;
+        display: flex;
+        flex-flow: nowrap;
+        align-items: center;
+        justify-content: flex-end;
+
+        .right-icon {
+            margin-left: px2rem(12);
+        }
     }
 }
 </style>

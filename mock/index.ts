@@ -59,7 +59,7 @@ export default [
                         preview_img: "https://picsum.photos/400/150?random=1",
                         type: "image",
                         classname: "",
-                        tags: ["测试", "测试2", "加长标签"],
+                        tags: [{text: "测试", mode: 'light'}, {text: "测试2", mode: 'dark'}, {text: "加长标签"}],
                         count: 1000,
                         creator: {
                             avatar: "https://picsum.photos/48/48?random=1",
@@ -77,7 +77,7 @@ export default [
                         preview_img: "https://picsum.photos/400/150?random=2",
                         type: "image",
                         classname: "",
-                        tags: ["测试", "测试2", "加长标签"],
+                        tags: [{text: "测试", mode: 'light'}, {text: "测试2", mode: 'dark'}, {text: "加长标签"}],
                         count: 1000,
                         creator: {
                             avatar: "https://picsum.photos/48/48?random=2",
@@ -95,7 +95,7 @@ export default [
                         preview_img: "https://picsum.photos/400/150?random=3",
                         type: "image",
                         classname: "",
-                        tags: ["测试", "测试2", "加长标签"],
+                        tags: [{text: "测试", mode: 'light'}, {text: "测试2", mode: 'dark'}, {text: "加长标签"}],
                         count: 1000,
                         creator: {
                             avatar: "https://picsum.photos/48/48?random=3",
@@ -113,7 +113,7 @@ export default [
                         preview_img: "https://picsum.photos/400/150?random=4",
                         type: "image",
                         classname: "",
-                        tags: ["测试", "测试2", "加长标签"],
+                        tags: [{text: "测试", mode: 'light'}, {text: "测试2", mode: 'dark'}, {text: "加长标签"}],
                         count: 1000,
                         creator: {
                             avatar: "https://picsum.photos/48/48?random=4",
@@ -131,7 +131,7 @@ export default [
                         preview_img: "https://picsum.photos/400/150?random=5",
                         type: "image",
                         classname: "",
-                        tags: ["测试", "测试2", "加长标签"],
+                        tags: [{text: "测试", mode: 'light'}, {text: "测试2", mode: 'dark'}, {text: "加长标签"}],
                         count: 1000,
                         creator: {
                             avatar: "https://picsum.photos/48/48?random=5",
@@ -149,7 +149,7 @@ export default [
                         preview_img: "https://picsum.photos/400/150?random=6",
                         type: "image",
                         classname: "",
-                        tags: ["测试", "测试2", "加长标签"],
+                        tags: [{text: "测试", mode: 'light'}, {text: "测试2", mode: 'dark'}, {text: "加长标签"}],
                         count: 1000,
                         creator: {
                             avatar: "https://picsum.photos/48/48?random=6",

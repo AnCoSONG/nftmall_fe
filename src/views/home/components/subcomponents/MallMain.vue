@@ -30,9 +30,14 @@ const active = ref(0);
         box-sizing: border-box;
     }
 }
-.van-tab--active {
+.mall-main .van-tab--active {
     .van-tab__text {
         font-size: px2rem(20);
     }
+}
+
+.mall-main .van-tabs--line .van-tabs__wrap{
+    // make tabs height higher
+    height: px2rem(54)!important;
 }
 </style>

@@ -27,9 +27,17 @@ import EnvironmentInspector from './components/EnvironmentInspector.vue';
 
 <style lang="scss">
 // global style definition
+html,
+body,
 #app {
   background-color: $backgroundColor;
   // color: $normalTextColor;
+}
+
+.outer-box {
+  padding: px2rem(17) px2rem(17);
+  padding-bottom: 0;
+  box-sizing: border-box;
 }
 
 .app-gold-text {
