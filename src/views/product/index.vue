@@ -75,8 +75,18 @@ import Price from '../../components/Price.vue';
 import Tag from '../../components/Tag.vue';
 import { px2rem } from '../../utils';
 import { useRoute, useRouter } from 'vue-router';
-import { nextTick, onDeactivated, ref } from 'vue';
+import { nextTick, onDeactivated, ref, toRef } from 'vue';
 import { onMountedOrActivated } from '@vant/use';
+
+
+// 拿到id获取藏品类别信息
+const props = defineProps({
+    id: {
+        type: String,
+        default: '',
+    },
+})
+const id = toRef(props, 'id')
 const route = useRoute()
 const router = useRouter()
 

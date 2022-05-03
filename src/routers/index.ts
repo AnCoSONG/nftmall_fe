@@ -38,6 +38,7 @@ const router = createRouter({
             path: "/order/:id",
             name: "order-detail",
             component: () => import("views/order/detail.vue"),
+            props: true,
         },
         {
             path: "/collection",
@@ -48,12 +49,14 @@ const router = createRouter({
             path: "/collection/:id",
             name: "collection-detail",
             component: () => import("views/collection/detail.vue"),
+            props: true,
         },
         {
             // ID为藏品类别ID
             path: "/product/:id",
             name: "product-detail",
             component: () => import("views/product/index.vue"),
+            props: true,
         },
         {
             path: "/setting",
@@ -82,12 +85,19 @@ const router = createRouter({
             component: () => import("views/verification/index.vue")
         },
         {
+            path: '/doc/:type',
+            name: "doc",
+            component: () => import("views/doc/index.vue"),
+            props: true
+        },
+        {
             path: "/test",
             name: "test",
             component: () => import("comps/Subpage.vue"),
         },
     ],
     scrollBehavior: (to, from, savedPosition) => {
+        // fix some case cannot scroll
         document
             .querySelector("#app")!
             .scrollTo({ left: 0, top: 0, behavior: "smooth" });
