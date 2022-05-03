@@ -11,6 +11,7 @@
     "@soerenmartius/vue3-clipboard": "^0.1.2",
     "@types/nprogress": "^0.2.0",
     "axios": "^0.27.2",
+    "dompurify": "^2.3.6",
     "mockjs": "^1.1.0",
     "normalize.css": "^8.0.1",
     "nprogress": "^0.2.0",
@@ -21,6 +22,7 @@
     "vue-router": "^4.0.13"
   },
   "devDependencies": {
+    "@types/dompurify": "^2.3.3",
     "@types/uuid": "^8.3.4",
     "@vitejs/plugin-vue": "^2.3.1",
     "sass": "^1.51.0",
