@@ -23,7 +23,13 @@ import { storeToRefs } from 'pinia'
 import { ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { v4 } from 'uuid';
+import { onMountedOrActivated } from '@vant/use';
+import { useAxios } from '../../plugins/axios';
+import { useUserStore } from '../../stores/user';
+import { Notify } from 'vant';
+const axios = useAxios()
 const app = useAppStore();
+const user = useUserStore();
 const { title } = storeToRefs(app);
 const route = useRoute()
 const router = useRouter()
@@ -48,6 +54,21 @@ const items = ref([
         text: "我的"
     }
 ])
+
+onMountedOrActivated(async () => {
+    console.log('123')
+    const res = await axios.get('/v1/auth/fetchUserInfo')
+    if (res.data.code === 200) {
+        if(user.firstBack) {
+            Notify({
+                type: 'success',
+                message: "欢迎回来, " + res.data.data.username,
+            })
+        }
+        user.login(res.data.data);
+        sessionStorage.setItem('id', res.data.data.id)
+    }
+})
 </script>
 <style lang="scss">
 .home {

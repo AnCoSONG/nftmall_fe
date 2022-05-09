@@ -2,7 +2,7 @@ import { useAxios, request } from "../plugins/axios";
 
 export const fetchAnnouncements = async () => {
     // const axios = useAxios();
-    const res = await request.get("/v1/announcement").catch((err) => {
+    const res = await request.get("/v1/notices").catch((err) => {
         console.log(err);
     });
     if (res) {
@@ -13,7 +13,7 @@ export const fetchAnnouncements = async () => {
 };
 
 export const fetchBanners = async () => {
-    const res = await request.get("/v1/banner").catch((err) => {
+    const res = await request.get("/v1/banners").catch((err) => {
         console.log(err);
     });
     if (res) {
@@ -35,11 +35,15 @@ export const fetchHotProduct = async () => {
     }
 };
 
-export const postVerification = async () => {
+export const postVerification = async (phone: string) => {
     // const axios = useAxios();
-    const res = await request.post("/v1/verification").catch((err) => {
-        console.log(err);
-    });
+    const res = await request
+        .post("/v1/auth/sendCode", {
+            phone,
+        })
+        .catch((err) => {
+            console.log(err);
+        });
     if (res) {
         return res.data;
     } else {

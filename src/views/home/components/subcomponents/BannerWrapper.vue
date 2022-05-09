@@ -2,8 +2,8 @@
     <div class="banner-wrapper">
         <!-- todo: customize indicator position and shape -->
         <van-swipe :autoplay="3000" indicatorColor="#ddd" class="banner-wrapper-swiper" lazy-render>
-            <van-swipe-item v-for="image in app.banner" :key="image.imgsrc">
-                <van-image class="banner-img" fit="cover" :src="image.imgsrc" lazy-load>
+            <van-swipe-item v-for="image in app.banner" :key="image.src">
+                <van-image class="banner-img" fit="cover" :src="image.src" lazy-load>
                     <template v-slot:loading>
                         <div class="loader-wrapper">
                             <van-loading type="spinner" size="20" />

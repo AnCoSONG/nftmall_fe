@@ -15,9 +15,9 @@
         <div class="basic" v-else @click="routeToLogin">请登录</div>
         <div class="address" v-show="user.isLogin">
             <div class="text">
-                区块链地址: {{ user.data.chain_address }}
+                区块链地址: {{ user.data.bsn_address }}
             </div>
-            <div class="copy" v-clipboard:copy="user.data.chain_address" v-clipboard:success="onCopySuccess"
+            <div class="copy" v-clipboard:copy="user.data.bsn_address" v-clipboard:success="onCopySuccess"
                 v-clipboard:error="onCopyError">
                 <van-icon :name="copySvg" />
             </div>
@@ -73,6 +73,10 @@ const routeToLogin = () => {
             width: px2rem(54);
             height: px2rem(54);
             margin-right: px2rem(19);
+            box-shadow: 0 0 0 px2rem(2) $normalTextColor;
+            border: 2px solid $backgroundColor;
+            border-radius: 50%;
+            background-color: $normalTextColor;
         }
 
         .name-credit {

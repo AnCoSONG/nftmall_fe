@@ -9,7 +9,7 @@ import { viteMockServe } from 'vite-plugin-mock'
 export default defineConfig({
     plugins: [
         vue(),
-        viteMockServe(),
+        // viteMockServe(),
         styleImport({
             resolves: [VantResolve()],
         }),

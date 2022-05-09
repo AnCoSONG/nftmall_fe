@@ -14,9 +14,13 @@
                 <div class="prefix">+86</div>
                 <input class="inner-input" type="text" label="请输入手机号" v-model="phone">
                 <!-- todo 完善获取验证码按钮的逻辑，三种状态 待发送，已发送，输入有误或者时间没到不能发送 -->
-                <div class="suffix" :data-disabled="disabled" @click="getVerification()">
-                    {{verificationBtnText}}
+                <div class="suffix" :data-disabled="disabled" @click="getVerification()" v-if="!showingCountDown">
+                    获取验证码
                 </div>
+                <div class="suffix" v-else>
+                    {{ countDownCurrent.seconds }}秒后重新发送
+                </div>
+
             </div>
             <div class="error" :data-show="errorText !== ''">
                 {{ errorText }}
@@ -55,7 +59,7 @@ import { phoneTest } from '../../utils'
 import { userInfo } from 'os';
 import { useUserStore } from '../../stores/user';
 import { useCountDown } from '@vant/use';
-import {useRouter} from 'vue-router'
+import { useRouter } from 'vue-router'
 import { useAxios } from '../../plugins/axios';
 import { Notify } from 'vant';
 const axios = useAxios();
@@ -64,7 +68,15 @@ const app = useAppStore()
 const user = useUserStore()
 const phone = ref('')
 const disabled = ref(true)
-const sendVerification = ref(0)
+const showingCountDown = ref(false)
+const countDown = useCountDown({
+    time: 60 * 1000, onFinish: () => {
+        // console.log('countDown onFinish')
+        showingCountDown.value = false;
+        countDown.reset();
+    }
+})
+const countDownCurrent = countDown.current;
 watch(phone, (newVal) => {
     if (phoneTest(newVal)) {
         disabled.value = false
@@ -113,29 +125,22 @@ const getVerification = async () => {
             type: 'success',
             message: '验证码已发送'
         })
-        sendVerification.value = Date.now()
+        countDown.start()
+        showingCountDown.value = true;
     } else {
         console.log('验证码发送失败, 请稍后重试')
     }
 }
 
-const verificationBtnText = computed(() => {
-    if (Date.now() - sendVerification.value > 5*60*1000) {
-        return '获取验证码'
-    } else {
-        return '已发送'
-    }
-})
-
 const login = async () => {
-    
+
     if (!phoneTest(phone.value)) {
         Notify({
             type: 'danger',
             message: '请输入正确的手机号'
         })
         return;
-    } 
+    }
     if (verifiedCode.value.length === 0) {
         Notify({
             type: 'danger',
@@ -149,10 +154,10 @@ const login = async () => {
             message: '请同意用户协议'
         })
         return;
-    } 
-    const res = await axios.post('/v1/login', {
+    }
+    const res = await axios.post('/v1/auth/login', {
         phone: phone.value,
-        verification_code: verifiedCode.value
+        code: verifiedCode.value
     })
     const data = res.data;
     if (data && data.code === 200) {
@@ -161,11 +166,13 @@ const login = async () => {
             type: 'success',
             message: '登录成功'
         })
+        sessionStorage.setItem('id', data.data.id);
         router.push('/user')
     } else {
+
         Notify({
             type: 'danger',
-            message: '登录失败'
+            message: '登录失败, ' + data.message
         })
     }
 }
@@ -266,6 +273,7 @@ const login = async () => {
                 padding: px2rem(8) px2rem(8);
                 box-shadow: 0 0 0 1px rgba(0, 0, 0, .25);
                 background-color: $greyTextColor;
+                user-select: none;
 
                 // flex-shrink: 0;
                 // width: 100px;
@@ -324,6 +332,7 @@ const login = async () => {
         flex-flow: nowrap column;
         justify-content: flex-start;
         align-items: flex-start;
+
         .agreement {
             font-size: px2rem(14);
             color: white;

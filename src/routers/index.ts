@@ -15,11 +15,13 @@ const router = createRouter({
                 },
                 {
                     path: "exhibition",
+                    meta: { title: "个人展馆", requireAuth: "prompt" },
                     component: () =>
                         import("views/home/components/exhibition.vue"),
                 },
                 {
                     path: "user",
+                    meta: { title: "个人中心", requireAuth: "prompt" },
                     component: () => import("views/home/components/user.vue"),
                 },
             ],
@@ -32,22 +34,26 @@ const router = createRouter({
         {
             path: "/order", // 订单
             name: "order",
+            meta: { title: "订单", requireAuth: "required" },
             component: () => import("views/order/index.vue"),
         },
         {
             path: "/order/:id",
             name: "order-detail",
+            meta: { title: "订单详情", requireAuth: "required" },
             component: () => import("views/order/detail.vue"),
             props: true,
         },
         {
             path: "/collection",
             name: "collection",
+            meta: { title: "收藏", requireAuth: "required" },
             component: () => import("views/collection/index.vue"),
         },
         {
             path: "/collection/:id",
             name: "collection-detail",
+            meta: { title: "收藏详情", requireAuth: "required" },
             component: () => import("views/collection/detail.vue"),
             props: true,
         },
@@ -55,40 +61,47 @@ const router = createRouter({
             // ID为藏品类别ID
             path: "/product/:id",
             name: "product-detail",
+            meta: { title: "藏品详情", requireAuth: "required" },
             component: () => import("views/product/index.vue"),
             props: true,
         },
         {
             path: "/setting",
             name: "setting",
+            meta: { title: "设置" },
             component: () => import("views/setting/index.vue"),
         },
         {
             // ID为订单ID
             path: "/cashier/:id",
             name: "cashier",
+            meta: { title: "收银台", requireAuth: "required" },
             component: () => import("views/cashier/index.vue"),
         },
         {
             path: "/payment_waiting",
             name: "payment_waiting",
+            meta: { title: "等待支付回调", requireAuth: "required" },
             component: () => import("views/cashier/payment_waiting.vue"),
         },
         {
             path: "/account",
             name: "account",
-            component: () => import("views/account/index.vue")
+            meta: { title: "账户", requireAuth: "required" },
+            component: () => import("views/account/index.vue"),
         },
         {
-            path: '/verification',
+            path: "/verification",
             name: "verification",
-            component: () => import("views/verification/index.vue")
+            meta: { title: "身份验证", requireAuth: "required" },
+            component: () => import("views/verification/index.vue"),
         },
         {
-            path: '/doc/:type',
+            path: "/doc/:type",
             name: "doc",
+            meta: { title: "文档" },
             component: () => import("views/doc/index.vue"),
-            props: true
+            props: true,
         },
         {
             path: "/test",
@@ -112,6 +125,7 @@ const router = createRouter({
 import NProgress from "nprogress";
 import "../styles/nprogress.scss";
 import { defineAsyncComponent } from "vue";
+import { Notify } from "vant";
 
 NProgress.configure({ easing: "ease", speed: 500, showSpinner: false });
 
@@ -120,7 +134,25 @@ router.beforeEach((to, from, next) => {
     // console.log(to, from)
     NProgress.start();
     document.title = to.meta.title ? (to.meta.title as string) : defaultTitle;
-    next();
+    console.log(to.matched)
+    if (to.matched.some((route) => route.meta.requireAuth === "required")) {
+        if (!sessionStorage.getItem('id')) { 
+            next('/login');
+        } else {
+            next();
+        }
+    } else if (to.matched.some((route) => route.meta.requireAuth === "prompt")) {
+        if (!sessionStorage.getItem('id')) {
+            Notify({
+                message: "请先登录",
+            })
+            next()
+        } else {
+            next()
+        }
+    } else {
+        next();
+    }
 });
 
 router.afterEach((to, from) => {

@@ -29,7 +29,7 @@ declare type Product = {
 declare type User = {
     id: ID,
     username: string,
-    chain_address: string,
+    bsn_address: string,
     phone: string,
     email: string,
     avatar: string,
