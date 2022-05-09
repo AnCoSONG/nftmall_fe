@@ -34,20 +34,24 @@ const onLoadMore = async () => {
                 id: 1,
                 name: "测试商品",
                 preview_img: "https://img.yzcdn.cn/vant/apple-1.jpg",
+                src: "https://img.yzcdn.cn/vant/apple-1.jpg",
+                description: "测试商品描述",
                 type: "image",
-                classname: "",
-                count: 1,
-                creator: {
+                genres: [{ id: 1, name: '男装' }, { id: 2, name: '女装' }],
+                publish_count: 1,
+                publisher_id: 1,
+                publisher: {
+                    id: 1,
                     avatar: "https://img.yzcdn.cn/vant/apple-1.jpg",
                     name: "创作者",
                 },
-                details: {},
+                details: "",
                 price: "10.50",
                 tags: [{
-                    text: '测试',
+                    name: '测试',
                     mode: 'dark',
                 }, {
-                    text: '测试',
+                    name: '测试',
                     mode: 'light'
                 }],
                 sale_timestamp: Date.now() + 1000 * 60 * 5,

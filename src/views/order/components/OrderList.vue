@@ -51,22 +51,22 @@ const onLoadMore = async () => {
                         price: '100.00',
                         tags: [
                         {
-                            text: '测试标签',
+                            name: '测试标签',
                             mode: 'dark'
                         },
                         {
-                            text: '测试标签'
+                            name: '测试标签'
                         },
                         {
-                            text: '测试标签',
+                            name: '测试标签',
                             mode: 'light'
                         },
                         {
-                            text: '测试标签',
+                            name: '测试标签',
                             mode: 'light'
                         },
                         {
-                            text: '测试标签',
+                            name: '测试标签',
                             mode: 'light'
                         },
                         ],

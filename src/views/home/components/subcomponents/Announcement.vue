@@ -1,9 +1,9 @@
 <template>
-    <div class="announcement" v-if="app.announcement.length !== 0">
+    <div class="announcement" v-if="notices.length !== 0">
         <van-notice-bar class="notice-bar" left-icon="volume-o" :scrollable="false"
             :background="theme.noticeBarBackground" :color="theme.noticeBarText">
             <van-swipe vertical class="notice-swipe" :autoplay="3000" :show-indicators="false">
-                <van-swipe-item v-for="item in app.announcement" :key="item.text">{{ item.text }}</van-swipe-item>
+                <van-swipe-item v-for="item in notices" :key="item.text">{{ item.text }}</van-swipe-item>
             </van-swipe>
         </van-notice-bar>
     </div>
@@ -12,10 +12,14 @@
 import { useThemeStore } from '../../../../stores/theme';
 import { useAppStore } from '../../../../stores/app';
 import { onMountedOrActivated } from '@vant/use';
+import { fetchNotices } from '../../../../api/index';
+import { ref } from 'vue';
 const theme = useThemeStore().announcement;
-const app = useAppStore();
+const notices = ref<Notice[]>([]);
 onMountedOrActivated(async () => {
-    await app.loadAnnouncement();
+    const data = await fetchNotices()
+    if (data.code === 200) 
+        notices.value = [...data.data]
 })
 </script>
 <style lang="scss" scoped>

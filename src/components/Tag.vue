@@ -1,6 +1,6 @@
 <template>
 <div class="tag" :data-mode="data.mode!==undefined?data.mode: 'light'">
-    {{data.text}}
+    {{data.name}}
 </div>
 </template>
 <script setup lang='ts'>

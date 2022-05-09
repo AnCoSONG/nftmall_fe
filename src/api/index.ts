@@ -1,6 +1,7 @@
+import { Notify } from "vant";
 import { useAxios, request } from "../plugins/axios";
 
-export const fetchAnnouncements = async () => {
+export const fetchNotices = async () => {
     // const axios = useAxios();
     const res = await request.get("/v1/notices").catch((err) => {
         console.log(err);
@@ -23,11 +24,24 @@ export const fetchBanners = async () => {
     }
 };
 
-export const fetchHotProduct = async () => {
+export const fetchRecommandProducts = async () => {
     // const axios = useAxios();
-    const res = await request.get("/v1/product").catch((err) => {
+    const res = await request.get("/v1/products").catch((err) => {
         console.log(err);
     });
+    if (res) {
+        return res.data;
+    } else {
+        return [];
+    }
+};
+
+export const fetchProducts = async (page: number, limit: number) => {
+    const res = await request
+        .get("/v1/products?page=" + page + "&limit=" + limit)
+        .catch((err) => {
+            console.log(err);
+        });
     if (res) {
         return res.data;
     } else {

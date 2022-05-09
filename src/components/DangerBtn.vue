@@ -10,6 +10,7 @@
 type PropType = {
     text: string,
     icon?: string,
+    loading?: boolean,
 }
 const prop = defineProps<PropType>()
 </script>

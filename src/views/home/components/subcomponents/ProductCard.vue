@@ -17,9 +17,9 @@
                 {{props.data.type}}
             </div>
             <div class="product-creator" v-show="loaded">
-                <van-image :src="props.data.creator.avatar" round class="product-creator-img"></van-image>
+                <van-image :src="props.data.publisher.avatar || 'https://avatars.dicebear.com/api/pixel-art/random.svg'" round class="product-creator-img"></van-image>
                 <div class="product-creator-name">
-                    {{props.data.creator.name}}
+                    {{props.data.publisher.name}}
                 </div>
             </div>
         </div>
@@ -68,7 +68,7 @@ type PropType = {
     data: Product
 }
 const props = defineProps<PropType>()
-
+console.log(props.data)
 const loaded = ref(false)
 
 const statusText = computed(() => {

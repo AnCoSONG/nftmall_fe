@@ -56,7 +56,6 @@ const items = ref([
 ])
 
 onMountedOrActivated(async () => {
-    console.log('123')
     const res = await axios.get('/v1/auth/fetchUserInfo')
     if (res.data.code === 200) {
         if(user.firstBack) {

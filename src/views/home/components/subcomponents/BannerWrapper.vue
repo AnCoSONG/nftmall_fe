@@ -2,7 +2,7 @@
     <div class="banner-wrapper">
         <!-- todo: customize indicator position and shape -->
         <van-swipe :autoplay="3000" indicatorColor="#ddd" class="banner-wrapper-swiper" lazy-render>
-            <van-swipe-item v-for="image in app.banner" :key="image.src">
+            <van-swipe-item v-for="image in banners" :key="image.src">
                 <van-image class="banner-img" fit="cover" :src="image.src" lazy-load>
                     <template v-slot:loading>
                         <div class="loader-wrapper">
@@ -17,10 +17,14 @@
 </template>
 <script setup lang='ts'>
 import { onMountedOrActivated } from '@vant/use';
-import { useAppStore } from '../../../../stores/app';
-const app = useAppStore()
+import { ref } from 'vue';
+import { fetchBanners } from '../../../../api';
+const banners = ref<Banner[]>([])
 onMountedOrActivated(async () => {
-    await app.loadBanner()
+    const data = await fetchBanners()
+    if (data.code === 200) {
+        banners.value = [...data.data]
+    }
 } )
 </script>
 <style lang="scss" scoped>

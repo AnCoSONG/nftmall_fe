@@ -6,34 +6,31 @@ export const useAppStore = defineStore("app", {
         return {
             title: "晋元数藏",
             mall_name: "晋元数字藏品商城",
-            announcement: [] as { text: string; link?: string }[],
             banner: [] as { src: string, link?: string }[],
             hot: [] as Product[],
-            user: {} as User,
-            isLogin: false,
         };
     },
     actions: {
-        async loadAnnouncement() {
-            const res = await api.fetchAnnouncements();
-            console.log(res);
-            this.announcement = [...res.data];
-        },
+        // async loadAnnouncement() {
+        //     const res = await api.fetchAnnouncements();
+        //     console.log(res);
+        //     this.announcement = [...res.data];
+        // },
 
-        async loadBanner() {
-            const res = await api.fetchBanners();
-            console.log(res);
-            this.banner = [...res.data];
-        },
+        // async loadBanner() {
+        //     const res = await api.fetchBanners();
+        //     console.log(res);
+        //     this.banner = [...res.data];
+        // },
 
-        async loadHotProduct() {
-            const res = await api.fetchHotProduct();
-            console.log(res)
-            this.hot = [...res.data];
-        },
+        // async loadHotProduct() {
+        //     const res = await api.fetchHotProduct();
+        //     console.log(res)
+        //     this.hot = [...res.data];
+        // },
 
-        setHotProduct(payload: Product[]) {
-            this.hot = [...payload];
-        }
+        // setHotProduct(payload: Product[]) {
+        //     this.hot = [...payload];
+        // }
     },
 });

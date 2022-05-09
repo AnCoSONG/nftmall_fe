@@ -13,7 +13,7 @@
             <div class="right-arrow"></div>
         </div>
         <div class="basic" v-else @click="routeToLogin">请登录</div>
-        <div class="address" v-show="user.isLogin">
+        <div class="address" v-if="user.isLogin && user.data.bsn_address != null">
             <div class="text">
                 区块链地址: {{ user.data.bsn_address }}
             </div>
@@ -22,6 +22,10 @@
                 <van-icon :name="copySvg" />
             </div>
         </div>
+        <!-- <div v-else-if="user.data.bsn_address == null">
+            即将上链
+        </div>
+        <div v-else></div> -->
     </div>
 </template>
 <script setup lang='ts'>
