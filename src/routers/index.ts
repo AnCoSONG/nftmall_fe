@@ -30,6 +30,7 @@ const router = createRouter({
             path: "/login",
             name: "login",
             component: () => import("views/login/index.vue"),
+            props: (route) => ({ backTo: route.params.backTo })
         },
         {
             path: "/order", // 订单
@@ -73,11 +74,11 @@ const router = createRouter({
         },
         {
             // ID为订单ID
-            path: "/cashier/:id",
+            path: "/cashier",
             name: "cashier",
             meta: { title: "收银台", requireAuth: "required" },
             component: () => import("views/cashier/index.vue"),
-            props: (route) => ({ id: route.params.id }),
+            props: (route) => ({ order_id: route.query.order_id, product_id: route.query.product_id }),
         },
         {
             path: "/payment_waiting",
@@ -114,7 +115,7 @@ const router = createRouter({
             path: '/:pathMatch(.*)*',
             name: '404',
             component: () => import('views/404/index.vue'),
-            meta: {title: '404'}
+            meta: { title: '404' }
         }
     ],
     scrollBehavior: (to, from, savedPosition) => {
@@ -145,6 +146,11 @@ router.beforeEach((to, from, next) => {
     // console.log(to.matched);
     if (to.matched.some((route) => route.meta.requireAuth === "required")) {
         if (!sessionStorage.getItem("id")) {
+            Notify({
+                message: '请先登录',
+                type: 'danger',
+                duration: 2000
+            })
             next("/login");
         } else {
             next();
@@ -154,7 +160,7 @@ router.beforeEach((to, from, next) => {
     ) {
         if (!sessionStorage.getItem("id")) {
             Toast({
-                message: "请您登录后再浏览此页面",
+                message: "建议您登录后浏览，以获得更好的体验",
                 duration: 2000,
                 forbidClick: true,
                 icon: 'warning-o',

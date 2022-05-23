@@ -52,3 +52,29 @@ export const srcTransform = async (src: string) => {
         }
     }
 };
+
+export enum PaymentStatus {
+    UNPAID = "unpaid",
+    PAID = "paid",
+    CANCELED = "canceled",
+}
+
+export enum SupportType {
+    IMAGE = "image",
+    VIDEO = "video",
+    AUDIO = "audio",
+    D3 = "3D",
+    HYBRID = "hybrid",
+}
+
+export enum DisplayMode {
+    LIGHT = "light",
+    DARK = "dark",
+}
+
+export enum onChainStatus {
+    SUCCESS = "success",
+    PROCESSING = "processing",
+    FAILED = "failed",
+    PENDING = "pending",
+}

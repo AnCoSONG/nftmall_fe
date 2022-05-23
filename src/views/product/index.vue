@@ -1,24 +1,16 @@
 <template>
-    <Subpage title="藏品详情">
+    <Subpage title="藏品详情" back-to="/">
         <div class="product" v-if="product">
             <div class="product-preview">
-                <van-image
-                    class="img"
-                    src="https://picsum.photos/400/400"
-                    :class="{ loop: notSupport }"
-                >
+                <van-image class="img" src="https://picsum.photos/400/400" :class="{ loop: notSupport }">
                     <template #loading>
                         <van-loading vertical>加载中</van-loading>
                     </template>
                 </van-image>
             </div>
-            <div class="timeline box">
+            <div class="timeline box" @click="onStepClick">
                 <!-- todo: click 显示时间细则 -->
-                <van-steps
-                    active-color="#E5E798"
-                    :active="currentActive"
-                    inactive-color="#888"
-                >
+                <van-steps active-color="#E5E798" :active="currentActive" inactive-color="#888">
                     <van-step>藏品上架</van-step>
                     <van-step>抽签开放</van-step>
                     <van-step>抽签结束</van-step>
@@ -26,12 +18,8 @@
                 </van-steps>
             </div>
             <div class="product-price-limit box">
-                <Price
-                    :small-size="(px2rem(20) as string)"
-                    :integral-size="(px2rem(32) as string)"
-                    money-type="¥"
-                    :price="product.price"
-                />
+                <Price :small-size="(px2rem(20) as string)" :integral-size="(px2rem(32) as string)" money-type="¥"
+                    :price="product.price" />
 
                 <div class="limit">
                     每人限购 <b color="gold">{{ product.limit }}</b> 份
@@ -56,11 +44,7 @@
                 <div class="title">创作者</div>
                 <div class="content">
                     <div class="creator">
-                        <van-image
-                            class="avatar"
-                            round
-                            :src="product.publisher.avatar"
-                        ></van-image>
+                        <van-image class="avatar" round :src="product.publisher.avatar"></van-image>
                         <div class="name">{{ product.publisher.name }}</div>
                     </div>
                 </div>
@@ -69,11 +53,7 @@
                 <div class="title">藏品故事</div>
                 <div class="content">
                     <!-- todo: 上COS后图像的地址可能需要映射一下 -->
-                    <van-image
-                        class="img"
-                        v-for="item in product.details"
-                        :src="item"
-                    ></van-image>
+                    <van-image class="img" v-for="item in product.details" :src="item"></van-image>
                 </div>
             </div>
             <div class="must-know box">
@@ -98,40 +78,24 @@
                 <!-- todo 状态体现在按钮上 即将 ｜ 倒计时 ｜ 抽签 ｜ 购买 ｜ 已售罄 -->
 
                 <!-- 抽签前 -->
-                <div
-                    class="pay-btn"
-                    :class="{ disabled: !btnClickable }"
-                    @click="onBtnClick"
-                >
+                <div class="pay-btn" :class="{ disabled: !btnClickable }" @click="onBtnClick">
                     <!-- 敬请期待，倒计时 -->
                     <div v-if="isLoading">
-                        <van-loading
-                            color="#333"
-                            size="18"
-                            v-if="btnClickable"
-                        />
+                        <van-loading color="#333" size="18" v-if="btnClickable" />
                         <van-loading color="#ddd" size="18" v-else />
                     </div>
-                    <div
-                        v-show="!isLoading"
-                        class="main-text"
-                        :class="{ noCountDown: !isCountdown }"
-                    >
+                    <div v-show="!isLoading" class="main-text" :class="{ noCountDown: !isCountdown }">
                         {{ statusText }}
                     </div>
-                    <div
-                        v-if="isCountdown"
-                        class="countdown"
-                        v-show="!isLoading"
-                    >
+                    <div v-if="isCountdown" class="countdown" v-show="!isLoading">
                         {{
-                            `${countDownRef.hours
-                                .toString()
-                                .padStart(2, "0")}:${countDownRef.minutes
-                                .toString()
-                                .padStart(2, "0")}:${countDownRef.seconds
-                                .toString()
-                                .padStart(2, "0")}`
+                                `${countDownRef.hours
+                                    .toString()
+                                    .padStart(2, "0")}:${countDownRef.minutes
+                                        .toString()
+                                        .padStart(2, "0")}:${countDownRef.seconds
+                                            .toString()
+                                            .padStart(2, "0")}`
                         }}
                     </div>
                 </div>
@@ -169,7 +133,7 @@ import {
     fetchIsLucky,
     fetchIsPaid,
     get_stock_count,
-seckill,
+    seckill,
 } from "../../api";
 import { Notify, Toast } from "vant";
 import dayjs from "dayjs";
@@ -189,7 +153,7 @@ const route = useRoute();
 const router = useRouter();
 
 if (id.value !== "") {
-    const data = await fetchProduct(id.value);
+    const data = await fetchProduct(id.value, true);
     console.log(data);
     if (data) {
         product.value = { ...data };
@@ -222,6 +186,13 @@ onMountedOrActivated(async () => {
 onDeactivated(() => {
     window.removeEventListener("deviceorientation", handler);
 });
+
+const onStepClick = () => {
+    Toast({
+        type: 'text',
+        message: '待实现：展示具体时间'
+    })
+}
 
 const count = ref(1);
 const operateCount = (payload: number) => {
@@ -324,27 +295,31 @@ const fetchLucky = async () => {
 const fetchInit = async () => {
     isLoading.value = true;
     if (!user.isLogin) {
-        Toast({
-            message: "请先登录",
-            duration: 1500,
-            forbidClick: true,
-            icon: "warning-o",
-            iconSize: "1.6rem",
-        });
+        // * Router已提示
+        // Toast({
+        //     message: "请先登录",
+        //     duration: 1500,
+        //     forbidClick: true,
+        //     icon: "warning-o",
+        //     iconSize: "1.6rem",
+        // });
         isLoading.value = false;
+        const stockRes = await get_stock_count(id.value, 'redis')
+        stock_count.value = stockRes;
         return;
     }
     const [drawRes, luckyRes, paidRes, stockRes] = await Promise.all([
         fetchIsDraw(user.data.id, id.value),
         fetchIsLucky(user.data.id, id.value),
         fetchIsPaid(user.data.id, id.value),
-        get_stock_count(id.value),
+        get_stock_count(id.value, 'redis'),
     ]);
     isLoading.value = false;
     isLucky.value = luckyRes;
     isDrawn.value = drawRes;
     isBought.value = paidRes;
     stock_count.value = stockRes;
+    // console.log(stock_count.value);
 };
 
 await fetchInit();
@@ -379,45 +354,70 @@ watchEffect(() => {
         countDown.reset(draw_end_timestamp - now);
         countDown.start();
         isCountdown.value = true;
-        if (isDrawn.value) {
+        if (!user.isLogin) {
             btnClickable.value = false;
-            statusText.value = "已抽签";
+            statusText.value = '请先登录'
         } else {
-            btnClickable.value = true;
-            statusText.value = "抽签";
+            if (isDrawn.value) {
+                btnClickable.value = false;
+                statusText.value = "已抽签";
+            } else {
+                btnClickable.value = true;
+                statusText.value = "抽签";
+            }
         }
-    } else if (now - draw_end_timestamp < 5 * 60 * 1000) {
+    } else if (now - draw_end_timestamp < 1 * 60 * 1000) {
         // 5分钟内优先展示正在结算
         currentStage.value = 3;
         btnClickable.value = false;
-        countDown.reset(now - draw_end_timestamp - 5 * 60 * 1000);
+        countDown.reset(draw_end_timestamp + 1 * 60 * 1000 - now);
         countDown.start();
         isCountdown.value = true;
-        statusText.value = "正在结算";
+        statusText.value = "正在结算"; // 本质上draw_end_timestamp时就应该已完成结算
     } else if (sale_timestamp - now >= 0) {
         currentStage.value = 4;
-        if (isLucky.value) {
-            countDown.reset(sale_timestamp - now);
-            countDown.start();
-            isCountdown.value = true;
-            btnClickable.value = false;
-            statusText.value = "即将发售";
+        if (!user.isLogin) {
+            btnClickable.value = true;
+            statusText.value = '请先登录'
         } else {
-            btnClickable.value = false;
-            statusText.value = "您未中签";
+            if (isLucky.value) {
+                countDown.reset(sale_timestamp - now);
+                countDown.start();
+                isCountdown.value = true;
+                btnClickable.value = false;
+                statusText.value = "即将发售";
+            } else {
+                btnClickable.value = false;
+                statusText.value = "您未中签";
+            }
         }
     } else {
         currentStage.value = 5;
-        if (!isLucky.value) {
+        if (user.isLogin && isBought.value) {
             btnClickable.value = false;
-            statusText.value = "您无购买资格";
+            statusText.value = "已购买";
+            return;
+        }
+        if (stock_count.value === 0) {
+            btnClickable.value = false;
+            statusText.value = '已售罄'
         } else {
-            if (isBought.value) {
-                btnClickable.value = false;
-                statusText.value = "已购买";
-            } else {
+            if (!user.isLogin) {
                 btnClickable.value = true;
-                statusText.value = "购买";
+                statusText.value = '请先登录'
+            } else {
+                if (!isLucky.value) {
+                    btnClickable.value = false;
+                    statusText.value = "您无购买资格";
+                } else {
+                    if (isBought.value) {
+                        btnClickable.value = false;
+                        statusText.value = "已购买";
+                    } else {
+                        btnClickable.value = true;
+                        statusText.value = "购买";
+                    }
+                }
             }
         }
     }
@@ -475,16 +475,16 @@ const onBtnClick = async () => {
         if (res) {
             if (res.order_id) {
                 Toast({
-                    message: "购买成功",
+                    message: "已下单",
                     duration: 1500,
                     forbidClick: true,
-                    icon: "success-o",
+                    icon: "passed",
                     iconSize: "1.6rem",
                 });
                 // 生成一个1000 - 1500ms的随机数
                 const random = Math.floor(Math.random() * (1500 - 1000 + 1)) + 1000;
                 setTimeout(() => {
-                    router.push(`/cashier/${res.order_id}`);
+                    router.push({ path: '/cashier', query: { product_id: id.value, order_id: res.order_id } });
                 }, random)
             } else {
                 Toast({
@@ -493,67 +493,19 @@ const onBtnClick = async () => {
                     forbidClick: true,
                     icon: "warning-o",
                     iconSize: "1.6rem",
+                    teleport: '#app'
                 });
             }
         } else {
             return null;
         }
+    } else if (statusText.value === '请先登录') {
+        // console.log(route.path)
+        router.push({ name: 'login', params: { backTo: route.path } })
     }
 };
 
-// 抽签
-const draw = async () => {
-    isLoading.value = true;
-    if (!user.isLogin) {
-        Toast({
-            message: "请先登录",
-            duration: 1500,
-            forbidClick: true,
-            icon: "warning-o",
-            iconSize: "1.6rem",
-        });
-        return;
-    }
-
-    const drawRes = await participateDraw(user.data.id, id.value);
-    if (!drawRes) {
-        Toast({
-            message: "抽签失败",
-            duration: 1500,
-            forbidClick: true,
-            icon: "warning-o",
-            iconSize: "1.6rem",
-        });
-        return;
-    }
-    if (drawRes.code === 0) {
-        Toast({
-            message: "抽签成功",
-            duration: 1500,
-            forbidClick: true,
-            icon: "success-o",
-            iconSize: "1.6rem",
-        });
-        // 抽签成功后，更新数据
-    } else {
-        Toast({
-            message: drawRes.message,
-            duration: 1500,
-            forbidClick: true,
-            icon: "warning-o",
-            iconSize: "1.6rem",
-        });
-    }
-    isLoading.value = false;
-};
-
-// 抢
-const buy = async () => {
-    // 创建订单，创建好后跳转至收银台
-    setTimeout(() => {
-        router.push(`/cashier/0`); // 需要带请求得到的订单id
-    }, 500);
-};
+// 
 </script>
 <style lang="scss" scoped>
 .product {
@@ -584,8 +536,7 @@ const buy = async () => {
             // transform: rotateX(10deg);
 
             &.loop {
-                animation: rotate 6s cubic-bezier(0.445, 0.05, 0.55, 0.95)
-                    infinite;
+                animation: rotate 6s cubic-bezier(0.445, 0.05, 0.55, 0.95) infinite;
             }
         }
 
@@ -653,11 +604,9 @@ const buy = async () => {
                 font-size: px2rem(24);
                 font-weight: bold;
                 margin-bottom: px2rem(8);
-                background: linear-gradient(
-                    94.63deg,
-                    #e8d9a6 14.59%,
-                    #dbc782 92.35%
-                );
+                background: linear-gradient(94.63deg,
+                        #e8d9a6 14.59%,
+                        #dbc782 92.35%);
                 -webkit-background-clip: text;
                 background-clip: text;
                 -webkit-text-fill-color: transparent;
@@ -877,8 +826,9 @@ const buy = async () => {
 
             &.disabled {
                 .main-text {
-                    // font-weight: normal;
+                    font-weight: bold;
                 }
+
                 background-color: #444;
                 color: #c4c4c4;
             }

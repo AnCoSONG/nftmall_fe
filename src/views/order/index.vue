@@ -6,10 +6,10 @@
                 <OrderList query="all"></OrderList>
             </van-tab>
             <van-tab title="待支付">
-                <OrderList query="unpaied"></OrderList>
+                <OrderList query="unpaid"></OrderList>
             </van-tab>
             <van-tab title="待上链">
-                <OrderList query="unlinked"></OrderList>
+                <OrderList query="pending"></OrderList>
             </van-tab>
             <van-tab title="已取消">
                 <OrderList query="canceled"></OrderList>

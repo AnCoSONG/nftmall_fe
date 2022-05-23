@@ -8,10 +8,11 @@
         <div class="text" v-if="!loading">
              {{ prop.text }}
         </div>
-        <van-loading v-else color="#ddd" size="18px">加载中...</van-loading>
+        <van-loading v-else color="#ddd" :size="px2rem(18)">加载中...</van-loading>
     </div>
 </template>
 <script setup lang="ts">
+import {px2rem } from '../utils/index'
 type PropType = {
     text: string;
     icon?: string;

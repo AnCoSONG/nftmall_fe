@@ -1,4 +1,4 @@
-import { Notify } from "vant";
+import { Notify, Toast } from "vant";
 import { request, Response } from "../plugins/axios";
 
 /**
@@ -80,7 +80,14 @@ export const fetchProducts = async (
     with_relation: boolean
 ) => {
     const res = await request
-        .get<Response<{ data: Product[]; total: number }>>("/products/list", {
+        .get<
+            Response<{
+                data: Product[];
+                total: number;
+                page: number;
+                limit: number;
+            }>
+        >("/products/list", {
             params: { with_relation: with_relation, page: page, limit: limit },
         })
         .catch((err) => {
@@ -98,7 +105,7 @@ export const fetchProducts = async (
     }
 };
 
-export const fetchProduct = async (id: ID, with_relation = true) => {
+export const fetchProduct = async (id: string, with_relation = false) => {
     const res = await request
         .get<Response<Product>>("/products/" + id, {
             params: { with_relation: with_relation },
@@ -353,19 +360,22 @@ export const participateDraw = async (
 };
 
 export const seckill = async (collector_id: number, product_id: string) => {
-    const res = await request.post<
-        Response<{ code: number; message: string; order_id?: string }>
-    >(`/affair/seckill`, {
-        collector_id,
-        product_id,
-    }).catch(err => {
-        console.error(err);
-        Notify({
-            message: err.response.data.message,
-            type: "danger",
-        })
-        return null;
-    })
+    const res = await request
+        .post<Response<{ code: number; message: string; order_id?: string }>>(
+            `/affair/seckill`,
+            {
+                collector_id,
+                product_id,
+            }
+        )
+        .catch((err) => {
+            console.error(err);
+            Notify({
+                message: err.response.data.message,
+                type: "danger",
+            });
+            return null;
+        });
     if (res) {
         return res.data.data;
     } else {
@@ -374,9 +384,14 @@ export const seckill = async (collector_id: number, product_id: string) => {
 };
 
 // todo: Order数据结构
-export const fetchOrderDetail = async (order_id: string) => {
+export const fetchOrderDetail = async (
+    order_id: string,
+    with_relation = false
+) => {
     const res = await request
-        .get<Response<Order>>(`/orders/${order_id}`)
+        .get<Response<Order>>(`/orders/${order_id}`, {
+            params: { with_relation },
+        })
         .catch((err) => {
             console.error(err);
             return null;
@@ -386,4 +401,61 @@ export const fetchOrderDetail = async (order_id: string) => {
     } else {
         return null;
     }
-}
+};
+
+export const fetchOrders = async (
+    page: number,
+    limit: number,
+    with_relation = true,
+    query = "all"
+) => {
+    const res = await request
+        .get<
+            Response<{
+                data: Order[];
+                total: number;
+                page: number;
+                limit: number;
+            }>
+        >(`/orders/list`, {
+            params: {
+                page,
+                limit,
+                with_relation,
+                query,
+            },
+        })
+        .catch((err) => {
+            Toast({
+                type: "fail",
+                message: err.response.data.message,
+            });
+            console.error(err);
+            return null;
+        });
+    if (res) {
+        return res.data.data;
+    } else {
+        return null;
+    }
+};
+
+export const fetchProductItemDetail = async (
+    product_item_id: string,
+    with_relation = true
+) => {
+    const res = await request.get<Response<ProductItem>>(`/product-items/${product_item_id}`, {
+        params: { with_relation },
+    }).catch(err => {
+        Toast({
+            type: 'fail',
+            message: err.response.data.message
+        })
+        return null;
+    })
+    if (res) {
+        return res.data.data;
+    } else {
+        return null;
+    }
+};

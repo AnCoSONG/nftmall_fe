@@ -86,6 +86,15 @@ import { onMountedOrActivated, useCountDown } from "@vant/use";
 import { useRouter } from "vue-router";
 import { useAxios } from "../../plugins/axios";
 import { Notify } from "vant";
+import { useRoute } from "vue-router";
+const props = defineProps({
+    backTo: {
+        type: String,
+        default: "/user",
+        required: false,
+    }
+})
+const route = useRoute()
 const axios = useAxios();
 const router = useRouter();
 const app = useAppStore();
@@ -162,7 +171,7 @@ const getVerification = async () => {
         console.log("验证码发送失败, 请稍后重试");
     }
 };
-
+// console.log(props.backTo, route.params);
 const login = async () => {
     if (!phoneTest(phone.value)) {
         Notify({
@@ -195,7 +204,7 @@ const login = async () => {
                 message: "登录成功",
             })
         }
-        router.push("/user");
+        router.push(props.backTo);
     } else {
         // do nothing
     }

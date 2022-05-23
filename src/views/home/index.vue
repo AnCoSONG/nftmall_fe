@@ -6,13 +6,8 @@
             </KeepAlive>
         </RouterView>
         <div class="bottom-bar">
-            <div
-                class="item"
-                v-for="item in items"
-                :key="item.id"
-                :data-active="route.path == item.path"
-                @click="() => router.push(item.path)"
-            >
+            <div class="item" v-for="item in items" :key="item.id" :data-active="route.path == item.path"
+                @click="() => router.push(item.path)">
                 <div class="icon">
                     <van-icon :name="item.icon" />
                 </div>
@@ -23,18 +18,11 @@
 </template>
 <script setup lang="ts">
 import { useAppStore } from "../../stores/app";
-import { px2rem } from "../../utils";
 import { storeToRefs } from "pinia";
 import { ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { v4 } from "uuid";
-import { onMountedOrActivated } from "@vant/use";
-import { useAxios } from "../../plugins/axios";
-import { useUserStore } from "../../stores/user";
-import { Notify } from "vant";
-const axios = useAxios();
 const app = useAppStore();
-const user = useUserStore();
 const { title } = storeToRefs(app);
 const route = useRoute();
 const router = useRouter();
@@ -59,19 +47,6 @@ const items = ref([
         text: "我的",
     },
 ]);
-
-onMountedOrActivated(async () => {
-    const res = await user.fetchUserInfo();
-    if (res) {
-        if (user.firstBack) {
-            Notify({
-                type: 'success',
-                message: "欢迎回来, " + user.data.username
-            })
-            user.firstBack = false;
-        }
-    }
-});
 </script>
 <style lang="scss">
 .home {

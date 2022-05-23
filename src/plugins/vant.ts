@@ -29,7 +29,8 @@ import {
     Divider,
     Button,
     Steps,
-    Step
+    Step,
+    CountDown
 } from "vant";
 
 export default function (app: App) {
@@ -62,4 +63,5 @@ export default function (app: App) {
     app.use(Button);
     app.use(Steps);
     app.use(Step);
+    app.use(CountDown);
 }

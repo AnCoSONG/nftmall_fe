@@ -1,23 +1,16 @@
 <template>
-    <div
-        class="orientation-inspector"
-        :style="{ height: orientation == 0 && isMobile ? 'auto' : '100%' }"
-    >
+    <div class="orientation-inspector" :style="{ height: orientation == 0 && isMobile ? 'auto' : '100%' }">
         <div v-if="orientation == 0 && isMobile">
             <van-config-provider :theme-vars="themeStore.componentVars">
                 <RouterView v-slot="{ Component }">
                     <template v-if="Component">
-                        <KeepAlive
-                            exclude="cashier,payment_waiting,product,verification,doc"
-                        >
+                        <KeepAlive exclude="cashier,payment_waiting,product,verification,doc,order">
                             <Suspense>
                                 <component :is="Component"></component>
                                 <template #fallback>
                                     <van-overlay :show="true">
                                         <div class="app-loader">
-                                            <van-loading vertical
-                                                >加载中</van-loading
-                                            >
+                                            <van-loading vertical>加载中</van-loading>
                                         </div>
                                     </van-overlay>
                                 </template>
@@ -30,11 +23,11 @@
         <div v-else class="wrapper">
             <div class="app-gold-text info-text">
                 {{
-                    orientation != 0
-                        ? "请在竖屏环境下使用"
-                        : isMobile
-                        ? "未知错误"
-                        : "本页面仅支持移动设备"
+                        orientation != 0
+                            ? "请在竖屏环境下使用"
+                            : isMobile
+                                ? "未知错误"
+                                : "本页面仅支持移动设备"
                 }}
             </div>
         </div>
@@ -44,10 +37,14 @@
 import { ref, watch } from "vue";
 import { useThemeStore } from "../stores/theme";
 import { useAppStore } from "../stores/app";
+import { useUserStore } from "../stores/user";
+import { onMountedOrActivated } from "@vant/use";
+import { Notify, Toast } from "vant";
 
 // theme begin
 const themeStore = useThemeStore();
 const appStore = useAppStore();
+const user = useUserStore()
 // theme end
 
 // orientation begin
@@ -80,6 +77,23 @@ window.addEventListener("resize", () => {
 // onload check
 const isMobile = ref(/Mobi|Android|iPhone/i.test(navigator.userAgent));
 appStore.isWx = /MicroMessenger/i.test(navigator.userAgent);
+
+onMountedOrActivated(async () => {
+    const res = await user.fetchUserInfo();
+    if (res) {
+        if (user.firstBack) {
+            Notify({
+                type: 'success',
+                message: "欢迎回来, " + user.data.username
+            })
+            // Toast({
+            //     type: 'success',
+            //     message: "欢迎回来, " + user.data.username,
+            // })
+            user.firstBack = false;
+        }
+    }
+});
 </script>
 <style lang="scss" scoped>
 .orientation-inspector {

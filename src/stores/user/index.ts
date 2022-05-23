@@ -67,8 +67,9 @@ export const useUserStore = defineStore("user", {
             } else {
                 if (this.firstInHome) {
                     Notify({
-                        message: "请注意，您已离线",
+                        message: "您已离线",
                         type: "danger",
+                        duration: 2000,
                     });
                     this.firstInHome = false;
                 }

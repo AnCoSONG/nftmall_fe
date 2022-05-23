@@ -1,58 +1,32 @@
 <template>
     <Subpage title="收银台">
-        <van-skeleton title :row="5" :loading="loading">
+        <van-skeleton title :row="5" :loading="loading || !product || !order">
             <div class="cashier">
                 <div class="order">
-                    <van-image
-                        class="img"
-                        src="https://picsum.photos/150/150"
-                    ></van-image>
+                    <van-image class="img" src="https://picsum.photos/150/150"></van-image>
                     <div class="info">
-                        <div class="title">数字藏品测试名称</div>
+                        <div class="title">{{ product?.name ?? '加载中' }}</div>
                         <div class="count">数量 x1</div>
                     </div>
                     <div class="right">
-                        <Price
-                            :small-size="(px2rem(20) as string)"
-                            :integral-size="(px2rem(32) as string)"
-                            money-type="¥"
-                            :price="'25.50'"
-                        />
+                        <Price :small-size="(px2rem(20) as string)" :integral-size="(px2rem(32) as string)"
+                            money-type="¥" :price="product?.price ?? '0.00'" />
                     </div>
                 </div>
                 <div class="pay">
                     <div class="hint">选择支付手段</div>
-                    <van-radio-group v-model="pay_method" class="payments">
+                    <van-radio-group v-model="order!.pay_method" class="payments">
                         <van-cell-group inset style="width: 100%; margin: 0">
-                            <van-cell
-                                size="large"
-                                title="微信支付"
-                                icon="wechat-pay"
-                                clickable
-                                @click="pay_method = 'wechat'"
-                            >
+                            <van-cell size="large" title="微信支付" icon="wechat-pay" clickable
+                                @click="changePayMethod('weixin')">
                                 <template #right-icon>
-                                    <van-radio
-                                        name="wechat"
-                                        shape="square"
-                                        checked-color="#41aa21"
-                                    ></van-radio>
+                                    <van-radio name="weixin" shape="square" checked-color="#41aa21"></van-radio>
                                 </template>
                             </van-cell>
-                            <van-cell
-                                size="large"
-                                title="支付宝"
-                                icon="alipay"
-                                clickable
-                                @click="notsupport()"
-                            >
+                            <van-cell size="large" title="支付宝" icon="alipay" clickable
+                                @click="changePayMethod('alipay')">
                                 <template #right-icon>
-                                    <van-radio
-                                        disabled
-                                        name="alipay"
-                                        shape="square"
-                                        checked-color="#41aa21"
-                                    >
+                                    <van-radio disabled name="alipay" shape="square" checked-color="#41aa21">
                                     </van-radio>
                                 </template>
                             </van-cell>
@@ -63,9 +37,8 @@
             <div class="bottom-bar">
                 <div class="total">
                     <div class="hint">合计</div>
-                    <div class="money-type">¥</div>
-                    <div class="integral">25</div>
-                    <div class="fractional">.50</div>
+                    <Price :small-size="(px2rem(20) as string)" :integral-size="(px2rem(32) as string)" money-type="¥"
+                        :price="order?.sum_price ?? '0.00'" />
                 </div>
                 <div class="pay-btn" @click="pay">支付</div>
             </div>
@@ -80,35 +53,67 @@ export default {
 <script setup lang="ts">
 import { ref, toRef } from "vue";
 import { onMountedOrActivated } from "@vant/use";
-import { Notify } from "vant";
+import { Notify, Toast } from "vant";
 import { useRouter } from "vue-router";
 import Subpage from "../../components/Subpage.vue";
 import { px2rem } from "../../utils";
 import Price from "../../components/Price.vue";
+import { fetchOrderDetail, fetchProduct } from "../../api";
 const router = useRouter();
 // 支付相关的功能
 // 接受订单号，完成支付
 const loading = ref(false);
 const props = defineProps({
-    id: {
+    order_id: {
         type: String,
         default: "",
     },
+    product_id: {
+        type: String,
+        default: "",
+    }
 })
-const id = toRef(props, "id");
-onMountedOrActivated(() => {
+const order = ref<Order>();
+const product = ref<Product>();
+const order_id = toRef(props, "order_id");
+const product_id = toRef(props, "product_id")
+onMountedOrActivated(async () => {
     //todo: 进来先检查订单是否支付过，支付过就不允许继续支付，直接跳转回首页
     loading.value = true;
-    setTimeout(() => {
-        loading.value = false;
-    }, 1000);
+    const [orderRes, productRes] = await Promise.all([fetchOrderDetail(order_id.value, false), fetchProduct(product_id.value, false)])
+    if (orderRes) {
+        order.value = orderRes
+    } else {
+        Toast({
+            type: 'fail',
+            message: '订单信息获取失败',
+        })
+    }
+    if (productRes) {
+        product.value = productRes;
+    } else {
+        Toast({
+            type: 'fail',
+            message: '藏品信息获取失败'
+        })
+    }
+    loading.value = false;
 });
 
-const pay_method = ref("wechat");
-
-const notsupport = () => {
-    Notify({ type: "danger", message: "暂不支持支付宝支付" });
-};
+const changePayMethod = (pay_method: SupportPayment) => {
+    if (pay_method == 'alipay') {
+        Toast({ type: "fail", message: "暂不支持支付宝支付" });
+    } else {
+        if (order.value) {
+            order.value.pay_method = pay_method
+        } else {
+            Toast({
+                type: 'fail',
+                message: '订单不存在'
+            })
+        }
+    }
+}
 
 const pay = async () => {
     // 检查wxbridge，向后端请求下单，拿到订单ID调起微信支付
@@ -116,7 +121,11 @@ const pay = async () => {
     // 等待页面请求后端检查订单状态
     //      成功则路由至订单页面，显示最新状态
     //      失败则路由至支付失败页面，支付失败页面会在几秒后路由至订单页面要求用户进行支付
-
+    Toast({
+        type: 'loading',
+        message: '支付中，待备案通过后与微信支付联调',
+        duration: 1000,
+    })
     setTimeout(() => {
         router.push("/payment_waiting");
     }, 500);
