@@ -3,39 +3,60 @@
         <van-skeleton title :row="5" :loading="loading">
             <div class="cashier">
                 <div class="order">
-                    <van-image class="img" src="https://picsum.photos/150/150"></van-image>
+                    <van-image
+                        class="img"
+                        src="https://picsum.photos/150/150"
+                    ></van-image>
                     <div class="info">
                         <div class="title">数字藏品测试名称</div>
                         <div class="count">数量 x1</div>
                     </div>
                     <div class="right">
-                        <div class="price">
-                            <div class="money-type">¥</div>
-                            <div class="integral">25</div>
-                            <div class="fractional">.50</div>
-                        </div>
+                        <Price
+                            :small-size="(px2rem(20) as string)"
+                            :integral-size="(px2rem(32) as string)"
+                            money-type="¥"
+                            :price="'25.50'"
+                        />
                     </div>
                 </div>
                 <div class="pay">
-                    <div class="hint">
-                        选择支付手段
-                    </div>
+                    <div class="hint">选择支付手段</div>
                     <van-radio-group v-model="pay_method" class="payments">
-                        <van-cell-group inset style="width: 100%;margin:0;">
-                            <van-cell size="large" title="微信支付" icon="wechat-pay" clickable
-                                @click="pay_method = 'wechat'">
+                        <van-cell-group inset style="width: 100%; margin: 0">
+                            <van-cell
+                                size="large"
+                                title="微信支付"
+                                icon="wechat-pay"
+                                clickable
+                                @click="pay_method = 'wechat'"
+                            >
                                 <template #right-icon>
-                                    <van-radio name="wechat" shape="square" checked-color="#41aa21"></van-radio>
+                                    <van-radio
+                                        name="wechat"
+                                        shape="square"
+                                        checked-color="#41aa21"
+                                    ></van-radio>
                                 </template>
                             </van-cell>
-                            <van-cell size="large" title="支付宝" icon="alipay" clickable @click="notsupport()">
+                            <van-cell
+                                size="large"
+                                title="支付宝"
+                                icon="alipay"
+                                clickable
+                                @click="notsupport()"
+                            >
                                 <template #right-icon>
-                                    <van-radio disabled name="alipay" shape="square" checked-color="#41aa21">
+                                    <van-radio
+                                        disabled
+                                        name="alipay"
+                                        shape="square"
+                                        checked-color="#41aa21"
+                                    >
                                     </van-radio>
                                 </template>
                             </van-cell>
                         </van-cell-group>
-
                     </van-radio-group>
                 </div>
             </div>
@@ -53,32 +74,41 @@
 </template>
 <script lang="ts">
 export default {
-    name: 'cashier'
-}
+    name: "cashier",
+};
 </script>
-<script setup lang='ts'>
-import { ref } from 'vue';
-import { onMountedOrActivated } from '@vant/use';
-import { Notify } from 'vant';
-import { useRouter } from 'vue-router';
-import Subpage from '../../components/Subpage.vue';
-const router = useRouter()
+<script setup lang="ts">
+import { ref, toRef } from "vue";
+import { onMountedOrActivated } from "@vant/use";
+import { Notify } from "vant";
+import { useRouter } from "vue-router";
+import Subpage from "../../components/Subpage.vue";
+import { px2rem } from "../../utils";
+import Price from "../../components/Price.vue";
+const router = useRouter();
 // 支付相关的功能
 // 接受订单号，完成支付
 const loading = ref(false);
+const props = defineProps({
+    id: {
+        type: String,
+        default: "",
+    },
+})
+const id = toRef(props, "id");
 onMountedOrActivated(() => {
     //todo: 进来先检查订单是否支付过，支付过就不允许继续支付，直接跳转回首页
     loading.value = true;
     setTimeout(() => {
         loading.value = false;
     }, 1000);
-})
+});
 
-const pay_method = ref('wechat');
+const pay_method = ref("wechat");
 
 const notsupport = () => {
-    Notify({ type: 'danger', message: '暂不支持支付宝支付' });
-}
+    Notify({ type: "danger", message: "暂不支持支付宝支付" });
+};
 
 const pay = async () => {
     // 检查wxbridge，向后端请求下单，拿到订单ID调起微信支付
@@ -88,9 +118,9 @@ const pay = async () => {
     //      失败则路由至支付失败页面，支付失败页面会在几秒后路由至订单页面要求用户进行支付
 
     setTimeout(() => {
-        router.push('/payment_waiting');
-    }, 500)
-}
+        router.push("/payment_waiting");
+    }, 500);
+};
 </script>
 <style lang="scss" scoped>
 .cashier {
@@ -166,8 +196,6 @@ const pay = async () => {
                 }
             }
         }
-
-
     }
 
     .pay {
@@ -187,7 +215,6 @@ const pay = async () => {
         .payments {
             // border-radius: px2rem(8);
             width: 100%;
-
         }
     }
 }
@@ -217,7 +244,6 @@ const pay = async () => {
         font-weight: bold;
         margin-right: px2rem(16);
 
-
         .hint {
             font-size: px2rem(14);
             color: $greyTextColor;
@@ -246,7 +272,7 @@ const pay = async () => {
         font-weight: bold;
         box-sizing: border-box;
         font-size: px2rem(18);
-        background-color: #D8E0A3;
+        background-color: #d8e0a3;
         color: black;
         padding: px2rem(8) 0;
         text-align: center;

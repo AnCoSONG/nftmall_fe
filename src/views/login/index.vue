@@ -1,7 +1,11 @@
 <template>
     <div class="login">
         <!-- <van-icon name="arrow-left"></van-icon> -->
-        <van-image :src="logoFff" class="logo" @click="router.push('/')"></van-image>
+        <van-image
+            :src="logoFff"
+            class="logo"
+            @click="router.push('/')"
+        ></van-image>
         <div class="product-name" @click="router.push('/')">
             {{ app.mall_name }}
         </div>
@@ -12,15 +16,24 @@
             </div>
             <div class="input">
                 <div class="prefix">+86</div>
-                <input class="inner-input" type="text" label="请输入手机号" v-model="phone">
+                <input
+                    class="inner-input"
+                    type="text"
+                    label="请输入手机号"
+                    v-model="phone"
+                />
                 <!-- todo 完善获取验证码按钮的逻辑，三种状态 待发送，已发送，输入有误或者时间没到不能发送 -->
-                <div class="suffix" :data-disabled="disabled" @click="getVerification()" v-if="!showingCountDown">
+                <div
+                    class="suffix"
+                    :data-disabled="disabled"
+                    @click="getVerification()"
+                    v-if="!showingCountDown"
+                >
                     获取验证码
                 </div>
                 <div class="suffix" v-else>
-                    {{ countDownCurrent.seconds }}秒后重新发送
+                    已发送 {{ countDownCurrent.seconds }}秒
                 </div>
-
             </div>
             <div class="error" :data-show="errorText !== ''">
                 {{ errorText }}
@@ -31,151 +44,162 @@
                 <van-icon :name="lockSvg" class="icon"></van-icon>
                 <span class="text">验证码</span>
             </div>
-            <van-password-input class="code-input" :value="verifiedCode" :mask="false" :focused="showKeyboard"
-                @focus="showKeyboard = true" />
+            <van-password-input
+                class="code-input"
+                :value="verifiedCode"
+                :mask="false"
+                :focused="showKeyboard"
+                @focus="showKeyboard = true"
+            />
         </div>
         <div class="login-btn">
             <div class="agreement">
-                <van-checkbox shape="square" v-model="isAgree" checked-color="green">
+                <van-checkbox
+                    shape="square"
+                    v-model="isAgree"
+                    checked-color="green"
+                >
                     <span class="text">我已阅读并同意《<a>用户协议</a>》</span>
                 </van-checkbox>
             </div>
             <div class="btn" @click="() => login()">登录</div>
-            <div class="info">
-                未注册账户将自动注册。
-            </div>
+            <div class="info">未注册账户将自动注册。</div>
         </div>
     </div>
-    <van-number-keyboard v-model="verifiedCode" :show="showKeyboard" @blur="showKeyboard = false" />
+    <van-number-keyboard
+        v-model="verifiedCode"
+        :show="showKeyboard"
+        @blur="showKeyboard = false"
+    />
 </template>
-<script setup lang='ts'>
-import { computed, onDeactivated } from 'vue';
-import { ref, watch } from 'vue';
-import logoFff from '../../assets/logo-fff.png'
-import phoneSvg from '../../assets/phone.svg'
-import lockSvg from '../../assets/lock.svg'
-import { useAppStore } from '../../stores/app';
-import { phoneTest } from '../../utils'
-import { userInfo } from 'os';
-import { useUserStore } from '../../stores/user';
-import { useCountDown } from '@vant/use';
-import { useRouter } from 'vue-router'
-import { useAxios } from '../../plugins/axios';
-import { Notify } from 'vant';
+<script setup lang="ts">
+import { computed, onDeactivated } from "vue";
+import { ref, watch } from "vue";
+import logoFff from "../../assets/logo-fff.png";
+import phoneSvg from "../../assets/phone.svg";
+import lockSvg from "../../assets/lock.svg";
+import { useAppStore } from "../../stores/app";
+import { phoneTest } from "../../utils";
+import { sendCode } from "../../api/index";
+import { useUserStore } from "../../stores/user";
+import { onMountedOrActivated, useCountDown } from "@vant/use";
+import { useRouter } from "vue-router";
+import { useAxios } from "../../plugins/axios";
+import { Notify } from "vant";
 const axios = useAxios();
 const router = useRouter();
-const app = useAppStore()
-const user = useUserStore()
-const phone = ref('')
-const disabled = ref(true)
-const showingCountDown = ref(false)
+const app = useAppStore();
+const user = useUserStore();
+const phone = ref("");
+const disabled = ref(true);
+const showingCountDown = ref(false);
 const countDown = useCountDown({
-    time: 60 * 1000, onFinish: () => {
+    time: 60 * 1000,
+    onFinish: () => {
         // console.log('countDown onFinish')
         showingCountDown.value = false;
         countDown.reset();
-    }
-})
+    },
+});
 const countDownCurrent = countDown.current;
 watch(phone, (newVal) => {
     if (phoneTest(newVal)) {
-        disabled.value = false
+        disabled.value = false;
     } else {
-        disabled.value = true
+        disabled.value = true;
     }
-})
+});
 
 const errorText = computed(() => {
     if (phone.value.length === 0) {
-        return ''
+        return "";
     } else if (!phoneTest(phone.value)) {
-        return '请输入正确的手机号'
+        return "请输入正确的手机号";
     } else {
-        return ''
+        return "";
     }
-})
+});
 
-const verifiedCode = ref('')
-const showKeyboard = ref(false)
+const verifiedCode = ref("");
+const showKeyboard = ref(false);
 
-const isAgree = ref(false)
+const isAgree = ref(false);
 
+onMountedOrActivated(() => {
+    // check if login
+    if (user.isLogin) {
+        router.push("/");
+    }
+});
 onDeactivated(() => {
     // init
-    phone.value = ''
-    verifiedCode.value = ''
-    disabled.value = true
-    showKeyboard.value = false
-    isAgree.value = false
-})
+    phone.value = "";
+    verifiedCode.value = "";
+    disabled.value = true;
+    showKeyboard.value = false;
+    isAgree.value = false;
+});
 
 const getVerification = async () => {
     if (disabled.value) {
         Notify({
-            type: 'danger',
-            message: '请输入正确的手机号后再试'
-        })
+            type: "danger",
+            message: "请输入正确的手机号后再试",
+        });
         return;
     }
     // const res = await axios.post('/v1/verification')
     // const data = res.data;
-    const data = await user.requestVerification(phone.value);
-    if (data && data.code === 200) {
+    const data = await sendCode(phone.value);
+    if (data == 200) {
         Notify({
-            type: 'success',
-            message: '验证码已发送'
-        })
-        countDown.start()
+            type: "success",
+            message: "验证码已发送",
+        });
+        countDown.start();
         showingCountDown.value = true;
     } else {
-        console.log('验证码发送失败, 请稍后重试')
+        console.log("验证码发送失败, 请稍后重试");
     }
-}
+};
 
 const login = async () => {
-
     if (!phoneTest(phone.value)) {
         Notify({
-            type: 'danger',
-            message: '请输入正确的手机号'
-        })
+            type: "danger",
+            message: "请输入正确的手机号",
+        });
         return;
     }
     if (verifiedCode.value.length === 0) {
         Notify({
-            type: 'danger',
-            message: '请输入验证码'
-        })
+            type: "danger",
+            message: "请输入验证码",
+        });
         return;
     }
     if (!isAgree.value) {
         Notify({
-            type: 'danger',
-            message: '请同意用户协议'
-        })
+            type: "danger",
+            message: "请同意用户协议",
+        });
         return;
     }
-    const res = await axios.post('/v1/auth/login', {
-        phone: phone.value,
-        code: verifiedCode.value
-    })
-    const data = res.data;
-    if (data && data.code === 200) {
-        user.login(data.data)
-        Notify({
-            type: 'success',
-            message: '登录成功'
-        })
-        sessionStorage.setItem('id', data.data.id);
-        router.push('/user')
+    const res = await user.login(phone.value, verifiedCode.value);
+    if (res) {
+        if (!user.firstBack) { 
+            // 如果用户都没有进入首页就登录成功
+            // 会导致两个Notify同时出现，所以这里要判断一下
+            Notify({
+                type: "success",
+                message: "登录成功",
+            })
+        }
+        router.push("/user");
     } else {
-
-        Notify({
-            type: 'danger',
-            message: '登录失败, ' + data.message
-        })
+        // do nothing
     }
-}
+};
 </script>
 <style lang="scss" scoped>
 .login {
@@ -212,7 +236,6 @@ const login = async () => {
 
         .label {
             margin-bottom: px2rem(12);
-            ;
             display: inline-flex;
             justify-content: center;
             align-items: center;
@@ -249,7 +272,7 @@ const login = async () => {
                 border-radius: px2rem(4);
                 background-color: $backgroundColor;
                 padding: px2rem(4) px2rem(8);
-                box-shadow: 0 px2rem(4) px2rem(4) rgba(0, 0, 0, .25);
+                box-shadow: 0 px2rem(4) px2rem(4) rgba(0, 0, 0, 0.25);
                 margin-right: px2rem(8);
             }
 
@@ -271,7 +294,7 @@ const login = async () => {
                 border-radius: px2rem(4);
                 // border: 2px solid white;
                 padding: px2rem(8) px2rem(8);
-                box-shadow: 0 0 0 1px rgba(0, 0, 0, .25);
+                box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
                 background-color: $greyTextColor;
                 user-select: none;
 
@@ -285,9 +308,7 @@ const login = async () => {
                         background: $dangerColor;
                     }
                 }
-
             }
-
         }
 
         .error {
@@ -302,7 +323,7 @@ const login = async () => {
             border-radius: px2rem(8);
             box-shadow: inset 0 px2rem(4) px2rem(4) 0 rgba(0, 0, 0, 0.25);
             transform: translateY(px2rem(-50));
-            transition: transform .3s ease-in-out;
+            transition: transform 0.3s ease-in-out;
             margin-bottom: px2rem(20);
 
             &[data-show="true"] {
@@ -322,7 +343,6 @@ const login = async () => {
             // border-radius: px2rem(8);
             margin-bottom: px2rem(50);
         }
-
     }
 
     .login-btn {
@@ -339,7 +359,6 @@ const login = async () => {
             padding-left: 0;
             padding-right: 0;
             margin-bottom: px2rem(12);
-
 
             .text {
                 color: white;
@@ -369,7 +388,6 @@ const login = async () => {
             font-size: px2rem(12);
             align-self: center;
         }
-
     }
 }
 </style>

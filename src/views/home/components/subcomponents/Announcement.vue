@@ -1,26 +1,35 @@
 <template>
     <div class="announcement" v-if="notices.length !== 0">
-        <van-notice-bar class="notice-bar" left-icon="volume-o" :scrollable="false"
-            :background="theme.noticeBarBackground" :color="theme.noticeBarText">
-            <van-swipe vertical class="notice-swipe" :autoplay="3000" :show-indicators="false">
-                <van-swipe-item v-for="item in notices" :key="item.text">{{ item.text }}</van-swipe-item>
+        <van-notice-bar
+            class="notice-bar"
+            left-icon="volume-o"
+            :scrollable="false"
+            :background="theme.noticeBarBackground"
+            :color="theme.noticeBarText"
+        >
+            <van-swipe
+                vertical
+                class="notice-swipe"
+                :autoplay="3000"
+                :show-indicators="false"
+            >
+                <van-swipe-item v-for="item in notices" :key="item.text">{{
+                    item.text
+                }}</van-swipe-item>
             </van-swipe>
         </van-notice-bar>
     </div>
 </template>
-<script setup lang='ts'>
-import { useThemeStore } from '../../../../stores/theme';
-import { useAppStore } from '../../../../stores/app';
-import { onMountedOrActivated } from '@vant/use';
-import { fetchNotices } from '../../../../api/index';
-import { ref } from 'vue';
+<script setup lang="ts">
+import { useThemeStore } from "../../../../stores/theme";
+import { onMountedOrActivated } from "@vant/use";
+import { fetchNotices } from "../../../../api/index";
+import { ref } from "vue";
 const theme = useThemeStore().announcement;
 const notices = ref<Notice[]>([]);
-onMountedOrActivated(async () => {
-    const data = await fetchNotices()
-    if (data.code === 200) 
-        notices.value = [...data.data]
-})
+const data = await fetchNotices();
+notices.value = [...data];
+onMountedOrActivated(async () => {});
 </script>
 <style lang="scss" scoped>
 .announcement {
@@ -35,8 +44,6 @@ onMountedOrActivated(async () => {
             line-height: px2rem(16);
             height: px2rem(16);
         }
-
     }
-
 }
 </style>

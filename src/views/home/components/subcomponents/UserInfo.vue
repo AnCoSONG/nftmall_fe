@@ -13,14 +13,26 @@
             <div class="right-arrow"></div>
         </div>
         <div class="basic" v-else @click="routeToLogin">请登录</div>
-        <div class="address" v-if="user.isLogin && user.data.bsn_address != null">
-            <div class="text">
-                区块链地址: {{ user.data.bsn_address }}
-            </div>
-            <div class="copy" v-clipboard:copy="user.data.bsn_address" v-clipboard:success="onCopySuccess"
-                v-clipboard:error="onCopyError">
+        <div
+            class="address"
+            v-if="user.isLogin && user.data.bsn_address != null"
+        >
+            <div class="text">区块链地址: {{ user.data.bsn_address }}</div>
+            <div
+                class="copy"
+                v-clipboard:copy="user.data.bsn_address"
+                v-clipboard:success="onCopySuccess"
+                v-clipboard:error="onCopyError"
+            >
                 <van-icon :name="copySvg" />
             </div>
+        </div>
+        <div
+            class="not-on-chain"
+            v-else-if="user.isLogin && user.data.bsn_address == null"
+            @click="onNotOnChain"
+        >
+            您的账户暂未上链
         </div>
         <!-- <div v-else-if="user.data.bsn_address == null">
             即将上链
@@ -28,32 +40,40 @@
         <div v-else></div> -->
     </div>
 </template>
-<script setup lang='ts'>
-import { useUserStore } from '../../../../stores/user';
-import { toClipboard } from '@soerenmartius/vue3-clipboard'
-import { Notify } from 'vant';
-import copySvg from '../../../../assets/copy.svg'
-import { useRouter } from 'vue-router';
+<script setup lang="ts">
+import { useUserStore } from "../../../../stores/user";
+import { toClipboard } from "@soerenmartius/vue3-clipboard";
+import { Dialog, Notify } from "vant";
+import copySvg from "../../../../assets/copy.svg";
+import { useRouter } from "vue-router";
 const router = useRouter();
 const user = useUserStore();
 
 const onCopySuccess = () => {
     Notify({
-        type: 'success',
+        type: "success",
         message: "复制成功",
-    })
-}
+    });
+};
 
 const onCopyError = () => {
     Notify({
-        type: 'danger',
+        type: "danger",
         message: "复制失败",
-    })
-}
+    });
+};
 
 const routeToLogin = () => {
-    router.push('/login');
-}
+    router.push("/login");
+};
+
+const onNotOnChain = () => {
+    Dialog.alert({
+        title: "未激活",
+        message: "您的账户目前未上链!\n您可以通过<strong>购买藏品</strong>来创建链上账户",
+        allowHtml: true,
+    });
+};
 </script>
 <style lang="scss" scoped>
 .user-info {
@@ -71,7 +91,6 @@ const routeToLogin = () => {
         width: 100%;
         margin-bottom: px2rem(18);
         color: $normalTextColor;
-
 
         .avatar {
             width: px2rem(54);
@@ -98,7 +117,7 @@ const routeToLogin = () => {
 
             .credit {
                 font-size: px2rem(12);
-                color: $greyTextColor
+                color: $greyTextColor;
             }
         }
 
@@ -120,7 +139,7 @@ const routeToLogin = () => {
         padding: px2rem(4) px2rem(6);
         box-sizing: border-box;
         background-color: #1b1b1b;
-        box-shadow: inset 0px px2rem(4) px2rem(4) rgba(0, 0, 0, .25);
+        box-shadow: inset 0px px2rem(4) px2rem(4) rgba(0, 0, 0, 0.25);
 
         .text {
             flex: 1;
@@ -133,6 +152,20 @@ const routeToLogin = () => {
             font-size: px2rem(16);
             line-height: px2rem(16);
         }
+    }
+
+    .not-on-chain {
+        width: 100%;
+        box-sizing: border-box;
+        // height: px2rem(20);
+        border-radius: px2rem(8);
+        font-size: px2rem(16);
+        padding: px2rem(8) px2rem(16);
+        // line-height: px2rem(20);
+        text-align: center;
+        color: $normalTextColor;
+        background-color: $dangerColor;
+        box-shadow: 0px px2rem(4) px2rem(4) 0px rgba(0, 0, 0, 0.25);
     }
 }
 </style>

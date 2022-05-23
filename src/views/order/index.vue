@@ -15,7 +15,6 @@
                 <OrderList query="canceled"></OrderList>
             </van-tab>
             </van-tabs>
-
     </Subpage>
 </template>
 <script setup lang='ts'>

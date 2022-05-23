@@ -1,6 +1,16 @@
 import { App, inject } from "vue";
 import axios, { AxiosInstance } from "axios";
+import { Notify } from "vant";
 // import Cookies from "js-cookie";
+
+export type Response<D = any> = {
+    data: D;
+    statusCode: number;
+    code: number;
+    message: string;
+    auth?: number;
+};
+
 export const axiosSymbol = Symbol();
 // console.log(import.meta.env)
 export const request = axios.create({
@@ -24,9 +34,8 @@ request.interceptors.request.use(
 // Add a response interceptor
 request.interceptors.response.use(
     function (response) {
-        // Any status code that lie within the range of 2xx cause this function to trigger
-        // Do something with response data
-        return response as { data: {message: string, code: number, data: Object, auth?: number, rawCode: number} };
+        console.log(response);
+        return response;
     },
     function (error) {
         // Any status codes that falls outside the range of 2xx cause this function to trigger
@@ -34,6 +43,7 @@ request.interceptors.response.use(
         return Promise.reject(error);
     }
 );
+
 export const vueAxios = (app: App) => {
     app.provide(axiosSymbol, request);
 };

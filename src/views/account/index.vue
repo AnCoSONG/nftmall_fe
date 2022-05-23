@@ -1,91 +1,143 @@
 <template>
     <Subpage title="账户信息">
-        <div class="account">
+        <div class="account" v-if="user.data">
             <CellItem text="头像">
                 <template #value>
-                    <van-image class="avatar" round src="https://picsum.photos/120/120"></van-image>
+                    <van-image
+                        class="avatar"
+                        round
+                        :src="user.data.avatar"
+                    ></van-image>
                 </template>
             </CellItem>
-            <CellItem text="昵称" right-icon="arrow" value="藏家5406" @click="edit('用户名')"></CellItem>
-            <CellItem text="手机号" value="185****5406"></CellItem>
-            <CellItem text="邮箱" right-icon="arrow" value="未绑定" @click="edit('邮箱')"></CellItem>
-            <CellItem text="UID" value="1673123"></CellItem>
-            <CellItem text="积分" value="9.9"></CellItem>
-            <CellItem text="区块链地址" :right-icon="copySvg" v-clipboard:copy="'123182edhe12bdu21g3y12eh281ge20021ge081g'"
-                v-clipboard:success="onCopySuccess" v-clipboard:error="onCopyError">
+            <CellItem
+                text="昵称"
+                right-icon="arrow"
+                :value="user.data.username"
+                @click="edit('用户名')"
+            ></CellItem>
+            <CellItem
+                text="手机号"
+                :value="hidePhone(user.data.phone)"
+            ></CellItem>
+            <CellItem
+                text="邮箱"
+                right-icon="arrow"
+                :value="user.data.email ?? '未绑定'"
+                @click="edit('邮箱')"
+            ></CellItem>
+            <CellItem
+                text="UID"
+                :value="`#${user.data.id.toString().padStart(5, '0')}`"
+            ></CellItem>
+            <CellItem text="积分" :value="user.data.credit"></CellItem>
+            <CellItem
+                text="区块链地址"
+                :right-icon="copySvg"
+                v-clipboard:copy="'123182edhe12bdu21g3y12eh281ge20021ge081g'"
+                v-clipboard:success="onCopySuccess"
+                v-clipboard:error="onCopyError"
+            >
                 <template #value>
                     <div class="chain_text">
-                        123182edhe12bdu21g3y12eh281ge20021ge081g
+                        {{ user.data.bsn_address }}
                     </div>
                 </template>
             </CellItem>
-            <CellItem text="实名认证" right-icon="arrow" value="未完成" @click="router.push('/verification')"></CellItem>
+            <CellItem
+                text="实名认证"
+                right-icon="arrow"
+                value="未完成"
+                v-if="!user.data.real_name"
+                @click="router.push('/verification')"
+            ></CellItem>
             <!-- 已完成 -->
-            <CellItem text="实名认证" right-icon="checked" value="已完成"></CellItem>
+            <CellItem
+                text="实名认证"
+                v-else
+                right-icon="checked"
+                value="已完成"
+            ></CellItem>
 
             <DangerBtn text="注销账户" @click="notSupport" />
         </div>
     </Subpage>
-    <van-dialog v-model:show="editing" :title="'编辑' + edit_field" show-cancel-button :before-close="onConfirm">
+    <van-dialog
+        v-model:show="editing"
+        :title="'编辑' + edit_field"
+        show-cancel-button
+        :before-close="onConfirm"
+    >
         <div class="input-wrapper">
-            <input class="inner-input" type="text" v-model="value">
+            <input class="inner-input" type="text" v-model="value" />
         </div>
     </van-dialog>
 </template>
-<script setup lang='ts'>
-import Subpage from '../../components/Subpage.vue';
-import CellItem from '../../components/CellItem.vue';
-import copySvg from 'assets/copy.svg';
-import DangerBtn from '../../components/DangerBtn.vue';
-import { useRouter } from 'vue-router';
-import { Notify } from 'vant';
-import { ref } from 'vue';
+<script setup lang="ts">
+import Subpage from "../../components/Subpage.vue";
+import CellItem from "../../components/CellItem.vue";
+import copySvg from "assets/copy.svg";
+import DangerBtn from "../../components/DangerBtn.vue";
+import { useUserStore } from "../../stores/user";
+import { useRouter } from "vue-router";
+import { hidePhone } from "../../utils";
+import { Notify } from "vant";
+import { ref } from "vue";
+import { onMountedOrActivated } from "@vant/use";
+const user = useUserStore();
+const router = useRouter();
 
-const router = useRouter()
+const edit_field = ref("");
+const editing = ref(false);
+const value = ref("");
 
-const edit_field = ref('')
-const editing = ref(false)
-const value = ref('')
+await user.fetchUserInfo();
 
 const edit = (field: string) => {
-    edit_field.value = field
-    value.value = ''
-    editing.value = true
-}
+    edit_field.value = field;
+    value.value = "";
+    editing.value = true;
+};
 
 const onCopyError = () => {
-    Notify({ type: 'danger', message: '复制出错' })
-}
+    Notify({ type: "danger", message: "复制出错" });
+};
 
 const onCopySuccess = () => {
-    Notify({ type: 'success', message: '复制成功' })
-}
+    Notify({ type: "success", message: "复制成功" });
+};
 
-const onConfirm = (action: string) => {
-    // todo 改为正式逻辑
-    if (action === 'cancel') {
-        return true;
+const onConfirm = (action: string): Promise<boolean> => {
+    /** 
+     * todo 改为正式逻辑 patch collector/:id
+     * */ 
+    if (action === "cancel") {
+        return Promise.resolve(true);
     }
     return new Promise((resolve) => {
         setTimeout(() => {
             Notify({
-                type: 'success',
-                message: '编辑成功'
-            })
+                type: "success",
+                message: "编辑成功",
+            });
             editing.value = false;
-            edit_field.value = '';
-            value.value = '';
-            resolve(true)
-        }, 500)
-    })
-}
+            edit_field.value = "";
+            value.value = "";
+            resolve(true);
+        }, 500);
+    });
+};
 
 const notSupport = () => {
     Notify({
-        type: 'danger',
-        message: '暂不支持'
-    })
-}
+        type: "danger",
+        message: "暂不支持",
+    });
+};
+
+// onMountedOrActivated(async () => {
+//     console.log(user.data);
+// });
 </script>
 <style lang="scss" scoped>
 .account {

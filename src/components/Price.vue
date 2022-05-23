@@ -6,6 +6,8 @@
     </div>
 </template>
 <script setup lang='ts'>
+import { computed } from '@vue/reactivity';
+
 type PropType = {
     moneyType: string,
     price: string,

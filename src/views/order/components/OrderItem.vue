@@ -1,85 +1,111 @@
 <template>
     <div class="order-item">
-        <div class="product-wrapper" :class="{ withBottomRadius: data.order_status === 'canceled' }">
+        <div
+            class="product-wrapper"
+            :class="{ withBottomRadius: data.order_status === 'canceled' }"
+        >
             <div class="purchase-info">
-                <van-image class="img" :src="data.purchase_item.product.preview_img" fit="cover" />
+                <van-image
+                    class="img"
+                    :src="data.purchase_item.product.preview_img"
+                    fit="cover"
+                />
                 <div class="info">
-                    <div class="title">{{ data.purchase_item.product.name }}</div>
+                    <div class="title">
+                        {{ data.purchase_item.product.name }}
+                    </div>
                     <div class="tags">
-                        <Tag v-for="item in data.purchase_item.product.tags" :data="item" />
+                        <Tag
+                            v-for="item in data.purchase_item.product.tags"
+                            :data="item"
+                        />
                     </div>
                 </div>
                 <div class="right">
-                    <div class="status" :data-status="data.order_status">{{ statusText }}</div>
-                    <div class="count">数量: x{{ data.purchase_item.count }}</div>
+                    <div class="status" :data-status="data.order_status">
+                        {{ statusText }}
+                    </div>
+                    <div class="count">
+                        数量: x{{ data.purchase_item.count }}
+                    </div>
                 </div>
             </div>
-            <div class="price">
-                <div class="money-type">¥&nbsp;</div>
-                <div class="integral">
-                    {{ data.purchase_item.product.price?.split('.')[0] }}
-                </div>
-                <div class="fractional">
-                    .{{ data.purchase_item.product.price?.split('.')[1] }}
-                </div>
-            </div>
+            <Price
+                :small-size="(px2rem(20) as string)"
+                :integral-size="(px2rem(32) as string)"
+                money-type="¥"
+                :price="data.purchase_item.product.price!"
+            />
         </div>
-        <div class="controls" :class="{ inactive: data.order_status === 'canceled' }">
-            <div class="btn detail-btn" v-if="data.order_status != 'unpaied'" @click="router.push(`/order/${data.id}`)">
+        <div
+            class="controls"
+            :class="{ inactive: data.order_status === 'canceled' }"
+        >
+            <div
+                class="btn detail-btn"
+                v-if="data.order_status != 'unpaied'"
+                @click="router.push(`/order/${data.id}`)"
+            >
                 详情
             </div>
             <div class="btn pay-btn" v-if="data.order_status === 'unpaied'">
                 支付
             </div>
         </div>
-        <div class="notification" :class="{ active: data.order_status === 'unpaied' }">
+        <div
+            class="notification"
+            :class="{ active: data.order_status === 'unpaied' }"
+        >
             <div class="wrapper">
-                请于 {{ countDownRef.minutes + ":" + countDownRef.seconds }} 前完成支付
+                请于
+                {{
+                    countDownRef.minutes + ":" + countDownRef.seconds
+                }}
+                前完成支付
             </div>
         </div>
     </div>
-
 </template>
-<script setup lang='ts'>
-
-import { onMountedOrActivated, useCountDown } from '@vant/use';
-import { computed, toRef } from 'vue';
-import { useRouter } from 'vue-router';
-import Tag from '../../../components/Tag.vue';
+<script setup lang="ts">
+import { onMountedOrActivated, useCountDown } from "@vant/use";
+import { computed, toRef } from "vue";
+import { useRouter } from "vue-router";
+import { px2rem } from "../../../utils";
+import Price from "../../../components/Price.vue";
+import Tag from "../../../components/Tag.vue";
 
 type PropType = {
-    data: Order
-}
-const props = defineProps<PropType>()
-const data = toRef(props, "data")
+    data: Order;
+};
+const props = defineProps<PropType>();
+const data = toRef(props, "data");
 const countDown = useCountDown({
     time: 1000 * 60 * 5, // time 后端生成
-})
+});
 
 const statusText = computed(() => {
-    if (data.value.order_status === 'unpaied') {
-        return '待支付'
-    } else if (data.value.order_status === 'canceled'){
-        return '已取消'
-    } else if (data.value.order_status === 'unlinked'){
-        return '待上链'
+    if (data.value.order_status === "unpaied") {
+        return "待支付";
+    } else if (data.value.order_status === "canceled") {
+        return "已取消";
+    } else if (data.value.order_status === "unlinked") {
+        return "待上链";
     } else {
-        return '已完成'
+        return "已完成";
     }
-})
-const countDownRef = countDown.current
+});
+const countDownRef = countDown.current;
 onMountedOrActivated(() => {
-    countDown.start()
-})
+    countDown.start();
+});
 
-const router = useRouter()
+const router = useRouter();
 </script>
 <style lang="scss" scoped>
 .order-item {
     position: relative;
     width: 100%;
     margin-bottom: px2rem(30);
-
 
     .product-wrapper {
         border-top-left-radius: px2rem(8);
@@ -89,7 +115,7 @@ const router = useRouter()
         display: flex;
         flex-flow: nowrap column;
         background-color: $boxBgColor;
-        box-shadow: 0 px2rem(4) px2rem(4) 0 rgba(0, 0, 0, .25);
+        box-shadow: 0 px2rem(4) px2rem(4) 0 rgba(0, 0, 0, 0.25);
 
         .purchase-info {
             display: flex;
@@ -132,12 +158,9 @@ const router = useRouter()
                     margin-bottom: px2rem(8);
 
                     .tag {
-
                         font-size: px2rem(10);
                     }
                 }
-
-
             }
 
             .right {
@@ -171,7 +194,6 @@ const router = useRouter()
                     color: $greyTextColor;
                     font-size: px2rem(12);
                 }
-
             }
         }
 
@@ -211,7 +233,6 @@ const router = useRouter()
         border-bottom-left-radius: px2rem(8);
         box-shadow: 0 px2rem(4) px2rem(4) 0 rgba(0, 0, 0, 0.25);
 
-
         &.inactive {
             border-top: none;
             display: none;
@@ -220,8 +241,8 @@ const router = useRouter()
         .btn {
             padding: px2rem(8) px2rem(16);
             border-radius: px2rem(4);
-            box-shadow: 0 px2rem(4) px2rem(4) rgba(0, 0, 0, .25);
-            
+            box-shadow: 0 px2rem(4) px2rem(4) rgba(0, 0, 0, 0.25);
+
             &.pay-btn {
                 background-color: $lightRedColor;
             }
@@ -230,8 +251,6 @@ const router = useRouter()
                 background-color: #3471da;
             }
         }
-
-
     }
 
     .notification {

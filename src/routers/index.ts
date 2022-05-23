@@ -21,7 +21,7 @@ const router = createRouter({
                 },
                 {
                     path: "user",
-                    meta: { title: "个人中心", requireAuth: "prompt" },
+                    meta: { title: "个人中心" },
                     component: () => import("views/home/components/user.vue"),
                 },
             ],
@@ -61,9 +61,9 @@ const router = createRouter({
             // ID为藏品类别ID
             path: "/product/:id",
             name: "product-detail",
-            meta: { title: "藏品详情", requireAuth: "required" },
+            meta: { title: "藏品详情", requireAuth: "prompt" },
             component: () => import("views/product/index.vue"),
-            props: true,
+            props: (route) => ({ id: route.params.id }),
         },
         {
             path: "/setting",
@@ -77,6 +77,7 @@ const router = createRouter({
             name: "cashier",
             meta: { title: "收银台", requireAuth: "required" },
             component: () => import("views/cashier/index.vue"),
+            props: (route) => ({ id: route.params.id }),
         },
         {
             path: "/payment_waiting",
@@ -108,6 +109,13 @@ const router = createRouter({
             name: "test",
             component: () => import("comps/Subpage.vue"),
         },
+        {
+            // path: '/:\w+',
+            path: '/:pathMatch(.*)*',
+            name: '404',
+            component: () => import('views/404/index.vue'),
+            meta: {title: '404'}
+        }
     ],
     scrollBehavior: (to, from, savedPosition) => {
         // fix some case cannot scroll
@@ -125,7 +133,7 @@ const router = createRouter({
 import NProgress from "nprogress";
 import "../styles/nprogress.scss";
 import { defineAsyncComponent } from "vue";
-import { Notify } from "vant";
+import { Notify, Toast } from "vant";
 
 NProgress.configure({ easing: "ease", speed: 500, showSpinner: false });
 
@@ -134,21 +142,30 @@ router.beforeEach((to, from, next) => {
     // console.log(to, from)
     NProgress.start();
     document.title = to.meta.title ? (to.meta.title as string) : defaultTitle;
-    console.log(to.matched)
+    // console.log(to.matched);
     if (to.matched.some((route) => route.meta.requireAuth === "required")) {
-        if (!sessionStorage.getItem('id')) { 
-            next('/login');
+        if (!sessionStorage.getItem("id")) {
+            next("/login");
         } else {
             next();
         }
-    } else if (to.matched.some((route) => route.meta.requireAuth === "prompt")) {
-        if (!sessionStorage.getItem('id')) {
-            Notify({
-                message: "请先登录",
+    } else if (
+        to.matched.some((route) => route.meta.requireAuth === "prompt")
+    ) {
+        if (!sessionStorage.getItem("id")) {
+            Toast({
+                message: "请您登录后再浏览此页面",
+                duration: 2000,
+                forbidClick: true,
+                icon: 'warning-o',
+                iconSize: '1.6rem',
             })
-            next()
+            // Notify({
+            //     message: "请先登录",
+            // });
+            next();
         } else {
-            next()
+            next();
         }
     } else {
         next();

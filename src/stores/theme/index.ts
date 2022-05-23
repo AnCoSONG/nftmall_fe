@@ -23,6 +23,10 @@ export const useThemeStore = defineStore("theme", {
                 skeletonRowBackgroundColor: '#343434',
                 radioDisabledBackgroundColor: '#666',
                 radioDisabledIconColor: '#666',
+                stepsBackgroundColor: '#272727',
+                stepLineColor: '#444',
+                stepFinishTextColor: '#ccc',
+                // stepCircleColor: '#272727',
             },
             announcement: {
                 noticeBarBackground: "#343434",

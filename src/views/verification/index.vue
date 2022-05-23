@@ -7,13 +7,13 @@
             <div class="input-wrapper">
                 <div class="label">真实姓名</div>
                 <div class="input">
-                    <input class="realinput" type="text" v-model="realname">
+                    <input class="realinput" type="text" v-model="realname" />
                 </div>
             </div>
             <div class="input-wrapper">
                 <div class="label">身份证号</div>
                 <div class="input">
-                    <input class="realinput" type="text" v-model="realid">
+                    <input class="realinput" type="text" v-model="realid" />
                 </div>
             </div>
             <DangerBtn icon="lock" text="验证身份" @click="verify"></DangerBtn>
@@ -22,39 +22,57 @@
 </template>
 <script lang="ts">
 export default {
-    name:'verification'
-}
+    name: "verification",
+};
 </script>
-<script setup lang='ts'>
-import { ref } from 'vue';
-import { realnameTest, realidTest} from '../../utils'
-import Subpage from '../../components/Subpage.vue';
-import DangerBtn from '../../components/DangerBtn.vue';
-import { Notify } from 'vant';
-
-const realname = ref('')
-const realid = ref('')
+<script setup lang="ts">
+import { ref } from "vue";
+import { realnameTest, realidTest } from "../../utils";
+import Subpage from "../../components/Subpage.vue";
+import DangerBtn from "../../components/DangerBtn.vue";
+import { Notify } from "vant";
+import { idCheck } from "../../api/index";
+import { useUserStore } from "../../stores/user";
+import router from "../../routers";
+const realname = ref("");
+const realid = ref("");
+const user = useUserStore();
 
 const verify = async () => {
     // 正则检查realname和realid
     if (!realnameTest(realname.value)) {
         Notify({
-            type: 'danger',
-            message: '请输入正确的姓名'
-        })
-        return
+            type: "danger",
+            message: "请输入正确的姓名",
+        });
+        return;
     }
     if (!realidTest(realid.value)) {
         Notify({
-            type: 'danger',
-            message: '请输入正确的身份证号'
-        })
-        return
+            type: "danger",
+            message: "请输入正确的身份证号",
+        });
+        return;
     }
     // 验证：
     // 如果通过验证，自动返回，没通过的话就警告用户
-    
-}
+    const res = await idCheck(
+        user.data.id as number,
+        realname.value,
+        realid.value
+    );
+    if (res) {
+        Notify({
+            type: "success",
+            message: "验证成功",
+        });
+        user.data.real_name = realname.value;
+        user.data.real_id = realid.value;
+        router.replace('/user');
+    } else {
+        // 已处理
+    }
+};
 </script>
 <style lang="scss" scoped>
 .verification {
@@ -82,10 +100,10 @@ const verify = async () => {
             width: 100%;
             border-radius: px2rem(8);
             overflow: hidden;
-            padding:px2rem(16) px2rem(20);
+            padding: px2rem(16) px2rem(20);
             box-sizing: border-box;
             background-color: $boxBgColor;
-            box-shadow: inset 0 px2rem(4) px2rem(4) rgba(0, 0, 0, .25);
+            box-shadow: inset 0 px2rem(4) px2rem(4) rgba(0, 0, 0, 0.25);
 
             .realinput {
                 width: 100%;

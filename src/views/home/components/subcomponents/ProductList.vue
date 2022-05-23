@@ -1,71 +1,61 @@
 <template>
     <van-pull-refresh v-model="refreshing" @refresh="onRefresh()">
-        <van-list v-model:loading="loading" :finished="finished" finished-text="已加载全部内容" @load="onLoadMore()"
+        <van-list v-model:loading="loading" :finished="finished" @load="onLoadMore()"
             v-if="list.length > 0">
-            <ProductCard :data="item" v-for="item in list"></ProductCard>
+            <ProductCard :data="item" v-for="(item, index) in list" :is-last="index == list.length - 1"></ProductCard>
+            <template #finished>
+                <UniversalDivider/>
+            </template>
         </van-list>
         <Empty v-else />
     </van-pull-refresh>
 </template>
 <script setup lang='ts'>
 import ProductCard from './ProductCard.vue';
+import UniversalDivider from '../../../../components/UniversalDivider.vue';
 import Empty from '../../../../components/Empty.vue';
 import { ref } from 'vue';
 import { onMountedOrActivated } from '@vant/use';
+import { fetchProducts } from '../../../../api';
+import { computed } from '@vue/reactivity';
 
 const finished = ref(false)
 const loading = ref(false)
 const refreshing = ref(false)
+const limit = 5;
 const list = ref<Product[]>([])
+const total = ref(0);
+const page = computed(() => {
+    return Math.floor(list.value.length / limit) + 1;
+})
 const onRefresh = async () => {
     loading.value = true
     finished.value = false
+    refreshing.value = true;
     await onLoadMore()
 }
 const onLoadMore = async () => {
-    setTimeout(() => {
-        if (refreshing.value) {
-            list.value = []
-            refreshing.value = false;
+    if (finished.value) return;
+    if (refreshing.value) {
+        // 清空列表
+        list.value = []
+    }
+    loading.value = true;
+    const data = await fetchProducts(page.value, limit, true);
+    if (data) {
+        for (const item of data.data) {
+            list.value.push(item)
         }
-        for (let i = 0; i < 12; i++) {
-            // 模拟添加数据
-            list.value.push({
-                id: 1,
-                name: "测试商品",
-                preview_img: "https://img.yzcdn.cn/vant/apple-1.jpg",
-                src: "https://img.yzcdn.cn/vant/apple-1.jpg",
-                description: "测试商品描述",
-                type: "image",
-                genres: [{ id: 1, name: '男装' }, { id: 2, name: '女装' }],
-                publish_count: 1,
-                publisher_id: 1,
-                publisher: {
-                    id: 1,
-                    avatar: "https://img.yzcdn.cn/vant/apple-1.jpg",
-                    name: "创作者",
-                },
-                details: "",
-                price: "10.50",
-                tags: [{
-                    name: '测试',
-                    mode: 'dark',
-                }, {
-                    name: '测试',
-                    mode: 'light'
-                }],
-                sale_timestamp: Date.now() + 1000 * 60 * 5,
-                stock_count: 800,
-                limit: 1,
-            })
-        }
-        if (list.value.length > 40) {
-            finished.value = true;
-        }
-        loading.value = false;
-        // finished.value = true;
-        console.log('load more', list.value)
-    }, 500)
+        total.value = data.total;
+    } else {
+        list.value = [];
+        total.value = 0;
+    }
+    refreshing.value = false;
+    loading.value = false;
+    if (list.value.length >= total.value) {
+        finished.value = true;
+    }
 }
 
 onMountedOrActivated(() => {

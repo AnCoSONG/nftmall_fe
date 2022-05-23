@@ -6,8 +6,7 @@ export const useAppStore = defineStore("app", {
         return {
             title: "晋元数藏",
             mall_name: "晋元数字藏品商城",
-            banner: [] as { src: string, link?: string }[],
-            hot: [] as Product[],
+            isWx: false,
         };
     },
     actions: {
@@ -16,19 +15,16 @@ export const useAppStore = defineStore("app", {
         //     console.log(res);
         //     this.announcement = [...res.data];
         // },
-
         // async loadBanner() {
         //     const res = await api.fetchBanners();
         //     console.log(res);
         //     this.banner = [...res.data];
         // },
-
         // async loadHotProduct() {
         //     const res = await api.fetchHotProduct();
         //     console.log(res)
         //     this.hot = [...res.data];
         // },
-
         // setHotProduct(payload: Product[]) {
         //     this.hot = [...payload];
         // }

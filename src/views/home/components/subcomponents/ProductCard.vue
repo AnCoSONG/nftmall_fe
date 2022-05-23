@@ -1,7 +1,15 @@
 <template>
-    <div class="product-card" @click="router.push(`/product/${props.data.id}`)">
+    <div
+        class="product-card"
+        @click="router.push(`/product/${props.data.id}`)"
+        :data-last="props.isLast === true"
+    >
         <div class="img-wrapper">
-            <van-image :src="props.data.preview_img" class="img" @load="loaded=true">
+            <van-image
+                :src="props.data.preview_img"
+                class="img"
+                @load="loaded = true"
+            >
                 <template v-slot:loading>
                     <div class="loader-wrapper">
                         <van-loading type="spinner" size="20" />
@@ -9,81 +17,133 @@
                 </template>
                 <template v-slot:error>加载失败</template>
             </van-image>
-            <!-- todo: 优化实现细节 -->
+            <!-- todo: 发售状态组件 -->
             <div class="product-status" v-show="loaded">
-                {{statusText}}
+                {{ statusText }}
+                <span v-if="isCountdown">
+                    &nbsp;{{
+                        `${countDownRef.hours
+                            .toString()
+                            .padStart(2, "0")}:${countDownRef.minutes
+                            .toString()
+                            .padStart(2, "0")}:${countDownRef.seconds
+                            .toString()
+                            .padStart(2, "0")}`
+                    }}</span
+                >
             </div>
+            <!-- todo: 图像类型组件 -->
             <div class="product-type" v-show="loaded">
-                {{props.data.type}}
+                <TypeIcon :type="props.data.type"></TypeIcon>
             </div>
             <div class="product-creator" v-show="loaded">
-                <van-image :src="props.data.publisher.avatar || 'https://avatars.dicebear.com/api/pixel-art/random.svg'" round class="product-creator-img"></van-image>
+                <van-image
+                    :src="
+                        props.data.publisher.avatar ||
+                        'https://avatars.dicebear.com/api/pixel-art/random.svg'
+                    "
+                    round
+                    class="product-creator-img"
+                ></van-image>
                 <div class="product-creator-name">
-                    {{props.data.publisher.name}}
+                    {{ props.data.publisher.name }}
                 </div>
             </div>
         </div>
         <div class="desc">
             <div class="info">
-                <div class="title">{{ props.data.name }}</div>
+                <!-- 最多展示两行 -->
+                <div class="title van-multi-ellipsis--l2">
+                    {{ props.data.name }}
+                </div>
                 <div class="tags">
-                    <Tag v-for="tag in props.data.tags" :data="tag"/>
+                    <Tag v-for="tag in props.data.tags" :data="tag" />
                 </div>
             </div>
-            <div class="price">
-                <span class="money-type">¥&nbsp;</span>
-                <span class="money-integral">{{ props.data.price.split('.')[0] }}</span>
-                <span class="money-fractional">.{{ props.data.price.split('.')[1] }}</span>
-            </div>
+            <Price
+                :small-size="(px2rem(20) as string)"
+                :integral-size="(px2rem(32) as string)"
+                money-type="¥"
+                :price="props.data.price"
+            />
         </div>
     </div>
 </template>
-<script setup lang='ts'>
-import { computed } from '@vue/reactivity';
-import { ref } from 'vue';
-import Tag from '../../../../components/Tag.vue';
-import { useRouter } from 'vue-router';
+<script setup lang="ts">
+import { computed, ComputedRef } from "@vue/reactivity";
+import { ref } from "vue";
+import Tag from "../../../../components/Tag.vue";
+import TypeIcon from "../../../../components/TypeIcon.vue";
+import { useRouter } from "vue-router";
+import { px2rem } from "../../../../utils";
+import Price from "../../../../components/Price.vue";
+import dayjs from "dayjs";
+import { CurrentTime, useCountDown } from "@vant/use";
+import { get_stock_count } from "../../../../api";
 const router = useRouter();
 
-// type Product = {
-//     id: number | string,
-//     name: string,
-//     preview_img: string,
-//     type: "image" | "audio" | "video" | "hybrid" | "3d" | "other",
-//     classname: string,
-//     count: number,
-//     creator: {
-//         avatar: string,
-//         name: string,
-//     }
-//     details: Object,
-//     price: string,
-//     tags: string[],
-//     sale_timestamp: number,
-//     stock_count: number,
-//     limit: number,
-// }
-
 type PropType = {
-    data: Product
-}
-const props = defineProps<PropType>()
-console.log(props.data)
-const loaded = ref(false)
+    data: Product;
+    isLast: boolean;
+};
+const props = defineProps<PropType>();
+const loaded = ref(false);
+const countDown = useCountDown({
+    time: 0, // time 后端生成
+    onFinish: () => {
+        isCountdown.value = false;
+    },
+});
+const countDownRef = countDown.current;
+const isCountdown = ref(false);
+const stock_count = ref(0);
+// 加载
+const stock_count_res = await get_stock_count(props.data.id as string, "redis");
+console.log(stock_count_res);
+stock_count.value = stock_count_res;
 
+// todo: statusText优化
 const statusText = computed(() => {
     if (props.data.stock_count === 0) {
-        return '已售罄'
+        return "🪧 已售罄";
     }
-    const diff = props.data.sale_timestamp - Date.now()
-    if (diff < 0) {
-        return '热销中'
-    } else if (diff > 24 * 60 * 60 * 1000){
-        return '即将开售';
+    const now = dayjs().valueOf();
+    const draw_timestamp = dayjs(props.data.draw_timestamp).valueOf();
+    const draw_end_timestamp = dayjs(props.data.draw_end_timestamp).valueOf();
+    const sale_timestamp = dayjs(props.data.sale_timestamp).valueOf();
+
+    if (now < draw_timestamp) {
+        if (draw_timestamp - now > 24 * 60 * 60 * 1000) {
+            return "🌟 敬请期待";
+        } else {
+            isCountdown.value = true;
+            countDown.reset(draw_timestamp - now);
+            countDown.start();
+            return "⌛️ 待抽签";
+        }
+    } else if (now < draw_end_timestamp) {
+        // 抽签已开始但还为结束
+        isCountdown.value = true;
+        countDown.reset(draw_end_timestamp - now);
+        countDown.start();
+        return "🎲 抽签中";
+    } else if (now < sale_timestamp) {
+        // 抽签已结束但还为开售，可以查看抽签结果
+        isCountdown.value = true;
+        countDown.reset(sale_timestamp - now);
+        countDown.start();
+        return "📢 抢购马上开始";
     } else {
-        return '待发售'
+        // 已开售：已售罄 ｜ 火热抢购中
+        if (stock_count.value > 10) {
+            return "🔥 火热抢购中";
+        } else if (stock_count.value > 0) {
+            return "❕ 库存紧张";
+        } else {
+            return "🪧 已售罄";
+        }
     }
-})
+});
 </script>
 <style lang="scss" scoped>
 .product-card {
@@ -92,12 +152,11 @@ const statusText = computed(() => {
     border-radius: px2rem(8);
     overflow: hidden;
     margin-bottom: px2rem(36);
-    box-shadow: 0 px2rem(4) px2rem(4) rgba(0, 0, 0, .25);
+    box-shadow: 0 px2rem(4) px2rem(4) rgba(0, 0, 0, 0.25);
 
-    &:last-child {
-        margin-bottom: 0;
+    &[data-last="true"] {
+        margin-bottom: px2rem(18);
     }
-    
 
     .img-wrapper {
         position: relative;
@@ -120,30 +179,30 @@ const statusText = computed(() => {
             align-items: center;
             justify-content: center;
         }
-        
+
         .product-status {
-            position:absolute;
+            position: absolute;
             top: px2rem(10);
             left: px2rem(16);
             font-size: px2rem(12);
             background-color: rgba(0, 0, 0, 0.5);
             padding: px2rem(6) px2rem(8);
             box-sizing: border-box;
-            color:$normalTextColor;
+            color: $normalTextColor;
             border-radius: px2rem(4);
             backdrop-filter: blur(px2rem(4));
             -webkit-backdrop-filter: blur(px2rem(4));
         }
 
         .product-type {
-            position:absolute;
+            position: absolute;
             top: px2rem(10);
             right: px2rem(16);
-            font-size: px2rem(10);
-            background-color: rgba(0, 0, 0, .5);
-            padding: px2rem(6) px2rem(8);
+            font-size: px2rem(16);
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: px2rem(4) px2rem(6);
             box-sizing: border-box;
-            color:$normalTextColor;
+            color: $normalTextColor;
 
             border-radius: px2rem(4);
             backdrop-filter: blur(px2rem(4));
@@ -155,10 +214,10 @@ const statusText = computed(() => {
             bottom: px2rem(10);
             right: px2rem(16);
             font-size: px2rem(10);
-            background-color: rgba(0, 0, 0, .5);
+            background-color: rgba(0, 0, 0, 0.5);
             padding: px2rem(6) px2rem(8);
             box-sizing: border-box;
-            color:$normalTextColor;
+            color: $normalTextColor;
 
             border-radius: px2rem(4);
             backdrop-filter: blur(px2rem(4));
@@ -192,6 +251,7 @@ const statusText = computed(() => {
             flex-flow: nowrap column;
             justify-content: flex-start;
             align-items: flex-start;
+            overflow: hidden;
 
             .title {
                 font-size: px2rem(24);
@@ -217,7 +277,6 @@ const statusText = computed(() => {
             display: flex;
             flex-flow: nowrap row;
             align-items: baseline;
-            
 
             .money-type,
             .money-fractional {

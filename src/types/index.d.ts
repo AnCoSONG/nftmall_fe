@@ -2,6 +2,7 @@
 // todo: 根据后端调整
 declare type ID = number | string
 
+declare type SupportType = "image" | "audio" | "video" | "hybrid" | "3d" | "other";
 declare type Tag = {
     name: string,
     mode?: 'light' | 'dark'
@@ -13,41 +14,43 @@ declare type Genre = {
 }
 
 declare type Publisher = {
-    id: ID,
+    id: string,
     name: string,
     avatar: string,
     works?: Product[],
 }
 
 declare type Product = {
-    id: ID,
+    id: string,
     name: string,
     preview_img: string,
     src: string,
     description: string,
-    type: "image" | "audio" | "video" | "hybrid" | "3d" | "other",
+    type: SupportType,
     genres: Genre[],
     publish_count: number,
     stock_count: number,
     publisher_id: ID,
     publisher: Publisher,
     items?: ProductItem[],
-    details: string,
-    price: string, // todo: number
+    details: string[],
+    price: string,
     limit: number,
     tags: Tag[],
-    sale_timestamp: number;
+    sale_timestamp: string;
+    draw_timestamp: string;
+    draw_end_timestamp: string;
 }
 
 declare type ProductItem = {
-    id: ID,
+    id: string,
     no: number,
     product: Product,
     bsn_address: string,
 }
 
 declare type User = {
-    id: ID,
+    id: number,
     username: string,
     bsn_address: string,
     phone: string,
@@ -55,22 +58,22 @@ declare type User = {
     avatar: string,
     real_name: string,
     real_id: string,
-    credit: number,
+    credit: string,
 }
 
 
 declare type OrderStatus = "canceled" | "completed" | "unlinked" | "unpaied"
 
+//todo: 根据后端调整
 declare type Order = {
-    id: ID,
-    buyer_id: ID,
-    purchase_item: OrderPurchaseItem,
+    id: string,
+    buyer_id: number,
+    product_item_id: string,
     order_status: OrderStatus,
     pay_method: "alipay" | "wechat" | "card",
     gen_credits: number,
     create_at: number,
     pay_at: number,
-    on_chain_at: number,
 }
 
 declare type OrderPurchaseItem = {

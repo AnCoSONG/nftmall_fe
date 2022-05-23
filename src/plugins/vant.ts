@@ -24,7 +24,12 @@ import {
     Checkbox,
     Skeleton,
     Radio,
-    RadioGroup
+    RadioGroup,
+    Toast,
+    Divider,
+    Button,
+    Steps,
+    Step
 } from "vant";
 
 export default function (app: App) {
@@ -52,4 +57,9 @@ export default function (app: App) {
     app.use(Skeleton);
     app.use(Radio);
     app.use(RadioGroup);
+    app.use(Toast);
+    app.use(Divider);
+    app.use(Button);
+    app.use(Steps);
+    app.use(Step);
 }
