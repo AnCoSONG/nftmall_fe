@@ -1,13 +1,21 @@
 <template>
     <div class="item" @click="router.push(`/collection/${data.id}`)">
-        <van-image :src="data.product.preview_img" class="img"></van-image>
+        <van-image :src="data.product?.preview_img" class="img">
+            <template v-slot:loading>
+                <ImageLoader />
+            </template>
+        </van-image>
         <div class="info">
             <div class="creator">
-                <van-image :src="data.product.creator?.avatar" class="avatar" round></van-image>
-                <div class="creator-name">{{ data.product.creator?.name }}</div>
+                <van-image :src="data.product?.publisher?.avatar" class="avatar" round>
+                    <template v-slot:loading>
+                        <ImageLoader />
+                    </template>
+                </van-image>
+                <div class="creator-name">{{ data.product?.publisher?.name }}</div>
             </div>
             <div class="product-name">
-                {{ data.product.name }}
+                {{ data.product?.name }}
             </div>
             <div class="no">
                 {{ noText }}
@@ -18,11 +26,12 @@
 <script setup lang='ts'>
 import { computed } from '@vue/reactivity';
 import { toRef } from 'vue';
-import {useRouter} from 'vue-router'
+import { useRouter } from 'vue-router'
+import ImageLoader from '../../../components/ImageLoader.vue';
 const router = useRouter()
 
 type PropType = {
-    data: BoughtItem
+    data: ProductItem
 }
 
 const props = defineProps<PropType>()
@@ -51,8 +60,11 @@ const noText = computed(() => {
 
     .img {
         width: 100%;
+        min-height: 100px;
         border-radius: px2rem(8);
         overflow: hidden;
+
+
     }
 
     .info {
@@ -75,6 +87,7 @@ const noText = computed(() => {
                 border: 1px solid white;
                 box-shadow: 0 px2rem(4) px2rem(4) rgba(0, 0, 0, 0.25);
                 margin-bottom: px2rem(8);
+
             }
 
             .creator-name {

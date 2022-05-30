@@ -28,13 +28,25 @@ import EnvironmentInspector from './components/EnvironmentInspector.vue';
 <style lang="scss">
 // global style definition
 .van-step__circle-container {
-  background-color: #272727!important;
+  background-color: #272727 !important;
 }
+
 html,
 body,
 #app {
+  width: 100%;
+  min-height: 100% !important;
+  height: 100%;
   background-color: $backgroundColor;
   // color: $normalTextColor;
+}
+
+.dg.ac {
+  top: px2rem(54);
+}
+
+#app {
+  overflow: auto;
 }
 
 .outer-box {

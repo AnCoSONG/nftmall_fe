@@ -39,6 +39,7 @@ const onLoadMore = async () => {
     if (refreshing.value) {
         // 清空列表
         list.value = []
+        total.value = 0;
     }
     loading.value = true;
     const data = await fetchProducts(page.value, limit, true);

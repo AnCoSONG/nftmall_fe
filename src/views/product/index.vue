@@ -1,106 +1,113 @@
 <template>
     <Subpage title="藏品详情" back-to="/">
-        <div class="product" v-if="product">
-            <div class="product-preview">
-                <van-image class="img" src="https://picsum.photos/400/400" :class="{ loop: notSupport }">
-                    <template #loading>
-                        <van-loading vertical>加载中</van-loading>
-                    </template>
-                </van-image>
-            </div>
-            <div class="timeline box" @click="onStepClick">
-                <!-- todo: click 显示时间细则 -->
-                <van-steps active-color="#E5E798" :active="currentActive" inactive-color="#888">
-                    <van-step>藏品上架</van-step>
-                    <van-step>抽签开放</van-step>
-                    <van-step>抽签结束</van-step>
-                    <van-step>开放抢购</van-step>
-                </van-steps>
-            </div>
-            <div class="product-price-limit box">
-                <Price :small-size="(px2rem(20) as string)" :integral-size="(px2rem(32) as string)" money-type="¥"
-                    :price="product.price" />
+        <van-skeleton :loading="!product" :row="20">
+            <div class="product" v-if="product">
+                <div class="product-preview">
+                    <ProductViewer :src="product.preview_src" :rotate_mode="0" :backup_img="product.preview_img">
+                    </ProductViewer>
+                </div>
+                <div class="timeline box" @click="onStepClick">
+                    <!-- todo: click 显示时间细则 -->
+                    <van-steps active-color="#E5E798" :active="currentActive" inactive-color="#888">
+                        <van-step>藏品上架</van-step>
+                        <van-step>抽签开放</van-step>
+                        <van-step>抽签结束</van-step>
+                        <van-step>开放抢购</van-step>
+                    </van-steps>
+                </div>
+                <div class="product-price-limit box">
+                    <Price :small-size="(px2rem(20) as string)" :integral-size="(px2rem(32) as string)" money-type="¥"
+                        :price="product.price" />
 
-                <div class="limit">
-                    每人限购 <b color="gold">{{ product.limit }}</b> 份
-                </div>
-            </div>
-            <div class="product-info box">
-                <div class="left">
-                    <div class="name">{{ product.name }}</div>
-                    <div class="tags">
-                        <Tag :data="tag" v-for="tag in product.tags"></Tag>
+                    <div class="limit">
+                        每人限购 <b color="gold">{{ product.limit }}</b> 份
                     </div>
                 </div>
-                <div class="right">
-                    <div class="type">
-                        <TypeIcon :type="product.type"></TypeIcon>
+                <div class="product-info box">
+                    <div class="left">
+                        <div class="name">{{ product.name }}</div>
+                        <div class="tags">
+                            <Tag :data="tag" v-for="tag in product.tags"></Tag>
+                        </div>
                     </div>
-                    <!-- <div class="limit"></div> -->
+                    <div class="right">
+                        <div class="type">
+                            <TypeIcon :type="product.type"></TypeIcon>
+                        </div>
+                        <!-- <div class="limit"></div> -->
+                    </div>
                 </div>
-            </div>
 
-            <div class="detail box">
-                <div class="title">创作者</div>
-                <div class="content">
-                    <div class="creator">
-                        <van-image class="avatar" round :src="product.publisher.avatar"></van-image>
-                        <div class="name">{{ product.publisher.name }}</div>
+                <div class="detail box">
+                    <div class="title">创作者</div>
+                    <div class="content">
+                        <div class="creator">
+                            <van-image class="avatar" round :src="product.publisher?.avatar">
+                                <template #loading>
+                                    <ImageLoader />
+                                </template>
+                            </van-image>
+                            <div class="name">{{ product.publisher?.name }}</div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="detail box">
-                <div class="title">藏品故事</div>
-                <div class="content">
-                    <!-- todo: 上COS后图像的地址可能需要映射一下 -->
-                    <van-image class="img" v-for="item in product.details" :src="item"></van-image>
-                </div>
-            </div>
-            <div class="must-know box">
-                <div class="title">购买须知</div>
-                <div class="content">
-                    数字藏品为虚拟数字商品，而非实物，仅限实名认真为年满14
-                    周岁的中国大陆用户购买。数字藏品的版权由发行方或原创者
-                    拥有，除另行取得版权拥有者书面同意外，用户不得将数字藏
-                    品用于任何商业用途。本商品一经售出，不支持退换。本商品
-                    源文件不支持本地下载。请勿对数字藏品进行炒作、场外交易
-                    、欺诈，或以任何其他非法方式进行使用。
-                </div>
-            </div>
-            <div class="bottom-bar">
-                <div class="counter">
-                    <div class="jian operation" @click="operateCount(-1)">
-                        -
+                <div class="detail box">
+                    <div class="title">藏品故事</div>
+                    <div class="content">
+                        <!-- todo: 上COS后图像的地址可能需要映射一下 -->
+                        <van-image class="img" v-for="item in product.details" :src="item">
+                            <template #loading>
+                                <ImageLoader />
+                            </template>
+                        </van-image>
                     </div>
-                    <div class="num">{{ count }}</div>
-                    <div class="jia operation" @click="operateCount(1)">+</div>
                 </div>
-                <!-- todo 状态体现在按钮上 即将 ｜ 倒计时 ｜ 抽签 ｜ 购买 ｜ 已售罄 -->
+                <div class="must-know box">
+                    <div class="title">购买须知</div>
+                    <div class="content">
+                        数字藏品为虚拟数字商品，而非实物，仅限实名认真为年满14
+                        周岁的中国大陆用户购买。数字藏品的版权由发行方或原创者
+                        拥有，除另行取得版权拥有者书面同意外，用户不得将数字藏
+                        品用于任何商业用途。本商品一经售出，不支持退换。本商品
+                        源文件不支持本地下载。请勿对数字藏品进行炒作、场外交易
+                        、欺诈，或以任何其他非法方式进行使用。
+                    </div>
+                </div>
+                <div class="bottom-bar">
+                    <div class="counter">
+                        <div class="jian operation" @click="operateCount(-1)">
+                            -
+                        </div>
+                        <div class="num">{{ count }}</div>
+                        <div class="jia operation" @click="operateCount(1)">+</div>
+                    </div>
+                    <!-- todo 状态体现在按钮上 即将 ｜ 倒计时 ｜ 抽签 ｜ 购买 ｜ 已售罄 -->
 
-                <!-- 抽签前 -->
-                <div class="pay-btn" :class="{ disabled: !btnClickable }" @click="onBtnClick">
-                    <!-- 敬请期待，倒计时 -->
-                    <div v-if="isLoading">
-                        <van-loading color="#333" size="18" v-if="btnClickable" />
-                        <van-loading color="#ddd" size="18" v-else />
-                    </div>
-                    <div v-show="!isLoading" class="main-text" :class="{ noCountDown: !isCountdown }">
-                        {{ statusText }}
-                    </div>
-                    <div v-if="isCountdown" class="countdown" v-show="!isLoading">
-                        {{
-                                `${countDownRef.hours
-                                    .toString()
-                                    .padStart(2, "0")}:${countDownRef.minutes
+                    <!-- 抽签前 -->
+                    <div class="pay-btn" :class="{ disabled: !btnClickable }" @click="onBtnClick">
+                        <!-- 敬请期待，倒计时 -->
+                        <div v-if="isLoading">
+                            <van-loading color="#333" size="18" v-if="btnClickable" />
+                            <van-loading color="#ddd" size="18" v-else />
+                        </div>
+                        <div v-show="!isLoading" class="main-text" :class="{ noCountDown: !isCountdown }">
+                            {{ statusText }}
+                        </div>
+                        <div v-if="isCountdown" class="countdown" v-show="!isLoading">
+                            {{
+                                    `${countDownRef.hours
                                         .toString()
-                                        .padStart(2, "0")}:${countDownRef.seconds
+                                        .padStart(2, "0")}:${countDownRef.minutes
                                             .toString()
-                                            .padStart(2, "0")}`
-                        }}
+                                            .padStart(2, "0")}:${countDownRef.seconds
+                                                .toString()
+                                                .padStart(2, "0")}`
+                            }}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </van-skeleton>
     </Subpage>
 </template>
 <script lang="ts">
@@ -115,27 +122,21 @@ import Tag from "../../components/Tag.vue";
 import TypeIcon from "../../components/TypeIcon.vue";
 import { px2rem } from "../../utils";
 import { useRoute, useRouter } from "vue-router";
-import {
-    computed,
-    getCurrentInstance,
-    nextTick,
-    onDeactivated,
-    ref,
-    toRef,
-    watch,
-    watchEffect,
-} from "vue";
+import { computed, ref, toRef, watch, watchEffect } from "vue";
 import { onMountedOrActivated, useCountDown } from "@vant/use";
+import ProductViewer from "../../components/ProductViewer.vue";
+import ImageLoader from "../../components/ImageLoader.vue";
 import {
     fetchProduct,
     fetchIsDraw,
     participateDraw,
     fetchIsLucky,
-    fetchIsPaid,
     get_stock_count,
     seckill,
+    fetchUnpaid,
+    fetchProductBoughtCount,
 } from "../../api";
-import { Notify, Toast } from "vant";
+import { Dialog, Notify, Toast } from "vant";
 import dayjs from "dayjs";
 import { useUserStore } from "../../stores/user";
 
@@ -152,48 +153,15 @@ const product = ref<Product>();
 const route = useRoute();
 const router = useRouter();
 
-if (id.value !== "") {
-    const data = await fetchProduct(id.value, true);
-    console.log(data);
-    if (data) {
-        product.value = { ...data };
-    } else {
-        // 404
-        router.push("/404");
-    }
-}
-
-const xRotate = ref(0);
-const yRotate = ref(0);
-const notSupport = ref(false);
-
-const handler = function (event: DeviceOrientationEvent) {
-    // 只能在https或者localhost下使用
-    // gamma: 从左到右
-    xRotate.value = event.gamma ?? 0;
-    // beta: 从前到后的运动
-    yRotate.value = event.beta ?? 0;
-};
-onMountedOrActivated(async () => {
-    // 支持陀螺仪就让用户交互来实现藏品头图变化
-    if (window.DeviceOrientationEvent) {
-        window.addEventListener("deviceorientation", handler, true);
-    } else {
-        notSupport.value = true;
-    }
-});
-
-onDeactivated(() => {
-    window.removeEventListener("deviceorientation", handler);
-});
-
 const onStepClick = () => {
+    // todo: 使用Popup实现展示效果
     Toast({
-        type: 'text',
-        message: '待实现：展示具体时间'
-    })
-}
+        type: "text",
+        message: "待实现：展示具体时间",
+    });
+};
 
+// 购物个数
 const count = ref(1);
 const operateCount = (payload: number) => {
     if (product.value) {
@@ -206,13 +174,13 @@ const operateCount = (payload: number) => {
                 iconSize: "1.6rem",
             });
             return;
-        } else if (count.value + payload > product.value.limit) {
-            Toast({
-                message: `限购 ${product.value.limit} 份`,
-                duration: 1500,
-                forbidClick: true,
-                icon: "warning-o",
-                iconSize: "1.6rem",
+        } else if (count.value + payload > 1) {
+            // todo: 目前只支持一个，后期增加一次买多个
+            Dialog.alert({
+                title: "提示",
+                message:
+                    "目前一次只能购买<b>1</b>份!\n如需购买多份请完成付费后再回到本页购买。",
+                allowHtml: true,
             });
             return;
         } else {
@@ -223,6 +191,7 @@ const operateCount = (payload: number) => {
     // todo: 3 is limit, change to limit
 };
 
+// 阶段
 const currentStage = ref<0 | 1 | 2 | 3 | 4 | 5>(0);
 
 const currentActive = computed(() => {
@@ -251,8 +220,9 @@ const isCountdown = ref(false);
 const isLoading = ref(false);
 const btnClickable = ref(false); // 购买位按钮是否可点击
 const isDrawn = ref(false);
-const isLucky = ref(false);
-const isBought = ref(false);
+const isLucky = ref<number>(-1); // 0 无资格 1 有资格 -1 未生成结果 -2 出错
+const unpaid = ref<{ code: number; order_id?: string }>({ code: 0 });
+const bounght_count = ref(0);
 const stock_count = ref(0);
 const statusText = ref("");
 
@@ -295,34 +265,40 @@ const fetchLucky = async () => {
 const fetchInit = async () => {
     isLoading.value = true;
     if (!user.isLogin) {
-        // * Router已提示
-        // Toast({
-        //     message: "请先登录",
-        //     duration: 1500,
-        //     forbidClick: true,
-        //     icon: "warning-o",
-        //     iconSize: "1.6rem",
-        // });
         isLoading.value = false;
-        const stockRes = await get_stock_count(id.value, 'redis')
+        const stockRes = await get_stock_count(id.value, "redis");
         stock_count.value = stockRes;
         return;
     }
-    const [drawRes, luckyRes, paidRes, stockRes] = await Promise.all([
-        fetchIsDraw(user.data.id, id.value),
-        fetchIsLucky(user.data.id, id.value),
-        fetchIsPaid(user.data.id, id.value),
-        get_stock_count(id.value, 'redis'),
-    ]);
+    const [drawRes, luckyRes, unpaidRes, stockRes, bounghtCountRes] =
+        await Promise.all([
+            fetchIsDraw(user.data.id, id.value),
+            fetchIsLucky(user.data.id, id.value),
+            fetchUnpaid(user.data.id, id.value),
+            get_stock_count(id.value, "redis"),
+            fetchProductBoughtCount(user.data.id, id.value),
+        ]);
     isLoading.value = false;
     isLucky.value = luckyRes;
     isDrawn.value = drawRes;
-    isBought.value = paidRes;
+    unpaid.value = unpaidRes;
     stock_count.value = stockRes;
-    // console.log(stock_count.value);
+    bounght_count.value = bounghtCountRes ?? 0;
 };
 
-await fetchInit();
+onMountedOrActivated(async () => {
+    if (id.value !== "") {
+        const data = await fetchProduct(id.value, true);
+        console.log(data);
+        if (data) {
+            product.value = { ...data };
+        } else {
+            // 404
+            router.push("/404");
+        }
+    }
+    await fetchInit();
+})
 
 watchEffect(() => {
     if (!product.value) {
@@ -356,7 +332,7 @@ watchEffect(() => {
         isCountdown.value = true;
         if (!user.isLogin) {
             btnClickable.value = false;
-            statusText.value = '请先登录'
+            statusText.value = "请先登录";
         } else {
             if (isDrawn.value) {
                 btnClickable.value = false;
@@ -378,44 +354,65 @@ watchEffect(() => {
         currentStage.value = 4;
         if (!user.isLogin) {
             btnClickable.value = true;
-            statusText.value = '请先登录'
+            statusText.value = "请先登录";
         } else {
-            if (isLucky.value) {
+            if (isLucky.value === 1) {
                 countDown.reset(sale_timestamp - now);
                 countDown.start();
                 isCountdown.value = true;
                 btnClickable.value = false;
                 statusText.value = "即将发售";
-            } else {
+            } else if (isLucky.value === 0) {
                 btnClickable.value = false;
                 statusText.value = "您未中签";
+            } else if (isLucky.value === -1) {
+                btnClickable.value = true;
+                statusText.value = "查看抽签结果";
+            } else if (isLucky.value === -2) {
+                btnClickable.value = true;
+                statusText.value = "加载出错, 点此刷新";
             }
         }
     } else {
         currentStage.value = 5;
-        if (user.isLogin && isBought.value) {
-            btnClickable.value = false;
-            statusText.value = "已购买";
-            return;
-        }
-        if (stock_count.value === 0) {
-            btnClickable.value = false;
-            statusText.value = '已售罄'
+        // if (user.isLogin && unpaid.value) {
+        //     btnClickable.value = false;
+        //     statusText.value = "已购买";
+        //     return;
+        // }
+        if (unpaid.value!.code === 1) {
+            btnClickable.value = true;
+            statusText.value = "待支付";
         } else {
-            if (!user.isLogin) {
-                btnClickable.value = true;
-                statusText.value = '请先登录'
+            if (stock_count.value === 0) {
+                btnClickable.value = false;
+                statusText.value = "已售罄";
             } else {
-                if (!isLucky.value) {
-                    btnClickable.value = false;
-                    statusText.value = "您无购买资格";
+                if (!user.isLogin) {
+                    btnClickable.value = true;
+                    statusText.value = "请先登录";
                 } else {
-                    if (isBought.value) {
+                    if (!isLucky.value) {
                         btnClickable.value = false;
-                        statusText.value = "已购买";
+                        statusText.value = "您无购买资格";
                     } else {
-                        btnClickable.value = true;
-                        statusText.value = "购买";
+                        // 检测是否有未支付订单
+                        if (unpaid.value!.code === 1) {
+                            btnClickable.value = true;
+                            statusText.value = "待支付";
+                        } else if (unpaid.value!.code === 0) {
+                            if (bounght_count.value >= product.value.limit) {
+                                btnClickable.value = false;
+                                statusText.value = "已达到限购上限";
+                            } else {
+                                btnClickable.value = true;
+                                statusText.value = "购买";
+                            }
+                        } else {
+                            // 2
+                            btnClickable.value = true;
+                            statusText.value = "加载出错, 点此刷新";
+                        }
                     }
                 }
             }
@@ -428,7 +425,7 @@ watch(isDrawn, (val) => {
         btnClickable.value = false;
         statusText.value = "已抽签";
         if (product.value) {
-            const now = dayjs().valueOf()
+            const now = dayjs().valueOf();
             const draw_end_timestamp = dayjs(
                 product.value.draw_end_timestamp
             ).valueOf();
@@ -441,71 +438,126 @@ watch(isDrawn, (val) => {
 
 const onBtnClick = async () => {
     if (statusText.value === "抽签") {
-        const res = await participateDraw(user.data.id, id.value);
+        const res = await participateDraw(id.value);
         if (!res) {
-            Toast({
-                message: "抽签失败",
-                duration: 1500,
-                forbidClick: true,
-                icon: "warning-o",
-                iconSize: "1.6rem",
+            // Toast({
+            //     message: "抽签失败",
+            //     duration: 1500,
+            //     forbidClick: true,
+            //     icon: "warning-o",
+            //     iconSize: "1.6rem",
+            // });
+            Dialog.alert({
+                title: "抽签失败",
+                message: "请稍后重试",
             });
             return;
         }
         if (res.code === 0) {
-            Toast({
+            Dialog.alert({
+                title: "成功",
                 message: "抽签成功",
-                duration: 1500,
-                forbidClick: true,
-                icon: "success-o",
-                iconSize: "1.6rem",
             });
             await fetchDraw();
         } else {
-            Toast({
+            Dialog.alert({
+                title: "抽签出错",
                 message: res.message,
-                duration: 1500,
-                forbidClick: true,
-                icon: "warning-o",
-                iconSize: "1.6rem",
             });
         }
-    } else if (statusText.value === '购买') {
-        const res = await seckill(user.data.id, id.value);
+    } else if (statusText.value === "购买") {
+        isLoading.value = true;
+        const res = await seckill(id.value);
         if (res) {
             if (res.order_id) {
                 Toast({
-                    message: "已下单",
+                    message: "下单成功!",
                     duration: 1500,
                     forbidClick: true,
                     icon: "passed",
                     iconSize: "1.6rem",
                 });
-                // 生成一个1000 - 1500ms的随机数
-                const random = Math.floor(Math.random() * (1500 - 1000 + 1)) + 1000;
+                // 生成一个500 - 1500ms的随机数
+                const random =
+                    Math.floor(Math.random() * (1500 - 500 + 1)) + 500;
                 setTimeout(() => {
-                    router.push({ path: '/cashier', query: { product_id: id.value, order_id: res.order_id } });
-                }, random)
+                    isLoading.value = false;
+                    router.push({
+                        path: "/cashier",
+                        query: { product_id: id.value, order_id: res.order_id },
+                    });
+                }, random);
             } else {
-                Toast({
-                    message: res.message,
-                    duration: 1500,
-                    forbidClick: true,
-                    icon: "warning-o",
-                    iconSize: "1.6rem",
-                    teleport: '#app'
-                });
+                isLoading.value = false;
+                if (res.code === 6) {
+                    Dialog.confirm({
+                        title: '提示',
+                        message: '应监管要求，您在购买前需完成实名认证。',
+                        confirmButtonText: '进行实名认证',
+                        cancelButtonColor: '暂不够卖'
+                    }).then(() => {
+                        router.push('/verification')
+                    }).catch(() => {
+                        Toast({
+                            type: 'text',
+                            message: '稍后可在个人中心页面完成实名认证'
+                        })
+                    })
+                } else {
+                    Dialog.alert({
+                        title: "购买失败",
+                        message: res.message,
+                    });
+                }
             }
         } else {
+            isLoading.value = false;
             return null;
         }
-    } else if (statusText.value === '请先登录') {
+    } else if (statusText.value === "请先登录") {
         // console.log(route.path)
-        router.push({ name: 'login', params: { backTo: route.path } })
+        router.push({ name: "login", params: { backTo: route.path } });
+    } else if (statusText.value === "待支付") {
+        if (unpaid.value.order_id) {
+            router.push({
+                path: "/cashier",
+                query: {
+                    product_id: id.value,
+                    order_id: unpaid.value?.order_id,
+                },
+            });
+        } else {
+            Toast({
+                type: "fail",
+                message: "出错: 待支付的订单ID未获取！",
+            });
+        }
+    } else if (statusText.value === "查看抽签结果") {
+        isLoading.value = true;
+        isLucky.value = await fetchIsLucky(user.data.id, id.value);
+        if (isLucky.value === 1) {
+            Dialog.alert({
+                title: '查看抽签结果',
+                message: '🎉恭喜，您已中签！'
+            })
+        } else if (isLucky.value === 0) {
+            Dialog.alert({
+                title: '查看抽签结果',
+                message: '非常可惜，您未中签！'
+            })
+        } else {
+            Dialog.alert({
+                title: '查看抽签结果',
+                message: '出了点问题，请稍后刷新'
+            })
+        }
+        isLoading.value = false;
+    } else if (statusText.value === "加载出错, 点此刷新") {
+        location.reload();
     }
 };
 
-// 
+//
 </script>
 <style lang="scss" scoped>
 .product {
@@ -516,52 +568,6 @@ const onBtnClick = async () => {
     align-items: center;
     justify-content: center;
     margin-bottom: px2rem(72);
-
-    .product-preview {
-        margin-top: px2rem(50);
-        margin-bottom: px2rem(50);
-        // overflow: hidden;
-        perspective: px2rem(500);
-        transform-style: preserve-3d;
-        perspective-origin: 50% 50%;
-
-        .img {
-            border: 2px solid #ddd;
-            width: px2rem(300);
-            min-height: px2rem(200);
-            border-radius: px2rem(8);
-            overflow: hidden;
-            box-shadow: 0 px2rem(4) px2rem(20) rgba(210, 215, 112, 0.25);
-            // transform: rotate3d(0, 1, 0, -30deg);
-            // transform: rotateX(10deg);
-
-            &.loop {
-                animation: rotate 6s cubic-bezier(0.445, 0.05, 0.55, 0.95) infinite;
-            }
-        }
-
-        @keyframes rotate {
-            0% {
-                transform: rotateY(-15deg) translateZ(0px);
-            }
-
-            // 25% {
-            //     transform: rotateY(30deg);
-            // }
-
-            50% {
-                transform: rotateY(15deg) translateZ(-30px);
-            }
-
-            // 75% {
-            //     transform: rotateY(-30deg) translateZ(100px);
-            // }
-
-            100% {
-                transform: rotateY(-15deg) translateZ(0px);
-            }
-        }
-    }
 
     .box {
         padding: px2rem(12) px2rem(16);
@@ -702,6 +708,7 @@ const onBtnClick = async () => {
 
             .img {
                 margin-bottom: 0;
+                min-height: 100px;
                 display: block;
                 overflow: hidden;
 

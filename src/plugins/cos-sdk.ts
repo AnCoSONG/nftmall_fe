@@ -62,6 +62,10 @@ export const getObjectUrlPromisify = async (
     }
 };
 
+export const cdnTransform = (key: string) => {
+    return `https://mall-1308324841.file.myqcloud.com/${key}`
+}
+
 export const vueCos = (app: App) => {
     app.provide(cosSymbol, cos);
 };

@@ -34,7 +34,7 @@ request.interceptors.request.use(
 // Add a response interceptor
 request.interceptors.response.use(
     function (response) {
-        console.log(response);
+        console.log(response.config.url, response);
         return response;
     },
     function (error) {

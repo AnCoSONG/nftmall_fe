@@ -26,6 +26,7 @@ export const useThemeStore = defineStore("theme", {
                 stepsBackgroundColor: '#272727',
                 stepLineColor: '#444',
                 stepFinishTextColor: '#ccc',
+                imagePlaceholderBackgroundColor: '#272727',
                 // stepCircleColor: '#272727',
             },
             announcement: {

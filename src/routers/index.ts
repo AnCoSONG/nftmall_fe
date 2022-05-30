@@ -15,12 +15,14 @@ const router = createRouter({
                 },
                 {
                     path: "exhibition",
+                    name: 'exhibition',
                     meta: { title: "个人展馆", requireAuth: "prompt" },
                     component: () =>
                         import("views/home/components/exhibition.vue"),
                 },
                 {
                     path: "user",
+                    name: 'user',
                     meta: { title: "个人中心" },
                     component: () => import("views/home/components/user.vue"),
                 },

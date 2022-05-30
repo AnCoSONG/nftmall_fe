@@ -17,6 +17,11 @@
             </van-tabs>
     </Subpage>
 </template>
+<script lang="ts">
+export default {
+    name: "order",
+};
+</script>
 <script setup lang='ts'>
 import { ref } from 'vue';
 import Subpage from '../../components/Subpage.vue';

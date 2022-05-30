@@ -11,9 +11,7 @@
                 @load="loaded = true"
             >
                 <template v-slot:loading>
-                    <div class="loader-wrapper">
-                        <van-loading type="spinner" size="20" />
-                    </div>
+                    <ImageLoader></ImageLoader>
                 </template>
                 <template v-slot:error>加载失败</template>
             </van-image>
@@ -39,14 +37,18 @@
             <div class="product-creator" v-show="loaded">
                 <van-image
                     :src="
-                        props.data.publisher.avatar ||
+                        props.data.publisher?.avatar ??
                         'https://avatars.dicebear.com/api/pixel-art/random.svg'
                     "
                     round
                     class="product-creator-img"
-                ></van-image>
+                >
+                    <template #loading>
+                        <ImageLoader/>
+                    </template>
+                </van-image>
                 <div class="product-creator-name">
-                    {{ props.data.publisher.name }}
+                    {{ props.data.publisher?.name }}
                 </div>
             </div>
         </div>
@@ -79,6 +81,7 @@ import { px2rem } from "../../../../utils";
 import Price from "../../../../components/Price.vue";
 import dayjs from "dayjs";
 import { CurrentTime, useCountDown } from "@vant/use";
+import ImageLoader from "../../../../components/ImageLoader.vue";
 import { get_stock_count } from "../../../../api";
 const router = useRouter();
 
@@ -160,24 +163,17 @@ const statusText = computed(() => {
 
     .img-wrapper {
         position: relative;
-        min-height: 100px;
+        min-height: 150px;
 
         .img {
             width: 100%;
             height: 100%;
+            background-color: $boxBgColor;
+            min-height: 150px;
             // height: auto;
             display: block;
             // border-radius: px2rem(8);
             // overflow: hidden;
-        }
-
-        .loader-wrapper {
-            height: 100%;
-            width: 100%;
-            display: flex;
-            flex-flow: nowrap column;
-            align-items: center;
-            justify-content: center;
         }
 
         .product-status {

@@ -1,9 +1,12 @@
 <template>
     <div class="collection-list">
+        <div class="total">
+            共 {{ total }} 件藏品
+        </div>
         <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
             <!-- todo: 自定义 finished text 槽 -->
-            <van-list class="grid" v-model:loading="loading" :finished="finished" finished-text="已显示所有订单" v-if="list.length > 0"
-                @load="onLoadMore">
+            <van-list class="grid" v-model:loading="loading" :finished="finished" finished-text="已显示所有藏品"
+                v-if="list.length > 0" @load="onLoadMore">
                 <CollectionItem v-for="item in list" :data="item" />
             </van-list>
             <Empty v-else />
@@ -13,54 +16,73 @@
 <script setup lang='ts'>
 import CollectionItem from './CollectionItem.vue';
 import Empty from '../../../components/Empty.vue';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
+import { onChainStatus } from '../../../utils';
+import { useUserStore } from '../../../stores/user';
+import { fetchProductItems } from '../../../api';
+import { onMountedOrActivated } from '@vant/use';
 
+const user = useUserStore()
 const refreshing = ref(false)
 const finished = ref(false)
 const loading = ref(false)
-const list = ref<BoughtItem[]>([])
+const limit = 10;
+const total = ref(0);
+const page = computed(() => {
+    return Math.floor(list.value.length / limit) + 1;
+})
+const list = ref<ProductItem[]>([])
 
 const onRefresh = async () => {
+    refreshing.value = true;
     loading.value = true
     finished.value = false
-    onLoadMore()
+    await onLoadMore()
 }
 
 const onLoadMore = async () => {
-    setTimeout(() => {
-        if (refreshing.value) {
-            list.value = []
-            refreshing.value = false;
+    if (refreshing.value) {
+        list.value = []
+        refreshing.value = false;
+    }
+    loading.value = true
+    const data = await fetchProductItems(user.data.id, page.value, limit, true)
+    console.log('藏品', data)
+    if (data) {
+        for (const item of data.data) {
+            list.value.push(item)
         }
-        for (let i = 0; i < 12; i++) {
-            // 模拟添加数据
-            list.value.push({
-                id: 0,
-                product: {
-                    id: 1,
-                    name: '测试商品',
-                    preview_img: 'https://img.yzcdn.cn/vant/apple-1.jpg',
-                    type: 'image',
-                    creator: {
-                        name: '创作者',
-                        avatar: 'https://img.yzcdn.cn/vant/apple-1.jpg'
-                    }
-                },
-                chain_address: '12321gd219gf21ge9df192gge29e91ge91',
-                no: 213,
-            })
-        }
-        loading.value = false;
+        total.value = data.total;
+    } else {
+        list.value = [];
+        total.value = 0;
+    }
+    refreshing.value = false;
+    loading.value = false;
+    if (list.value.length >= total.value) {
         finished.value = true;
-        console.log('load more', list.value)
-    }, 500)
+    }
 }
+
+onMountedOrActivated(async () => {
+    refreshing.value = true;
+    await onRefresh()
+})
 </script>
 <style lang="scss" scoped>
 .collection-list {
     width: 100%;
     position: relative;
     margin-top: px2rem(20);
+
+    .total {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: px2rem(12);
+        color: $greyTextColor;
+        margin-bottom: px2rem(30);
+    }
 
     .grid {
         // display: grid;

@@ -2,7 +2,11 @@
     <div class="order-item">
         <div class="product-wrapper" :class="{ withBottomRadius: order_status === 'canceled' }">
             <div class="purchase-info">
-                <van-image class="img" :src="data.product_item?.product?.preview_img" fit="cover" />
+                <van-image class="img" :src="data.product_item?.product?.preview_img" fit="cover">
+                    <template #loading>
+                        <ImageLoader></ImageLoader>
+                    </template>
+                </van-image>
                 <div class="info">
                     <div class="title">
                         {{ data.product_item?.product?.name }}
@@ -30,14 +34,15 @@
                 @click="router.push(`/order/${data.id}`)">
                 详情
             </div>
-            <div class="btn pay-btn" v-if="order_status === 'unpaid'">
+            <div class="btn pay-btn" v-if="order_status === 'unpaid'" @click="onPayBtnClick">
                 支付
             </div>
         </div>
         <div class="notification" :class="{ active: order_status === 'unpaid' }">
             <div class="wrapper">
                 请于 {{
-                        countDownRef.minutes.toString().padStart(2, '0') + ':' + countDownRef.seconds.toString().padStart(2, '0')
+                        countDownRef.minutes.toString().padStart(2, '0') + ':' + countDownRef.seconds.toString().padStart(2,
+                            '0')
                 }} 前完成支付
                 <!-- <van-count-down :time="lastTime" ref="thisCountDown" @change="onChange" :auto-start="true">
                     <template #default="timedata">
@@ -59,6 +64,7 @@ import { onChainStatus, PaymentStatus, px2rem } from "../../../utils";
 import Price from "../../../components/Price.vue";
 import Tag from "../../../components/Tag.vue";
 import dayjs from "dayjs";
+import ImageLoader from "../../../components/ImageLoader.vue";
 import { fetchProductItemDetail } from "../../../api";
 import { CountDownInstance, Dialog, Toast } from 'vant'
 
@@ -132,7 +138,7 @@ const statusText = computed(() => {
         if (data.value.product_item.on_chain_status === onChainStatus.PENDING) {
             return "待上链";
         } else if (data.value.product_item.on_chain_status === onChainStatus.FAILED) {
-            return "正在上链..."
+            return "上链暂停"
         } else if (data.value.product_item.on_chain_status === onChainStatus.PROCESSING) {
             return "正在上链"
         } else if (data.value.product_item.on_chain_status === onChainStatus.SUCCESS) {
@@ -140,16 +146,27 @@ const statusText = computed(() => {
         }
     }
 });
-const lastTime = ref(99999999)
+// const lastTime = ref(99999999)
 
-watchEffect(() => {
-    lastTime.value = dayjs(data.value.create_date).valueOf() + 10 * 60 * 1000 - dayjs().valueOf()
-})
+// watchEffect(() => {
+//     lastTime.value = dayjs(data.value.create_date).valueOf() + 10 * 60 * 1000 - dayjs().valueOf()
+// })
 
 if (!data.value.product_item) {
     const product_item_data = await fetchProductItemDetail(data.value.backup_product_item_id!, true)
     if (product_item_data) {
         data.value.product_item = product_item_data;
+    }
+}
+
+const onPayBtnClick = () => {
+    if (data.value.product_item) {
+        router.push({ path: '/cashier', query: { product_id: data.value.product_item.product_id, order_id: data.value.id } })
+    } else {
+        Toast({
+            type: 'fail',
+            message: 'parameter error'
+        })
     }
 }
 
@@ -226,11 +243,13 @@ const router = useRouter();
                 .status {
                     font-size: px2rem(16);
 
-                    &[data-status="unpaid"], &[data-status="retring"]{
+                    &[data-status="unpaid"],
+                    &[data-status="retring"] {
                         color: $lightRedColor;
                     }
 
-                    &[data-status="pending"], &[data-status="processing"] {
+                    &[data-status="pending"],
+                    &[data-status="processing"] {
                         color: $successColor;
                     }
 

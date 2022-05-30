@@ -4,6 +4,7 @@
             class="icon"
             :name="prop.icon"
             v-show="prop.icon != null"
+            v-if="!loading"
         ></van-icon>
         <div class="text" v-if="!loading">
              {{ prop.text }}

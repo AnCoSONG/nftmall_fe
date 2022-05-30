@@ -7,13 +7,14 @@
         </div>
         <UserInfo></UserInfo>
         <UserMain></UserMain>
-
+        <AdditionalInfo></AdditionalInfo>
     </div>
 </template>
 <script setup lang='ts'>
 import { useRouter } from 'vue-router';
 import UserInfo from './subcomponents/UserInfo.vue';
 import UserMain from './subcomponents/UserMain.vue'
+import AdditionalInfo from './subcomponents/AdditionalInfo.vue';
 const router = useRouter()
 // todo: 用户态!!!
 </script>

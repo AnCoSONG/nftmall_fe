@@ -20,12 +20,13 @@
                 text="手机号"
                 :value="hidePhone(user.data.phone)"
             ></CellItem>
-            <CellItem
+            <!-- todo: 增加邮箱 -->
+            <!-- <CellItem
                 text="邮箱"
                 right-icon="arrow"
                 :value="user.data.email ?? '未绑定'"
                 @click="edit('邮箱')"
-            ></CellItem>
+            ></CellItem> -->
             <CellItem
                 text="UID"
                 :value="`#${user.data.id.toString().padStart(5, '0')}`"
@@ -34,9 +35,10 @@
             <CellItem
                 text="区块链地址"
                 :right-icon="copySvg"
-                v-clipboard:copy="'123182edhe12bdu21g3y12eh281ge20021ge081g'"
+                v-clipboard:copy="user.data.bsn_address"
                 v-clipboard:success="onCopySuccess"
                 v-clipboard:error="onCopyError"
+                v-if="user.data.bsn_address"
             >
                 <template #value>
                     <div class="chain_text">
@@ -45,10 +47,20 @@
                 </template>
             </CellItem>
             <CellItem
+                text="区块链地址"
+                v-else
+            >
+                <template #value>
+                    <div class="chain_text">
+                        暂无区块链钱包地址
+                    </div>
+                </template>
+            </CellItem>
+            <CellItem
                 text="实名认证"
                 right-icon="arrow"
                 value="未完成"
-                v-if="!user.data.real_name"
+                v-if="!user.data.is_verified"
                 @click="router.push('/verification')"
             ></CellItem>
             <!-- 已完成 -->
@@ -73,6 +85,11 @@
         </div>
     </van-dialog>
 </template>
+<script lang="ts">
+export default {
+    name: "account",
+};
+</script>
 <script setup lang="ts">
 import Subpage from "../../components/Subpage.vue";
 import CellItem from "../../components/CellItem.vue";
@@ -80,7 +97,7 @@ import copySvg from "assets/copy.svg";
 import DangerBtn from "../../components/DangerBtn.vue";
 import { useUserStore } from "../../stores/user";
 import { useRouter } from "vue-router";
-import { hidePhone } from "../../utils";
+import { hidePhone, onCopySuccess, onCopyError, notSupport } from "../../utils";
 import { Notify } from "vant";
 import { ref } from "vue";
 import { onMountedOrActivated } from "@vant/use";
@@ -91,20 +108,14 @@ const edit_field = ref("");
 const editing = ref(false);
 const value = ref("");
 
-await user.fetchUserInfo();
+onMountedOrActivated(async () => {
+    await user.fetchUserInfo();
+})
 
 const edit = (field: string) => {
     edit_field.value = field;
     value.value = "";
     editing.value = true;
-};
-
-const onCopyError = () => {
-    Notify({ type: "danger", message: "复制出错" });
-};
-
-const onCopySuccess = () => {
-    Notify({ type: "success", message: "复制成功" });
 };
 
 const onConfirm = (action: string): Promise<boolean> => {
@@ -125,13 +136,6 @@ const onConfirm = (action: string): Promise<boolean> => {
             value.value = "";
             resolve(true);
         }, 500);
-    });
-};
-
-const notSupport = () => {
-    Notify({
-        type: "danger",
-        message: "暂不支持",
     });
 };
 

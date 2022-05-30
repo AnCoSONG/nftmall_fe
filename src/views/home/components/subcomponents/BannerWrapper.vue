@@ -19,9 +19,7 @@
                     lazy-load
                 >
                     <template v-slot:loading>
-                        <div class="loader-wrapper">
-                            <van-loading type="spinner" size="20" />
-                        </div>
+                        <ImageLoader/>
                     </template>
                     <template v-slot:error>加载失败</template>
                 </van-image>
@@ -33,6 +31,7 @@
 import { onMountedOrActivated } from "@vant/use";
 import { ref } from "vue";
 import { fetchBanners } from "../../../../api";
+import ImageLoader from "../../../../components/ImageLoader.vue";
 import { useRouter } from "vue-router";
 const router = useRouter();
 const banners = ref<Banner[]>([]);
@@ -68,15 +67,6 @@ const openNewUrl = (url: string) => {
             height: px2rem(calc(380 / 8 * 3));
             // border-radius: px2rem(8);
             display: block;
-
-            .loader-wrapper {
-                display: flex;
-                width: 100%;
-                height: 100%;
-                justify-content: center;
-                align-items: center;
-                background-color: $boxBgColor;
-            }
         }
     }
 }

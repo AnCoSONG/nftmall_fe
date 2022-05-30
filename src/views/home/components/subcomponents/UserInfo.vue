@@ -1,7 +1,11 @@
 <template>
     <div class="user-info">
         <div class="basic" v-if="user.isLogin">
-            <van-image :src="user.data.avatar" class="avatar" round></van-image>
+            <van-image :src="user.data.avatar" class="avatar" round>
+                <template #loading>
+                    <ImageLoader/>
+                </template>
+            </van-image>
             <div class="name-credit">
                 <div class="name">{{ user.data.username }}</div>
                 <div class="credit">积分: {{ user.data.credit }}</div>
@@ -13,25 +17,14 @@
             <div class="right-arrow"></div>
         </div>
         <div class="basic" v-else @click="routeToLogin">请登录</div>
-        <div
-            class="address"
-            v-if="user.isLogin && user.data.bsn_address != null"
-        >
+        <div class="address" v-if="user.isLogin && user.data.bsn_address != null">
             <div class="text">区块链地址: {{ user.data.bsn_address }}</div>
-            <div
-                class="copy"
-                v-clipboard:copy="user.data.bsn_address"
-                v-clipboard:success="onCopySuccess"
-                v-clipboard:error="onCopyError"
-            >
+            <div class="copy" v-clipboard:copy="user.data.bsn_address" v-clipboard:success="onCopySuccess"
+                v-clipboard:error="onCopyError">
                 <van-icon :name="copySvg" />
             </div>
         </div>
-        <div
-            class="not-on-chain"
-            v-else-if="user.isLogin && user.data.bsn_address == null"
-            @click="onNotOnChain"
-        >
+        <div class="not-on-chain" v-else-if="user.isLogin && user.data.bsn_address == null" @click="onNotOnChain">
             您的账户暂未上链
         </div>
         <!-- <div v-else-if="user.data.bsn_address == null">
@@ -43,25 +36,13 @@
 <script setup lang="ts">
 import { useUserStore } from "../../../../stores/user";
 import { toClipboard } from "@soerenmartius/vue3-clipboard";
-import { Dialog, Notify } from "vant";
+import { Dialog } from "vant";
+import { onCopySuccess, onCopyError } from "../../../../utils";
 import copySvg from "../../../../assets/copy.svg";
 import { useRouter } from "vue-router";
+import ImageLoader from "../../../../components/ImageLoader.vue";
 const router = useRouter();
 const user = useUserStore();
-
-const onCopySuccess = () => {
-    Notify({
-        type: "success",
-        message: "复制成功",
-    });
-};
-
-const onCopyError = () => {
-    Notify({
-        type: "danger",
-        message: "复制失败",
-    });
-};
 
 const routeToLogin = () => {
     router.push("/login");

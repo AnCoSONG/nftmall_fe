@@ -4,7 +4,7 @@
             <van-config-provider :theme-vars="themeStore.componentVars">
                 <RouterView v-slot="{ Component }">
                     <template v-if="Component">
-                        <KeepAlive exclude="cashier,payment_waiting,product,verification,doc,order">
+                        <KeepAlive exclude="cashier,payment_waiting,product,verification,order,account,order-detail,collection-detail">
                             <Suspense>
                                 <component :is="Component"></component>
                                 <template #fallback>

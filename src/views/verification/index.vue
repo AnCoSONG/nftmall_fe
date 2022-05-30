@@ -2,7 +2,7 @@
     <Subpage title="实名认证">
         <div class="verification">
             <div class="tips">
-                您的信息仅用作实名认证，我们承诺保护您的隐私安全。
+                为了购买数字藏品，您需要先完成实名认证。您的信息仅用作实名认证，我们承诺保护您的隐私安全。
             </div>
             <div class="input-wrapper">
                 <div class="label">真实姓名</div>
@@ -16,7 +16,7 @@
                     <input class="realinput" type="text" v-model="realid" />
                 </div>
             </div>
-            <DangerBtn icon="lock" text="验证身份" @click="verify"></DangerBtn>
+            <DangerBtn icon="lock" text="验证身份" @click="verify" :loading="isLoading"></DangerBtn>
         </div>
     </Subpage>
 </template>
@@ -30,21 +30,34 @@ import { ref } from "vue";
 import { realnameTest, realidTest } from "../../utils";
 import Subpage from "../../components/Subpage.vue";
 import DangerBtn from "../../components/DangerBtn.vue";
-import { Notify } from "vant";
-import { idCheck } from "../../api/index";
+import { Notify, Toast } from "vant";
+import { idCheck, fetchIsIdCheck } from "../../api/index";
 import { useUserStore } from "../../stores/user";
-import router from "../../routers";
+import { useRouter } from "vue-router";
+const router = useRouter()
 const realname = ref("");
 const realid = ref("");
 const user = useUserStore();
+const isLoading = ref(false)
+
+const isChecked = await fetchIsIdCheck();
+if (isChecked) {
+    Toast({
+        type: 'success',
+        message: '已通过实名认证'
+    })
+    router.push('/user')
+}
 
 const verify = async () => {
+    isLoading.value = true;
     // 正则检查realname和realid
     if (!realnameTest(realname.value)) {
         Notify({
             type: "danger",
             message: "请输入正确的姓名",
         });
+        isLoading.value = false;
         return;
     }
     if (!realidTest(realid.value)) {
@@ -52,12 +65,12 @@ const verify = async () => {
             type: "danger",
             message: "请输入正确的身份证号",
         });
+        isLoading.value = false;
         return;
     }
     // 验证：
     // 如果通过验证，自动返回，没通过的话就警告用户
     const res = await idCheck(
-        user.data.id as number,
         realname.value,
         realid.value
     );
@@ -68,10 +81,11 @@ const verify = async () => {
         });
         user.data.real_name = realname.value;
         user.data.real_id = realid.value;
-        router.replace('/user');
+        router.back()
     } else {
         // 已处理
     }
+    isLoading.value = false;
 };
 </script>
 <style lang="scss" scoped>
@@ -87,10 +101,12 @@ const verify = async () => {
         font-size: px2rem(16);
         line-height: px2rem(20);
         margin: px2rem(12) 0;
+        text-indent: 2em;
     }
 
     .input-wrapper {
         margin-top: px2rem(40);
+
         .label {
             font-size: px2rem(20);
             margin-bottom: px2rem(12);

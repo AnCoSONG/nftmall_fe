@@ -1,5 +1,10 @@
 import { useRouter } from "vue-router";
 import { cos, getObjectUrlPromisify } from "../plugins/cos-sdk";
+import AES from "crypto-js/aes";
+import ECB from "crypto-js/mode-ecb";
+import Pkcs7 from "crypto-js/pad-pkcs7";
+import CryptoJS from "crypto-js";
+import { Toast } from "vant";
 
 const designWidth = 414;
 export const px2rem = (px: number, only_digit = false) => {
@@ -48,7 +53,7 @@ export const srcTransform = async (src: string) => {
             return url;
         } else {
             // todo: 通用图像不存在时的占位符
-            return 'https://fakeimg.pl/400x200/?retina=1&text=?&font=noto'
+            return "https://fakeimg.pl/400x200/?retina=1&text=?&font=noto";
         }
     }
 };
@@ -78,3 +83,36 @@ export enum onChainStatus {
     FAILED = "failed",
     PENDING = "pending",
 }
+
+export const encrypt = (data: string) => {
+    // console.log(AES, Utf8, Pkcs7)
+    return AES.encrypt(data, "8992c282-ddff-11ec-9d64-0242ac120002", {
+        mode: ECB,
+        padding: Pkcs7,
+    }).toString();
+};
+
+
+export const onCopySuccess = () => {
+    Toast({
+        type: "success",
+        message: "复制成功",
+    });
+};
+
+export const onCopyError = () => {
+    Toast({
+        type: "fail",
+        message: "复制失败",
+    });
+};
+
+
+export const TIME_FORMAT = 'YYYY MM.DD HH:mm:ss'
+
+export const notSupport = () => {
+    Toast({
+        type: "fail",
+        message: "目前暂不支持，后续会尽快更新完善",
+    });
+};

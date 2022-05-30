@@ -14,12 +14,13 @@
 import { computed, onDeactivated, ref, toRef } from 'vue';
 import OrderItem from './OrderItem.vue'
 import Empty from '../../../components/Empty.vue'
+import { useUserStore } from '../../../stores/user';
 import { onMountedOrActivated } from '@vant/use';
 import { fetchOrders } from '../../../api';
 type PropType = {
     query: 'all' | "paid" | "unpaid" | "canceled" | "pending" | "failed" | "processing" | "success"
 }
-
+const user = useUserStore()
 const props = defineProps<PropType>()
 const query = toRef(props, 'query')
 const refreshing = ref(false); // 表示上拉刷新中
@@ -61,9 +62,8 @@ const onLoadMore = async () => {
         finished.value = true;
     }
 }
-onMountedOrActivated(() => {
-    refreshing.value = true;
-    onRefresh()
+onMountedOrActivated(async () => {
+    await onRefresh()
 })
 
 onDeactivated(() => {

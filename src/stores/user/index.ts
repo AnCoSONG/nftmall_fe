@@ -4,9 +4,7 @@ import * as api from "../../api";
 export const useUserStore = defineStore("user", {
     state: () => {
         return {
-            data: {
-                bsn_address: "fa4390sdadwq21312asdqwqweq123sab12e1231231",
-            } as User,
+            data: {} as User,
             isLogin: false,
             firstBack: true,
             firstInHome: true,
@@ -55,7 +53,7 @@ export const useUserStore = defineStore("user", {
 
         /**
          * 获取用户信息
-         * @returns {Promise<boolean>} true表示登出成功，false表示登出失败
+         * @returns {Promise<boolean>} true表示已登录，false表示已失败
          */
         async fetchUserInfo(): Promise<boolean> {
             const data = await api.fetchUserInfo();

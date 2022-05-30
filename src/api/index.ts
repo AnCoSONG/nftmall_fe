@@ -1,5 +1,6 @@
 import { Notify, Toast } from "vant";
 import { request, Response } from "../plugins/axios";
+import { encrypt } from '../utils'
 
 /**
  * 获取首页的公告
@@ -48,10 +49,21 @@ export const fetchBanners = async () => {
  * 获取热门商品
  * @returns 商品数组
  */
-export const fetchRecommandProducts = async (with_relation: boolean) => {
+export const fetchHotProducts = async (
+    with_relation: boolean,
+    page: number,
+    limit: number
+) => {
     const res = await request
-        .get<Response<Product[]>>("/products", {
-            params: { with_relation },
+        .get<
+            Response<{
+                data: Product[];
+                total: number;
+                page: number;
+                limit: number;
+            }>
+        >("/products/list", {
+            params: { with_relation, page, limit },
         })
         .catch((err) => {
             console.error(err);
@@ -60,11 +72,10 @@ export const fetchRecommandProducts = async (with_relation: boolean) => {
                 type: "danger",
             });
         });
-    console.log("fetch rec", res);
     if (res) {
         return res.data.data;
     } else {
-        return [];
+        return { data: [], total: 0, page: 1, limit: 10 };
     }
 };
 
@@ -97,7 +108,6 @@ export const fetchProducts = async (
                 type: "danger",
             });
         });
-    console.log("fetch pro", res);
     if (res) {
         return { total: res.data.data.total, data: res.data.data.data };
     } else {
@@ -231,14 +241,14 @@ export const fetchUserInfo = async () => {
     }
 };
 
-export const idCheck = async (id: number, name: string, id_card: string) => {
+export const idCheck = async (name: string, id_card: string) => {
+    console.log(encrypt(name))
     const res = await request
         .post<Response<{ code: number; message: string }>>(
             "/collectors/idcheck",
             {
-                id,
-                name,
-                id_card,
+                name: encrypt(name),
+                id_card: encrypt(id_card),
             }
         )
         .catch((err) => {
@@ -263,6 +273,22 @@ export const idCheck = async (id: number, name: string, id_card: string) => {
         return false;
     }
 };
+
+export const fetchIsIdCheck = async () => {
+    const res = await request.get<Response<boolean>>(`/collectors/isIdCheck`).catch(err => {
+        Toast({
+            type: 'fail',
+            message: '获取实名认证信息'
+        })
+        return null
+    })
+    if (res) {
+        return res.data.data;
+    } else {
+        return false;
+    }
+
+}
 
 export const get_stock_count = async (
     product_id: string,
@@ -307,7 +333,7 @@ export const fetchIsLucky = async (
     product_id: string
 ) => {
     const res = await request
-        .post(`/collectors/islucky`, {
+        .post<Response<number>>(`/collectors/islucky`, {
             collector_id,
             product_id,
         })
@@ -316,18 +342,25 @@ export const fetchIsLucky = async (
             return null;
         });
     if (res) {
-        return res.data.data === 1;
+        // 0 不存在，1 存在， -1 还未生成
+        return res.data.data;
     } else {
-        return false;
+        // -2 出错
+        return -2;
     }
 };
 
-export const fetchIsPaid = async (collector_id: number, product_id: string) => {
+export const fetchUnpaid = async (collector_id: number, product_id: string) => {
     const res = await request
-        .post(`/order/ispaid`, {
-            collector_id,
-            product_id,
-        })
+        .get<Response<{ code: number; order_id?: string }>>(
+            `/orders/is_unpaid`,
+            {
+                params: {
+                    collector_id,
+                    product_id,
+                },
+            }
+        )
         .catch((err) => {
             console.error(err);
             return null;
@@ -335,17 +368,13 @@ export const fetchIsPaid = async (collector_id: number, product_id: string) => {
     if (res) {
         return res.data.data;
     } else {
-        return false;
+        return { code: 2 };
     }
 };
 
-export const participateDraw = async (
-    collector_id: number,
-    product_id: string
-) => {
+export const participateDraw = async (product_id: string) => {
     const res = await request
         .post<Response<{ code: number; message: string }>>("/affair/draw", {
-            collector_id,
             product_id,
         })
         .catch((err) => {
@@ -359,12 +388,11 @@ export const participateDraw = async (
     }
 };
 
-export const seckill = async (collector_id: number, product_id: string) => {
+export const seckill = async (product_id: string) => {
     const res = await request
         .post<Response<{ code: number; message: string; order_id?: string }>>(
             `/affair/seckill`,
             {
-                collector_id,
                 product_id,
             }
         )
@@ -440,19 +468,85 @@ export const fetchOrders = async (
     }
 };
 
+export const fetchProductItems = async (
+    collector_id: number,
+    page: number,
+    limit: number,
+    with_relation = false
+) => {
+    const res = await request
+        .get<
+            Response<{
+                data: ProductItem[];
+                total: number;
+                page: number;
+                offset: number;
+            }>
+        >(`/product-items/list/${collector_id}`, {
+            params: {
+                page,
+                limit,
+                with_relation,
+            },
+        })
+        .catch((err) => {
+            console.error(err);
+            Toast({
+                type: "fail",
+                message: err,
+            });
+            return null;
+        });
+    if (res) {
+        return res.data.data;
+    } else {
+        return null;
+    }
+};
+
 export const fetchProductItemDetail = async (
     product_item_id: string,
     with_relation = true
 ) => {
-    const res = await request.get<Response<ProductItem>>(`/product-items/${product_item_id}`, {
-        params: { with_relation },
-    }).catch(err => {
-        Toast({
-            type: 'fail',
-            message: err.response.data.message
+    const res = await request
+        .get<Response<ProductItem>>(`/product-items/${product_item_id}`, {
+            params: { with_relation },
         })
+        .catch((err) => {
+            Toast({
+                type: "fail",
+                message: err.response.data.message,
+            });
+            return null;
+        });
+    if (res) {
+        return res.data.data;
+    } else {
         return null;
-    })
+    }
+};
+
+export const fetchProductBoughtCount = async (
+    collector_id: number,
+    product_id: string
+) => {
+    const res = await request
+        .get<Response<number>>(
+            `/product-items/get_collection_count/${collector_id}`,
+            {
+                params: {
+                    product_id,
+                },
+            }
+        )
+        .catch((err) => {
+            console.error(err);
+            Toast({
+                type: "fail",
+                message: err.response.data.message,
+            });
+            return null;
+        });
     if (res) {
         return res.data.data;
     } else {

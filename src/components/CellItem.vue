@@ -1,14 +1,14 @@
 <template>
-<!-- todo: optim this implementation -->
+    <!-- todo: optim this implementation -->
     <div class="cell-btn">
         <div class="icon" v-show="prop.icon != null">
             <van-icon :name="prop.icon"></van-icon>
         </div>
-        <div class="text">{{prop.text}}</div>
+        <div class="text">{{ prop.text }}</div>
         <!-- todo：增强右侧，可以显示其他图案 -->
         <div class="right">
             <slot name="value"></slot>
-            <div class="value" v-show="prop.value !== null">{{prop.value}}</div>
+            <div class="value" v-show="prop.value !== null">{{ prop.value }}</div>
             <van-icon class="right-icon" :name="prop.rightIcon" v-show="prop.rightIcon != null"></van-icon>
         </div>
     </div>
@@ -18,7 +18,7 @@ type Prop = {
     text: string,
     icon?: string,
     rightIcon?: string,
-    value?: string,
+    value?: string | number,
 }
 const prop = defineProps<Prop>()
 </script>
@@ -29,7 +29,7 @@ const prop = defineProps<Prop>()
     padding: px2rem(16) px2rem(16);
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: space-between;
     flex-flow: nowrap row;
     color: $normalTextColor;
     box-sizing: border-box;
@@ -51,18 +51,27 @@ const prop = defineProps<Prop>()
     }
 
     .text {
-        flex: 1;
+        // flex: 1;
+        max-width: px2rem(150);
         font-size: px2rem(18);
     }
 
     .right {
-        max-width: px2rem(160);
+        flex: 1;
+        max-width: px2rem(200);
         font-size: px2rem(16);
         color: $greyTextColor;
         display: flex;
-        flex-flow: nowrap;
+        flex-flow: nowrap row;
         align-items: center;
         justify-content: flex-end;
+
+        .value {
+            max-width: px2rem(200);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
         .right-icon {
             margin-left: px2rem(12);

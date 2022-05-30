@@ -85,7 +85,7 @@ import { useUserStore } from "../../stores/user";
 import { onMountedOrActivated, useCountDown } from "@vant/use";
 import { useRouter } from "vue-router";
 import { useAxios } from "../../plugins/axios";
-import { Notify } from "vant";
+import { Notify, Toast } from "vant";
 import { useRoute } from "vue-router";
 const props = defineProps({
     backTo: {
@@ -194,7 +194,14 @@ const login = async () => {
         });
         return;
     }
+    const toast = Toast.loading({
+        message: '请稍等...',
+        forbidClick: true,
+        loadingType: 'circular',
+        duration: 0
+    })
     const res = await user.login(phone.value, verifiedCode.value);
+    toast.clear();
     if (res) {
         if (!user.firstBack) { 
             // 如果用户都没有进入首页就登录成功
