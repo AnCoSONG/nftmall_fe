@@ -27,7 +27,7 @@ import EnvironmentInspector from './components/EnvironmentInspector.vue';
 
 <style lang="scss">
 // global style definition
-.van-step__circle-container {
+.timeline .van-step__circle-container {
   background-color: #272727 !important;
 }
 

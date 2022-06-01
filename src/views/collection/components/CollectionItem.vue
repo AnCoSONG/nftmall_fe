@@ -97,6 +97,9 @@ const noText = computed(() => {
         }
 
         .product-name {
+            padding: 0 px2rem(8);
+            text-align: center;
+            line-height: 1.15;
             font-size: px2rem(18);
             font-weight: bold;
             color: $glodTextColor;

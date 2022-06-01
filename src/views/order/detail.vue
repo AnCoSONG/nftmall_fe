@@ -27,8 +27,9 @@
                     </div>
                     <div class="order-info-wrapper">
                         <div class="order-info">
-                            <KeyValueLine :key-text="'订单交易号'" :value="orderDetail.trade_no" :copy="true" />
-                            <KeyValueLine :key-text="'订单状态'" :value="orderStatus ?? '...'" :copy="false" />
+                            <KeyValueLine key-text="订单ID" :value="orderDetail.id" :copy="true" />
+                            <KeyValueLine key-text="订单交易号" :value="orderDetail.trade_no" :copy="true" />
+                            <KeyValueLine key-text="订单状态" :value="orderStatus ?? '...'" :copy="false" />
                             <KeyValueLine key-text="订单创建时间" :value="orderCreateTimeFormat ?? '...'" :copy="false" />
                             <KeyValueLine key-text="订单支付时间" :value="orderPayTimeFormat ?? '...'" :copy="false" />
                             <KeyValueLine key-text="藏品上链时间" :value="productOnChainTimeFormat ?? '...'" :copy="false" />
@@ -111,8 +112,8 @@ const orderPayTimeFormat = computed(() => {
 })
 
 const productOnChainTimeFormat = computed(() => {
-    if (orderDetail.value) {
-        return dayjs(orderDetail.value.product_item?.on_chain_timestamp).format(TIME_FORMAT)
+    if (orderDetail.value && orderDetail.value.product_item && orderDetail.value.product_item.on_chain_timestamp) {
+        return dayjs(orderDetail.value.product_item.on_chain_timestamp).format(TIME_FORMAT)
     }
 })
 

@@ -1,6 +1,6 @@
 import { Notify, Toast } from "vant";
 import { request, Response } from "../plugins/axios";
-import { encrypt } from '../utils'
+import { encrypt } from "../utils";
 
 /**
  * 获取首页的公告
@@ -242,7 +242,7 @@ export const fetchUserInfo = async () => {
 };
 
 export const idCheck = async (name: string, id_card: string) => {
-    console.log(encrypt(name))
+    console.log(encrypt(name));
     const res = await request
         .post<Response<{ code: number; message: string }>>(
             "/collectors/idcheck",
@@ -275,20 +275,21 @@ export const idCheck = async (name: string, id_card: string) => {
 };
 
 export const fetchIsIdCheck = async () => {
-    const res = await request.get<Response<boolean>>(`/collectors/isIdCheck`).catch(err => {
-        Toast({
-            type: 'fail',
-            message: '获取实名认证信息'
-        })
-        return null
-    })
+    const res = await request
+        .get<Response<boolean>>(`/collectors/isIdCheck`)
+        .catch((err) => {
+            Toast({
+                type: "fail",
+                message: "获取实名认证信息",
+            });
+            return null;
+        });
     if (res) {
         return res.data.data;
     } else {
         return false;
     }
-
-}
+};
 
 export const get_stock_count = async (
     product_id: string,
@@ -539,6 +540,48 @@ export const fetchProductBoughtCount = async (
                 },
             }
         )
+        .catch((err) => {
+            console.error(err);
+            Toast({
+                type: "fail",
+                message: err.response.data.message,
+            });
+            return null;
+        });
+    if (res) {
+        return res.data.data;
+    } else {
+        return null;
+    }
+};
+
+export const createChainAccount = async () => {
+    const res = await request
+        .get<Response<{ code: number, message: string }>>(`/collectors/applyBsnAccount`)
+        .catch((err) => {
+            console.error(err);
+            Toast({
+                type: "fail",
+                message: err.response.data.message,
+            });
+            return null;
+        });
+    if (res) {
+        return res.data.data;
+    } else {
+        return null;
+    }
+};
+
+export const cancelOrder = async (order_id: string) => {
+    console.log('cancel order')
+    const res = await request
+        .post<
+            Response<{
+                returnStockRes: Record<string, unknown>;
+                cancelOrderRes: Record<string, unknown>;
+            }>
+        >("/affair/orderCancel", null, { params: { order_id } })
         .catch((err) => {
             console.error(err);
             Toast({

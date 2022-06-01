@@ -37,6 +37,9 @@
             <div class="btn pay-btn" v-if="order_status === 'unpaid'" @click="onPayBtnClick">
                 支付
             </div>
+            <div class="btn cancel-btn" v-if="order_status === 'unpaid'" @click="onCancelBtnClick">
+                取消
+            </div>
         </div>
         <div class="notification" :class="{ active: order_status === 'unpaid' }">
             <div class="wrapper">
@@ -65,13 +68,14 @@ import Price from "../../../components/Price.vue";
 import Tag from "../../../components/Tag.vue";
 import dayjs from "dayjs";
 import ImageLoader from "../../../components/ImageLoader.vue";
-import { fetchProductItemDetail } from "../../../api";
+import { cancelOrder, fetchProductItemDetail } from "../../../api";
 import { CountDownInstance, Dialog, Toast } from 'vant'
 
 type PropType = {
     data: Order;
 };
 const props = defineProps<PropType>();
+const emit = defineEmits(['needRefresh'])
 const data = toRef(props, "data");
 const beginFlag = ref(false);
 const countDown = useCountDown({
@@ -165,7 +169,38 @@ const onPayBtnClick = () => {
     } else {
         Toast({
             type: 'fail',
-            message: 'parameter error'
+            message: '参数错误'
+        })
+    }
+}
+
+const onCancelBtnClick = () => {
+    if (data.value.product_item) {
+        Dialog.confirm({
+            title: '确定取消？',
+            message: '取消后您可以再前往藏品页面购买,但也可能会因为售罄无法购买。',
+            cancelButtonText: '再想想'
+        }).then(async () => {
+            // 请求取消接口
+            const res = await cancelOrder(data.value.id)
+            if (res) {
+                Toast({
+                    type: 'success',
+                    message: '取消成功',
+                    duration: 750
+                })
+                // 
+                setTimeout(() => {
+                    emit('needRefresh')
+                }, 500)
+            }
+        }).catch(() => {
+            // 什么都不发生
+        })
+    } else {
+        Toast({
+            type: 'fail',
+            message: '参数错误'
         })
     }
 }
@@ -315,6 +350,7 @@ const router = useRouter();
             padding: px2rem(8) px2rem(16);
             border-radius: px2rem(4);
             box-shadow: 0 px2rem(4) px2rem(4) rgba(0, 0, 0, 0.25);
+            margin-left: px2rem(12);
 
             &.pay-btn {
                 background-color: $lightRedColor;

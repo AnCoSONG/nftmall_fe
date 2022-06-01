@@ -45,6 +45,7 @@ declare type Product = {
     sale_timestamp: string;
     draw_timestamp: string;
     draw_end_timestamp: string;
+    create_date: string;
 };
 
 declare type ProductItem = {

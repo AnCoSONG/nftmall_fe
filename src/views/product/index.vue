@@ -8,12 +8,36 @@
                 </div>
                 <div class="timeline box" @click="onStepClick">
                     <!-- todo: click 显示时间细则 -->
-                    <van-steps active-color="#E5E798" :active="currentActive" inactive-color="#888">
-                        <van-step>藏品上架</van-step>
-                        <van-step>抽签开放</van-step>
-                        <van-step>抽签结束</van-step>
-                        <van-step>开放抢购</van-step>
-                    </van-steps>
+                    <van-config-provider :theme-vars="theme.product_timeline">
+                        <van-steps active-color="#E5E798" :active="currentActive" inactive-color="#888">
+                            <van-step>藏品上架</van-step>
+                            <van-step>抽签开放</van-step>
+                            <van-step>抽签结束</van-step>
+                            <van-step>开放抢购</van-step>
+                        </van-steps>
+                    </van-config-provider>
+                    <van-popup round closeable teleport="#app" v-model:show="popup_show" position="bottom"
+                        :style="{ height: 'auto', padding: `${px2rem(40)} ${px2rem(10)}`, paddingBottom: `${px2rem(20)}`,boxSizing: 'border-box' }"
+                        safe-area-inset-bottom>
+                        <van-steps :active="currentActive" direction="vertical" active-icon="success">
+                            <van-step style="background-color:white!important;">
+                                <div>藏品上架</div>
+                                <div>{{ productCreateTimeFormat }}</div>
+                            </van-step>
+                            <van-step>
+                                <div>抽签开放</div>
+                                <div>{{ drawTimeFormat }}</div>
+                            </van-step>
+                            <van-step>
+                                <div>抽签结束</div>
+                                <div>{{ drawEndTimeFormat }}</div>
+                            </van-step>
+                            <van-step>
+                                <div>开放抢购</div>
+                                <div>{{ saleTimeFormat }}</div>
+                            </van-step>
+                        </van-steps>
+                    </van-popup>
                 </div>
                 <div class="product-price-limit box">
                     <Price :small-size="(px2rem(20) as string)" :integral-size="(px2rem(32) as string)" money-type="¥"
@@ -120,7 +144,7 @@ import Subpage from "../../components/Subpage.vue";
 import Price from "../../components/Price.vue";
 import Tag from "../../components/Tag.vue";
 import TypeIcon from "../../components/TypeIcon.vue";
-import { px2rem } from "../../utils";
+import { px2rem, TIME_FORMAT } from "../../utils";
 import { useRoute, useRouter } from "vue-router";
 import { computed, ref, toRef, watch, watchEffect } from "vue";
 import { onMountedOrActivated, useCountDown } from "@vant/use";
@@ -139,6 +163,8 @@ import {
 import { Dialog, Notify, Toast } from "vant";
 import dayjs from "dayjs";
 import { useUserStore } from "../../stores/user";
+import { useThemeStore } from "../../stores/theme";
+const theme = useThemeStore()
 
 // 拿到id获取藏品类别信息
 const props = defineProps({
@@ -152,14 +178,40 @@ const id = toRef(props, "id");
 const product = ref<Product>();
 const route = useRoute();
 const router = useRouter();
+const popup_show = ref(false)
 
 const onStepClick = () => {
     // todo: 使用Popup实现展示效果
-    Toast({
-        type: "text",
-        message: "待实现：展示具体时间",
-    });
+    // Toast({
+    //     type: "text",
+    //     message: "待实现：展示具体时间",
+    // });
+    popup_show.value = true
 };
+
+const productCreateTimeFormat = computed(() => {
+    if (product.value) {
+        return dayjs(product.value.create_date).format(TIME_FORMAT);
+    }
+})
+
+const drawTimeFormat = computed(() => {
+    if (product.value) {
+        return dayjs(product.value.draw_timestamp).format(TIME_FORMAT);
+    }
+})
+
+const drawEndTimeFormat = computed(() => {
+    if (product.value) {
+        return dayjs(product.value.draw_end_timestamp).format(TIME_FORMAT);
+    }
+})
+
+const saleTimeFormat = computed(() => {
+    if (product.value) {
+        return dayjs(product.value.sale_timestamp).format(TIME_FORMAT);
+    }
+})
 
 // 购物个数
 const count = ref(1);
@@ -403,7 +455,7 @@ watchEffect(() => {
                         } else if (unpaid.value!.code === 0) {
                             if (bounght_count.value >= product.value.limit) {
                                 btnClickable.value = false;
-                                statusText.value = "已达到限购上限";
+                                statusText.value = "已达限购上限";
                             } else {
                                 btnClickable.value = true;
                                 statusText.value = "购买";

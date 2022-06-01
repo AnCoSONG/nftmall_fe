@@ -15,8 +15,14 @@ import { useRouter } from 'vue-router';
 import UserInfo from './subcomponents/UserInfo.vue';
 import UserMain from './subcomponents/UserMain.vue'
 import AdditionalInfo from './subcomponents/AdditionalInfo.vue';
+import { onMountedOrActivated } from '@vant/use'
+import { useUserStore } from '../../../stores/user';
 const router = useRouter()
+const user = useUserStore()
 // todo: 用户态!!!
+onMountedOrActivated(async () => {
+    await user.fetchUserInfo();
+})
 </script>
 <style lang="scss" scoped>
 .user {

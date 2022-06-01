@@ -34,12 +34,12 @@ const items = ref([
         icon: "shop",
         text: "首页",
     },
-    {
-        id: v4(),
-        path: "/exhibition",
-        icon: "gem",
-        text: "个人展馆",
-    },
+    // {
+    //     id: v4(),
+    //     path: "/exhibition",
+    //     icon: "gem",
+    //     text: "个人展馆",
+    // },
     {
         id: v4(),
         path: "/user",

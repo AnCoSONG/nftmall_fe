@@ -23,9 +23,6 @@ export const useThemeStore = defineStore("theme", {
                 skeletonRowBackgroundColor: '#343434',
                 radioDisabledBackgroundColor: '#666',
                 radioDisabledIconColor: '#666',
-                stepsBackgroundColor: '#272727',
-                stepLineColor: '#444',
-                stepFinishTextColor: '#ccc',
                 imagePlaceholderBackgroundColor: '#272727',
                 // stepCircleColor: '#272727',
             },
@@ -33,6 +30,11 @@ export const useThemeStore = defineStore("theme", {
                 noticeBarBackground: "#343434",
                 noticeBarText: "",
             },
+            product_timeline: {
+                stepsBackgroundColor: '#272727',
+                stepLineColor: '#444',
+                stepFinishTextColor: '#ccc',
+            }
         };
     },
 });

@@ -134,6 +134,7 @@ const pay = async () => {
 <style lang="scss" scoped>
 .cashier {
     width: 100%;
+    margin-top: px2rem(10);
     position: relative;
 
     .order {

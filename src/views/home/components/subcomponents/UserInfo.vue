@@ -24,8 +24,8 @@
                 <van-icon :name="copySvg" />
             </div>
         </div>
-        <div class="not-on-chain" v-else-if="user.isLogin && user.data.bsn_address == null" @click="onNotOnChain">
-            您的账户暂未上链
+        <div class="not-on-chain" v-else-if="user.isLogin && user.data.bsn_address == null" @click="onCreateChainAccount">
+            申请区块链账户
         </div>
         <!-- <div v-else-if="user.data.bsn_address == null">
             即将上链
@@ -36,11 +36,12 @@
 <script setup lang="ts">
 import { useUserStore } from "../../../../stores/user";
 import { toClipboard } from "@soerenmartius/vue3-clipboard";
-import { Dialog } from "vant";
+import { Dialog, Toast } from "vant";
 import { onCopySuccess, onCopyError } from "../../../../utils";
 import copySvg from "../../../../assets/copy.svg";
 import { useRouter } from "vue-router";
 import ImageLoader from "../../../../components/ImageLoader.vue";
+import { createChainAccount } from "../../../../api";
 const router = useRouter();
 const user = useUserStore();
 
@@ -48,12 +49,24 @@ const routeToLogin = () => {
     router.push("/login");
 };
 
-const onNotOnChain = () => {
-    Dialog.alert({
-        title: "未激活",
-        message: "您的账户目前未上链!\n您可以通过<strong>购买藏品</strong>来创建链上账户",
-        allowHtml: true,
-    });
+const onCreateChainAccount = async () => {
+    // todo: 未测试，待测试
+    const res = await createChainAccount()
+    if (res) {
+        if (res.code === 0) {
+            Toast({
+                type: 'success',
+                message: res.message
+            })
+            // 刷新页面
+            router.go(0);
+        } else if (res.code === 1) {
+            Toast({
+                type: 'text',
+                message: res.message
+            })
+        }
+    }
 };
 </script>
 <style lang="scss" scoped>
