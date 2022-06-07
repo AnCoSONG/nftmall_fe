@@ -1,6 +1,6 @@
 <template>
     <div class="subpage-layout">
-        <div class="subpage-header">
+        <div class="subpage-header" :style="{backdropFilter: `blur(${blurPx}px)`}">
             <van-icon name="arrow-left" class="icon" @click="routeBack" />
             <div class="title" :style="{ visibility: props.title === '' ? 'hidden' : 'visible' }">{{ props.title }}
             </div>
@@ -13,7 +13,7 @@
 </template>
 <script setup lang='ts'>
 import { onMountedOrActivated } from '@vant/use';
-import { ref } from 'vue';
+import { onDeactivated, onUnmounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 const router = useRouter()
 type PropType = {
@@ -21,6 +21,7 @@ type PropType = {
     shareable?: boolean,
     backTo?: string,
 }
+const blurPx = ref(0)
 const props = defineProps<PropType>()
 
 const routeBack = () => {
@@ -30,6 +31,28 @@ const routeBack = () => {
         router.back()
     }
 }
+
+// https://codeantenna.com/a/XHbHc3eCZZ
+const handleScroll = () => {
+    const scrollTop = document.getElementById('app')?.scrollTop ?? 0;
+    console.log(scrollTop)
+    blurPx.value = scrollTop * 0.05;
+    if (blurPx.value >= 20) {
+        blurPx.value = 20;
+    }
+}
+
+onMountedOrActivated(() => {
+    window.addEventListener('scroll', handleScroll, true);
+})
+
+onDeactivated(() => {
+    window.removeEventListener('scroll', handleScroll, true);
+})
+
+onUnmounted(() => {
+    window.removeEventListener('scroll', handleScroll, true);
+})
 </script>
 <style lang="scss" scoped>
 .subpage-layout {
@@ -51,6 +74,7 @@ const routeBack = () => {
         position: sticky;
         top: 0;
         backdrop-filter: blur(20px);
+        background: transparent;
         
         .title {
             font-size: px2rem(18);

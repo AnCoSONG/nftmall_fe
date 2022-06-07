@@ -4,7 +4,8 @@
             <van-config-provider :theme-vars="themeStore.componentVars">
                 <RouterView v-slot="{ Component }">
                     <template v-if="Component">
-                        <KeepAlive exclude="cashier,payment_waiting,product,verification,order,account,order-detail,collection-detail">
+                        <KeepAlive
+                            exclude="cashier,payment_waiting,product,verification,order,account,order-detail,collection-detail">
                             <Suspense>
                                 <component :is="Component"></component>
                                 <template #fallback>
@@ -40,6 +41,9 @@ import { useAppStore } from "../stores/app";
 import { useUserStore } from "../stores/user";
 import { onMountedOrActivated } from "@vant/use";
 import { Notify, Toast } from "vant";
+import { getQuerys } from "../utils";
+import axios from "axios";
+import { fetchOpenid } from "../api";
 
 // theme begin
 const themeStore = useThemeStore();
@@ -77,6 +81,8 @@ window.addEventListener("resize", () => {
 // onload check
 const isMobile = ref(/Mobi|Android|iPhone/i.test(navigator.userAgent));
 appStore.isWx = /MicroMessenger/i.test(navigator.userAgent);
+console.log('isWX:', appStore.isWx);
+
 
 onMountedOrActivated(async () => {
     const res = await user.fetchUserInfo();
@@ -93,7 +99,20 @@ onMountedOrActivated(async () => {
             user.firstBack = false;
         }
     }
+    if (appStore.isWx) {
+        console.log('请求 OpenID')
+        // 获取用户 OPENID
+        const querys = getQuerys(location.href)
+        if ('code' in querys) {
+            const res = await fetchOpenid(querys['code'])
+            if (res) {
+                appStore.openid = res;
+                console.log('已获取OpenID', appStore.openid);
+            }
+        }
+    }
 });
+
 </script>
 <style lang="scss" scoped>
 .orientation-inspector {

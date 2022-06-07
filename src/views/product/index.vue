@@ -1,6 +1,8 @@
 <template>
     <Subpage title="藏品详情" back-to="/">
         <van-skeleton :loading="!product" :row="20">
+            <img src="https://mall-1308324841.file.myqcloud.com/productBg2.png" class="product-bg" alt=""
+                :style="{ opacity: bgLoaded ? 1 : 0 }" @load="bgLoaded = true" />
             <div class="product" v-if="product">
                 <div class="product-preview">
                     <ProductViewer :src="product.preview_src" :rotate_mode="0" :backup_img="product.preview_img">
@@ -17,7 +19,7 @@
                         </van-steps>
                     </van-config-provider>
                     <van-popup round closeable teleport="#app" v-model:show="popup_show" position="bottom"
-                        :style="{ height: 'auto', padding: `${px2rem(40)} ${px2rem(10)}`, paddingBottom: `${px2rem(20)}`,boxSizing: 'border-box' }"
+                        :style="{ height: 'auto', padding: `${px2rem(40)} ${px2rem(10)}`, paddingBottom: `${px2rem(20)}`, boxSizing: 'border-box' }"
                         safe-area-inset-bottom>
                         <van-steps :active="currentActive" direction="vertical" active-icon="success">
                             <van-step style="background-color:white!important;">
@@ -164,6 +166,11 @@ import { Dialog, Notify, Toast } from "vant";
 import dayjs from "dayjs";
 import { useUserStore } from "../../stores/user";
 import { useThemeStore } from "../../stores/theme";
+
+// 背景
+const bgLoaded = ref(false)
+
+
 const theme = useThemeStore()
 
 // 拿到id获取藏品类别信息
@@ -379,13 +386,13 @@ watchEffect(() => {
         statusText.value = "待抽签";
     } else if (draw_end_timestamp - now >= 0) {
         currentStage.value = 2;
-        countDown.reset(draw_end_timestamp - now);
-        countDown.start();
-        isCountdown.value = true;
         if (!user.isLogin) {
-            btnClickable.value = false;
+            btnClickable.value = true;
             statusText.value = "请先登录";
         } else {
+            countDown.reset(draw_end_timestamp - now);
+            countDown.start();
+            isCountdown.value = true;
             if (isDrawn.value) {
                 btnClickable.value = false;
                 statusText.value = "已抽签";
@@ -612,6 +619,17 @@ const onBtnClick = async () => {
 //
 </script>
 <style lang="scss" scoped>
+.product-bg {
+    // object-fit: contain;
+    width: 100%;
+    position: absolute;
+    top: px2rem(-108);
+    left: 0;
+    right: 0;
+    transition: opacity 0.3s ease-in-out;
+    // z-index: 
+}
+
 .product {
     width: 100%;
     position: relative;
@@ -620,6 +638,11 @@ const onBtnClick = async () => {
     align-items: center;
     justify-content: center;
     margin-bottom: px2rem(72);
+    background-size: contain;
+    background-image: url();
+    background-repeat: no-repeat;
+
+
 
     .box {
         padding: px2rem(12) px2rem(16);

@@ -3,7 +3,11 @@
         <van-skeleton title :row="5" :loading="loading || !product || !order">
             <div class="cashier">
                 <div class="order">
-                    <van-image class="img" src="https://picsum.photos/150/150"></van-image>
+                    <van-image class="img" src="https://picsum.photos/150/150">
+                        <template #loading>
+                            <ImageLoader />
+                        </template>
+                    </van-image>
                     <div class="info">
                         <div class="title">{{ product?.name ?? '加载中' }}</div>
                         <div class="count">数量 x1</div>
@@ -54,12 +58,15 @@ export default {
 import { ref, toRef } from "vue";
 import { onMountedOrActivated } from "@vant/use";
 import { Notify, Toast } from "vant";
+import ImageLoader from "../../components/ImageLoader.vue";
 import { useRouter } from "vue-router";
 import Subpage from "../../components/Subpage.vue";
 import { px2rem } from "../../utils";
 import Price from "../../components/Price.vue";
-import { fetchOrderDetail, fetchProduct } from "../../api";
+import { fetchOrderDetail, fetchProduct, requestPay } from "../../api";
+import { useAppStore } from "../../stores/app";
 const router = useRouter();
+const app = useAppStore();
 // 支付相关的功能
 // 接受订单号，完成支付
 const loading = ref(false);
@@ -115,20 +122,85 @@ const changePayMethod = (pay_method: SupportPayment) => {
     }
 }
 
+const jspay = (payload: WeixinJSBridge.WxBridgeInvoke) => {
+    return new Promise((resolve, reject) => {
+        WeixinJSBridge.invoke('getBrandWCPayRequest', payload, (res: { err_msg: string }) => {
+            if (res.err_msg == "get_brand_wcpay_request:ok") {
+                // 使用以上方式判断前端返回,微信团队郑重提示：
+                //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+                resolve('success')
+            } else if (res.err_msg == 'get_brand_wcpay_request:cancel') {
+                resolve('cancel');
+            } else {
+                reject(res.err_msg)
+            }
+        })
+    })
+}
+
+// todo: 待验证逻辑
 const pay = async () => {
     // 检查wxbridge，向后端请求下单，拿到订单ID调起微信支付
     // 接着进入等待页面
     // 等待页面请求后端检查订单状态
     //      成功则路由至订单页面，显示最新状态
     //      失败则路由至支付失败页面，支付失败页面会在几秒后路由至订单页面要求用户进行支付
-    Toast({
-        type: 'loading',
-        message: '支付中，待备案通过后与微信支付联调',
-        duration: 1000,
+    if (!app.isWx) {
+        Toast({
+            type: 'fail',
+            message: '当前仅支持在微信浏览器内完成支付！'
+        })
+        return;
+    }
+    if (!order.value) {
+        Toast({
+            type: 'fail',
+            message: '加载失败'
+        })
+        return;
+    }
+    const toastInstance = Toast.loading({
+        forbidClick: true,
+        message: '请稍等...',
+        duration: 0
     })
-    setTimeout(() => {
-        router.push("/payment_waiting");
-    }, 500);
+    // console.log(app.openid)
+    const res = await requestPay(order.value.id, 'jsapi', app.openid)
+    if (res) {
+        // 下单成功
+        // h5 支付 跳转至 h5_url
+        if (res.h5_url) {
+            window.open(res.h5_url, '_blank') // 打开新页面deeplink唤起微信
+        } else {
+            const jspay_res = await jspay({ appId: res.appId, timeStamp: res.timeStamp, nonceStr: res.nonceStr, package: res.package, signType: res.signType, paySign: res.paySign }).catch(err => {
+                console.error(err);
+                toastInstance.message = '支付失败';
+                setTimeout(() => {
+                    toastInstance.clear()
+                }, 1000)
+            })
+            if (jspay_res == 'success') {
+                setTimeout(() => {
+                    toastInstance.clear()
+                    // 用户完成支付
+                    router.push({ path: '/payment_waiting', query: { order_id: order.value?.id, trade_no: order.value?.trade_no } })
+                }, 500)
+            } else if (jspay_res == 'cancel') {
+                // 用户取消支付
+                toastInstance.message = '您已取消支付';
+                setTimeout(() => {
+                    toastInstance.clear()
+                    router.push('/order')
+                }, 500)
+            }
+        }
+        // setTimeout(() => {
+        //     router.push("/payment_waiting");
+        // }, 500);
+    } else {
+        router.replace('/') //回到首页
+    }
+
 };
 </script>
 <style lang="scss" scoped>

@@ -5,9 +5,27 @@ declare type Tag = {
     mode?: DisplayMode;
 };
 
+declare namespace WeixinJSBridge {
+    interface WxBridgeInvoke {
+        appId: string;
+
+        timeStamp: string;
+
+        nonceStr: string;
+
+        package: string;
+
+        signType: string;
+
+        paySign: string;
+    }
+
+    function invoke(key: string, obj: WxBridgeInvoke, cb: Function): void;
+}
+
 declare type SupportPayment = "weixin" | "alipay";
-declare type PaymentStatus = "unpaid" | "paid" | "canceled"
-declare type onChainStatus = "success" | "processing" | "failed" | "pending"
+declare type PaymentStatus = "unpaid" | "paid" | "canceled";
+declare type onChainStatus = "success" | "processing" | "failed" | "pending";
 
 declare type Genre = {
     id: number;
@@ -105,5 +123,3 @@ declare type Banner = {
     src: string;
     link?: string;
 };
-
-

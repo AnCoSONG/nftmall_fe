@@ -2,6 +2,8 @@
     <Subpage title="藏品详情" shareable>
         <van-skeleton :loading="!productItemData" :row="10">
             <div class="collection-detail" v-if="productItemData">
+                <img src="https://mall-1308324841.file.myqcloud.com/productBg2.png" class="product-bg" alt=""
+                    :style="{ opacity: bgLoaded ? 1 : 0 }" @load="bgLoaded = true" />
                 <ProductViewer :src="productItemData.product?.src!" :backup_img="productItemData.product?.preview_img!"
                     :rotate_mode="0"></ProductViewer>
                 <div class="box">
@@ -23,18 +25,19 @@
                 <div class="box collection-info">
                     <KeyValueLine key-text="藏品名" :value="productItemData.product?.name ?? '...'" :copy="false" />
                     <KeyValueLine key-text="藏品类别" :value="typeText ?? '...'" :copy="false" />
-                    <KeyValueLine key-text="藏品ID" :value="productItemData.product_id?? '...'" :copy="true" />
+                    <KeyValueLine key-text="藏品ID" :value="productItemData.product_id ?? '...'" :copy="true" />
                     <KeyValueLine key-text="发行方" :value="'晋元数字'" :copy="false" />
                     <KeyValueLine key-text="创作方" :value="productItemData.product?.publisher?.name ?? '...'"
                         :copy="false" />
+                    <KeyValueLine key-text="藏品铸造时间" :value="productOnChainTimeFormat ?? '...'" :copy="false" />
                     <KeyValueLine key-text="拥有者" :value="productItemData.owner?.username ?? '...'" :copy="false" />
-                    <KeyValueLine key-text="拥有者钱包地址" :value="productItemData.owner?.bsn_address ?? '...'" :copy="true" />
+                    <KeyValueLine key-text="拥有者钱包地址" :value="productItemData.owner?.bsn_address ?? '...'"
+                        :copy="true" />
                     <KeyValueLine key-text="上链状态" :value="onChainStatusText ?? '...'" :copy="true" />
                     <KeyValueLine key-text="藏品系列链上ID" :value="productItemData.nft_class_id ?? '...'" :copy="true" />
                     <KeyValueLine key-text="藏品链上ID" :value="productItemData.nft_id ?? '...'" :copy="true" />
                     <KeyValueLine key-text="藏品链上交易ID" :value="productItemData.operation_id ?? '...'" :copy="true" />
                     <KeyValueLine key-text="交易哈希" :value="productItemData.tx_hash ?? '...'" :copy="true" />
-
                 </div>
             </div>
 
@@ -47,6 +50,7 @@ export default {
 };
 </script>
 <script setup lang='ts'>
+import dayjs from 'dayjs';
 import { computed, onDeactivated, ref, toRef } from 'vue';
 import Subpage from '../../components/Subpage.vue';
 import ProductViewer from '../../components/ProductViewer.vue';
@@ -54,7 +58,8 @@ import { onMountedOrActivated } from '@vant/use'
 import ImageLoader from '../../components/ImageLoader.vue';
 import KeyValueLine from '../../components/KeyValueLine.vue';
 import { fetchProductItemDetail } from '../../api';
-import { onChainStatus, SupportType } from '../../utils';
+import { onChainStatus, SupportType, TIME_FORMAT } from '../../utils';
+const bgLoaded = ref(false);
 const props = defineProps({
     id: {
         type: String,
@@ -105,13 +110,33 @@ const onChainStatusText = computed(() => {
         }
     }
 })
+const productOnChainTimeFormat = computed(() => {
+    if (productItemData.value && productItemData.value.on_chain_timestamp) {
+        return dayjs(productItemData.value.on_chain_timestamp).format(TIME_FORMAT)
+    }
+})
 onDeactivated(() => {
     productItemData.value = undefined
 })
 </script>
 <style lang="scss" scoped>
+.product-bg {
+    // object-fit: contain;
+    width: 100%;
+    position: absolute;
+    top: px2rem(-108);
+    left: 0;
+    right: 0;
+    transition: opacity 0.3s ease-in-out;
+    z-index: 0;
+}
+
 .collection-detail {
+    position: relative;
+
     .box {
+        position: relative;
+        // z-index: 1;
         padding: px2rem(12) px2rem(16);
         box-sizing: border-box;
         border-radius: px2rem(8);

@@ -557,7 +557,9 @@ export const fetchProductBoughtCount = async (
 
 export const createChainAccount = async () => {
     const res = await request
-        .get<Response<{ code: number, message: string }>>(`/collectors/applyBsnAccount`)
+        .get<Response<{ code: number; message: string }>>(
+            `/collectors/applyBsnAccount`
+        )
         .catch((err) => {
             console.error(err);
             Toast({
@@ -574,7 +576,7 @@ export const createChainAccount = async () => {
 };
 
 export const cancelOrder = async (order_id: string) => {
-    console.log('cancel order')
+    // console.log('cancel order')
     const res = await request
         .post<
             Response<{
@@ -590,6 +592,101 @@ export const cancelOrder = async (order_id: string) => {
             });
             return null;
         });
+    if (res) {
+        return res.data.data;
+    } else {
+        return null;
+    }
+};
+
+export const fetchOpenid = async (code: string) => {
+    const encrypt_code = encrypt(code);
+    const res = await request
+        .get<Response<string>>("/auth/fetchOpenid", {
+            params: { code: encrypt_code },
+        })
+        .catch((err) => {
+            console.error(err);
+            Toast({
+                type: "fail",
+                message: err.response.data.message,
+            });
+            return null;
+        });
+    if (res) {
+        return res.data.data;
+    } else {
+        return null;
+    }
+};
+type H5PayRes = {
+    h5_url: string;
+};
+type JSAPIPayRes = {
+    appId: string;
+    timeStamp: string;
+    nonceStr: string;
+    package: string;
+    signType: string;
+    paySign: string;
+};
+export const requestPay = async (
+    order_id: string,
+    type: "jsapi" | "h5",
+    openid?: string
+) => {
+    const res = await request
+        .post<Response<H5PayRes & JSAPIPayRes>>(`/affair/pay`, {
+            order_id,
+            type,
+            openid,
+        })
+        .catch((err) => {
+            console.error(err);
+            Toast({
+                type: "fail",
+                message: err.response.data.message,
+            });
+            return null;
+        });
+    if (res) {
+        return res.data.data;
+    } else {
+        return null;
+    }
+};
+
+export const fetchPaymentStatus = async (order_id: string) => {
+    const res = await request
+        .get<Response<PaymentStatus>>("/orders/fetchPaymentStatus", {
+            params: { order_id },
+        })
+        .catch((err) => {
+            console.error(err);
+            Toast({
+                type: "fail",
+                message: err.response.data.message,
+            });
+            return null;
+        });
+    if (res) {
+        return res.data.data;
+    } else {
+        return null;
+    }
+};
+
+export const queryPayment = async (trade_no: string) => {
+    const res = await request.get<Response<{code: number, message?: string}>>(`/affair/queryPayment`, {
+        params: { trade_no },
+    }).catch(err => {
+        console.error(err);
+        Toast({
+            type: 'fail',
+            message: err.response.data.message,
+        })
+        return null;
+    })
     if (res) {
         return res.data.data;
     } else {

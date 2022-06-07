@@ -19,13 +19,14 @@ import { computed, ref } from 'vue';
 import { onMountedOrActivated } from '@vant/use';
 import { onDeactivated } from 'vue'
 type DocType = {
-    type: 'agreement' | 'bsn',
+    type: 'agreement' | 'bsn' | 'jinyuanshuzi',
 }
 const prop = defineProps<DocType>()
 
 const type2title = {
     'agreement': '用户协议',
     'bsn': '关于BSN文昌链',
+    'jinyuanshuzi': '关于晋元数字',
 }
 const title = computed(() => {
     return type2title[prop.type]

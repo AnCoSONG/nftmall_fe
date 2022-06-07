@@ -92,7 +92,6 @@ export const encrypt = (data: string) => {
     }).toString();
 };
 
-
 export const onCopySuccess = () => {
     Toast({
         type: "success",
@@ -107,12 +106,32 @@ export const onCopyError = () => {
     });
 };
 
-
-export const TIME_FORMAT = 'YYYY MM.DD HH:mm:ss'
+export const TIME_FORMAT = "YYYY MM.DD HH:mm:ss";
 
 export const notSupport = () => {
     Toast({
         type: "fail",
         message: "目前暂不支持，后续会尽快更新完善",
     });
+};
+
+export const getQuerys = (e: string) => {
+    if (!e) return {};
+    let t:Record<string, string> = {},
+        r = [],
+        n = "",
+        a = "";
+    try {
+        let i:string[] = [];
+        if (
+            (e.indexOf("?") >= 0 &&
+                (i = e.substring(e.indexOf("?") + 1, e.length).split("&")),
+            i.length > 0)
+        )
+            for (let o in i)
+                (n = (r = i[o].split("="))[0]), (a = r[1]), (t[n] = a);
+    } catch (s) {
+        t = {};
+    }
+    return t;
 };

@@ -87,6 +87,7 @@ const router = createRouter({
             name: "payment_waiting",
             meta: { title: "等待支付回调", requireAuth: "required" },
             component: () => import("views/cashier/payment_waiting.vue"),
+            props: (route) => ({order_id: route.query.order_id, trade_no: route.query.trade_no}),
         },
         {
             path: "/account",

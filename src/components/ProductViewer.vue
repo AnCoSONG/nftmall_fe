@@ -101,8 +101,8 @@ onMountedOrActivated(async () => {
         scene.add(dirlight)
         // 添加 半球光
         // 添加控制器
-        controls = new OrbitControls(camera, renderer.domElement);
-        camera.position.set(0, 0, 3);
+        // controls = new OrbitControls(camera, renderer.domElement);
+        camera.position.set(0, 0, 3.5);
         // controls.update()
         function animate() {
             requestAnimationFrame(animate);
@@ -116,7 +116,7 @@ onMountedOrActivated(async () => {
             }
             // cube.rotation.x += 0.01;
             // cube.rotation.y += 0.01;
-            controls!.update()
+            // controls!.update()
             renderer!.render(scene!, camera!);
         };
         webglLoading.value = false;

@@ -4,13 +4,13 @@
         <van-skeleton title avatar :row="10" :loading="!orderDetail">
             <div class="order-detail" v-if="orderDetail">
                 <div class="order-detail-card">
-                    <div class="product-info">
+                    <div class="product-info" @click="onProductInfoClick">
                         <van-image class="thumbnail" :width="px2rem(100)" height="auto" fit="contain"
                             :src="orderDetail.product_item?.product?.preview_img">
                             <template #loading>
                                 <ImageLoader></ImageLoader>
                             </template>
-                            </van-image>
+                        </van-image>
                         <div class="name-tag-count">
                             <div class="name">{{ orderDetail.product_item?.product?.name }}</div>
                             <div class="tags">
@@ -32,7 +32,7 @@
                             <KeyValueLine key-text="订单状态" :value="orderStatus ?? '...'" :copy="false" />
                             <KeyValueLine key-text="订单创建时间" :value="orderCreateTimeFormat ?? '...'" :copy="false" />
                             <KeyValueLine key-text="订单支付时间" :value="orderPayTimeFormat ?? '...'" :copy="false" />
-                            <KeyValueLine key-text="藏品上链时间" :value="productOnChainTimeFormat ?? '...'" :copy="false" />
+                            <KeyValueLine key-text="藏品铸造时间" :value="productOnChainTimeFormat ?? '...'" :copy="false" />
                             <KeyValueLine key-text="积分" :value="orderDetail.gen_credit" :copy="false" />
                         </div>
                     </div>
@@ -62,7 +62,9 @@ import Price from '../../components/Price.vue';
 import ImageLoader from '../../components/ImageLoader.vue';
 import KeyValueLine from '../../components/KeyValueLine.vue';
 import dayjs from 'dayjs';
+import { useRouter } from 'vue-router';
 
+const router = useRouter()
 const props = defineProps({
     id: {
         type: String,
@@ -122,6 +124,10 @@ const encounterProblem = () => {
         title: '遇到问题',
         message: '请您至个人页面添加客服微信，并将订单交易号提供给客服。'
     })
+}
+
+const onProductInfoClick = () => {
+    router.push(`/collection/${orderDetail.value?.product_item_id}`)
 }
 </script>
 <style lang="scss" scoped>
@@ -240,7 +246,7 @@ const encounterProblem = () => {
             // border-top: 1px solid #464646;
             font-size: px2rem(18);
             color: $normalTextColor;
-            
+
 
             .control {
                 border-top: 1px solid #464646;
@@ -250,7 +256,7 @@ const encounterProblem = () => {
                 width: 100%;
                 user-select: none;
                 box-sizing: border-box;
-                
+
 
                 &:active {
                     background-color: #464646;

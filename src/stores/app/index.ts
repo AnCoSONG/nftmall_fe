@@ -7,6 +7,7 @@ export const useAppStore = defineStore("app", {
             title: "晋元数藏",
             mall_name: "晋元数字藏品商城",
             isWx: false,
+            openid: '',
         };
     },
     actions: {

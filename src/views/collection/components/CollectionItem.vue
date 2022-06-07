@@ -50,7 +50,7 @@ const noText = computed(() => {
     // width: 100%;
     background-color: $boxBgColorLight;
     border-radius: px2rem(8);
-    overflow: hidden;
+    // overflow: hidden;
     box-shadow: 0 px2rem(4) px2rem(4) 0 rgba(0, 0, 0, 0.25);
     margin-bottom: px2rem(20);
 
