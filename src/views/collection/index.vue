@@ -1,5 +1,5 @@
 <template>
-    <Subpage title="我的藏品">
+    <Subpage title="我的藏品" back-to="/user">
         <CollectionList></CollectionList>
     </Subpage>
 </template>
