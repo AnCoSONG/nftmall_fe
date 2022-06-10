@@ -15,14 +15,14 @@ const router = createRouter({
                 },
                 {
                     path: "exhibition",
-                    name: 'exhibition',
+                    name: "exhibition",
                     meta: { title: "个人展馆", requireAuth: "prompt" },
                     component: () =>
                         import("views/home/components/exhibition.vue"),
                 },
                 {
                     path: "user",
-                    name: 'user',
+                    name: "user",
                     meta: { title: "个人中心" },
                     component: () => import("views/home/components/user.vue"),
                 },
@@ -32,7 +32,7 @@ const router = createRouter({
             path: "/login",
             name: "login",
             component: () => import("views/login/index.vue"),
-            props: (route) => ({ backTo: route.params.backTo })
+            props: (route) => ({ backTo: route.params.backTo }),
         },
         {
             path: "/order", // 订单
@@ -80,14 +80,20 @@ const router = createRouter({
             name: "cashier",
             meta: { title: "收银台", requireAuth: "required" },
             component: () => import("views/cashier/index.vue"),
-            props: (route) => ({ order_id: route.query.order_id, product_id: route.query.product_id }),
+            props: (route) => ({
+                order_id: route.query.order_id,
+                product_id: route.query.product_id,
+            }),
         },
         {
             path: "/payment_waiting",
             name: "payment_waiting",
             meta: { title: "等待支付回调", requireAuth: "required" },
             component: () => import("views/cashier/payment_waiting.vue"),
-            props: (route) => ({order_id: route.query.order_id, trade_no: route.query.trade_no}),
+            props: (route) => ({
+                order_id: route.query.order_id,
+                trade_no: route.query.trade_no,
+            }),
         },
         {
             path: "/account",
@@ -115,11 +121,11 @@ const router = createRouter({
         },
         {
             // path: '/:\w+',
-            path: '/:pathMatch(.*)*',
-            name: '404',
-            component: () => import('views/404/index.vue'),
-            meta: { title: '404' }
-        }
+            path: "/:pathMatch(.*)*",
+            name: "404",
+            component: () => import("views/404/index.vue"),
+            meta: { title: "404" },
+        },
     ],
     scrollBehavior: (to, from, savedPosition) => {
         // fix some case cannot scroll
@@ -136,24 +142,25 @@ const router = createRouter({
 
 import NProgress from "nprogress";
 import "../styles/nprogress.scss";
-import { defineAsyncComponent } from "vue";
 import { Notify, Toast } from "vant";
+import { checkSession } from "../api";
 
 NProgress.configure({ easing: "ease", speed: 500, showSpinner: false });
 
 const defaultTitle = "晋元数藏";
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
     // console.log(to, from)
     NProgress.start();
     document.title = to.meta.title ? (to.meta.title as string) : defaultTitle;
     // console.log(to.matched);
     if (to.matched.some((route) => route.meta.requireAuth === "required")) {
-        if (!sessionStorage.getItem("id")) {
+        const data = await checkSession(); // jwt检测
+        if (!data) {
             Notify({
-                message: '请先登录',
-                type: 'danger',
-                duration: 2000
-            })
+                message: "请先登录",
+                type: "danger",
+                duration: 2000,
+            });
             next("/login");
         } else {
             next();
@@ -161,14 +168,15 @@ router.beforeEach((to, from, next) => {
     } else if (
         to.matched.some((route) => route.meta.requireAuth === "prompt")
     ) {
-        if (!sessionStorage.getItem("id")) {
+        const data = await checkSession();
+        if (!data) {
             Toast({
                 message: "建议您登录后浏览，以获得更好的体验",
                 duration: 2000,
                 forbidClick: true,
-                icon: 'warning-o',
-                iconSize: '1.6rem',
-            })
+                icon: "warning-o",
+                iconSize: "1.6rem",
+            });
             // Notify({
             //     message: "请先登录",
             // });

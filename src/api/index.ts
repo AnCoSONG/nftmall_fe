@@ -241,6 +241,18 @@ export const fetchUserInfo = async () => {
     }
 };
 
+export const checkSession = async () => {
+    const res = await request.get<Response<true>>("/auth/checkSession")
+    .catch(err => {
+        return null;
+    })
+    if (res) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 export const idCheck = async (name: string, id_card: string) => {
     console.log(encrypt(name));
     const res = await request

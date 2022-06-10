@@ -41,13 +41,13 @@ const props = defineProps<PropType>();
 const order_id = toRef(props, 'order_id');
 const trade_no = toRef(props, 'trade_no');
 onMountedOrActivated(async () => {
-    // for (let i = 0; i < 3; i++) {
-    //     const paymentStatus = await fetchPaymentStatus(order_id.value);
-    //     if (paymentStatus === PaymentStatus.PAID) {
-    //         status.value = 'success'
-    //         return;
-    //     }
-    // }
+    for (let i = 0; i < 3; i++) {
+        const paymentStatus = await fetchPaymentStatus(order_id.value);
+        if (paymentStatus === PaymentStatus.PAID) {
+            status.value = 'success'
+            return;
+        }
+    }
     // 如果3次都没有拉取到
     const queryRes = await queryPayment(trade_no.value);
     if (queryRes) {
