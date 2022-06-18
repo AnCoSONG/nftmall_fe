@@ -4,7 +4,7 @@
         <!-- hot | product list | something else -->
         <van-tabs v-model:active="active" shrink sticky swipeable lazy-renderer background="#202020" color="#dcdda9" title-active-color="#dcdda9"
             title-inactive-color="#949494">
-            <van-tab title="热们推荐" class="mall-main-tab">
+            <van-tab title="热门推荐" class="mall-main-tab">
                 <Hot></Hot>
             </van-tab>
             <van-tab title="藏品列表" class="mall-main-tab">
@@ -32,7 +32,7 @@ const active = ref(0);
 }
 .mall-main .van-tab--active {
     .van-tab__text {
-        font-size: px2rem(20);
+        font-size: px2rem(18);
     }
 }
 

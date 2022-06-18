@@ -401,6 +401,11 @@ clipboard@^2.0.0:
     select "^1.1.2"
     tiny-emitter "^2.0.0"
 
+clipic@^0.8.0:
+  version "0.8.0"
+  resolved "https://mirrors.cloud.tencent.com/npm/clipic/-/clipic-0.8.0.tgz#58a455b1df410ebdbbb22882854e351e797bd574"
+  integrity sha512-U92EYUQSJDY5o5r/Lq28MsDWsChgoUxDCA9jQ+GHCoU7GxpeLRWNn/2ukVGE47OOaLkonEXxk73yj6v6YgsJRw==
+
 color-convert@^2.0.1:
   version "2.0.1"
   resolved "https://registry.npmmirror.com/color-convert/-/color-convert-2.0.1.tgz#72d3a68d598c9bdb3af2ad1e84f21d896abd4de3"

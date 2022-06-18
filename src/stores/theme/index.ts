@@ -28,7 +28,7 @@ export const useThemeStore = defineStore("theme", {
             },
             announcement: {
                 noticeBarBackground: "#343434",
-                noticeBarText: "",
+                noticeBarText: "#bbb",
             },
             product_timeline: {
                 stepsBackgroundColor: '#272727',

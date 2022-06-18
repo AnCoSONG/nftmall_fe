@@ -7,7 +7,7 @@ const router = createRouter({
             path: "/",
             name: "home",
             component: () => import("views/home/index.vue"),
-            meta: { title: "晋元数藏" },
+            meta: { title: "晋元数字" },
             children: [
                 {
                     path: "",
@@ -37,7 +37,7 @@ const router = createRouter({
         {
             path: "/order", // 订单
             name: "order",
-            meta: { title: "订单", requireAuth: "required" },
+            meta: { title: "我的订单", requireAuth: "required" },
             component: () => import("views/order/index.vue"),
         },
         {
@@ -50,7 +50,7 @@ const router = createRouter({
         {
             path: "/collection",
             name: "collection",
-            meta: { title: "收藏", requireAuth: "required" },
+            meta: { title: "我的收藏", requireAuth: "required" },
             component: () => import("views/collection/index.vue"),
         },
         {
@@ -88,7 +88,7 @@ const router = createRouter({
         {
             path: "/payment_waiting",
             name: "payment_waiting",
-            meta: { title: "等待支付回调", requireAuth: "required" },
+            meta: { title: "等待支付结果", requireAuth: "required" },
             component: () => import("views/cashier/payment_waiting.vue"),
             props: (route) => ({
                 order_id: route.query.order_id,
@@ -98,13 +98,13 @@ const router = createRouter({
         {
             path: "/account",
             name: "account",
-            meta: { title: "账户", requireAuth: "required" },
+            meta: { title: "账户详情", requireAuth: "required" },
             component: () => import("views/account/index.vue"),
         },
         {
             path: "/verification",
             name: "verification",
-            meta: { title: "身份验证", requireAuth: "required" },
+            meta: { title: "实名认证", requireAuth: "required" },
             component: () => import("views/verification/index.vue"),
         },
         {

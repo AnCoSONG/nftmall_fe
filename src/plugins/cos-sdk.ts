@@ -3,8 +3,8 @@ import { App, inject } from "vue";
 
 const cosSymbol = Symbol();
 export const cos = new COS({
-    SecretId: import.meta.env.VUE_APP_COS_SECRET_ID,
-    SecretKey: import.meta.env.VUE_APP_COS_SECRET_KEY,
+    SecretId: import.meta.env.VITE_COS_SECRET_ID,
+    SecretKey: import.meta.env.VITE_COS_SECRET_KEY,
 });
 
 const Bucket = "mall-1308324841";
@@ -62,9 +62,28 @@ export const getObjectUrlPromisify = async (
     }
 };
 
-export const cdnTransform = (key: string) => {
-    return `https://mall-1308324841.file.myqcloud.com/${key}`
+export const putObjectPromisify = async (key: string, file: File) => {
+    return new Promise((resolve, reject) => {
+        cos.putObject({
+            Bucket,
+            Region,
+            Key: `avatar/${key}`,
+            StorageClass: 'STANDARD',
+            Body: file
+        }, function(err, data) {
+            if (err) {
+                reject(err)
+            } else {
+                resolve(true)
+            }
+        })
+        
+    })
 }
+
+export const cdnTransform = (key: string) => {
+    return `https://mall-1308324841.file.myqcloud.com/${key}`;
+};
 
 export const vueCos = (app: App) => {
     app.provide(cosSymbol, cos);

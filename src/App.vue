@@ -32,6 +32,15 @@ import EnvironmentInspector from './components/EnvironmentInspector.vue';
   background-color: #272727 !important;
 }
 
+#clipicCancel, #clipicReset, #clipicConfirm {
+  font-size: px2rem(20);
+}
+
+.clipic-frame {
+  top: 40%!important;
+  transform: translate(-50%, -50%)!important;
+}
+
 html,
 body,
 #app {

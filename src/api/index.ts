@@ -707,3 +707,19 @@ export const queryPayment = async (trade_no: string) => {
         return null;
     }
 };
+
+export const updateUser = async (data: Partial<User>) => {
+    const res = await request.patch(`/collectors/update`, data).catch(err => {
+        console.error(err);
+        Toast({
+            type: 'fail',
+            message: err.response.data.message,
+        })
+        return null;
+    })
+    if (res) {
+        return res.data.data;
+    } else {
+        return null;
+    }
+}

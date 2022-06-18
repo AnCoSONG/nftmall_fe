@@ -17,7 +17,7 @@ const app = useAppStore()
     // font-family: serif;
     // background-color: #fff;
     margin-bottom: px2rem(20);
-    font-size: px2rem(24);
+    font-size: px2rem(22);
     color: $normalTextColor;
     display: flex;
     flex-flow: nowrap row;

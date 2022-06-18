@@ -70,7 +70,7 @@ onUnmounted(() => {
         // padding-bottom: px2rem(17);
         padding: px2rem(17) px2rem(17);
         box-sizing: border-box;
-        z-index: 100;
+        z-index: 99;
         position: sticky;
         top: 0;
         backdrop-filter: blur(20px);

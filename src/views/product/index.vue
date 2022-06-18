@@ -64,7 +64,7 @@
                     </div>
                 </div>
 
-                <div class="detail box">
+                <div class="detail box creator-box">
                     <div class="title">创作者</div>
                     <div class="content">
                         <div class="creator">
@@ -651,7 +651,7 @@ const onBtnClick = async () => {
         box-shadow: 0 px2rem(4) px2rem(4) rgba(0, 0, 0, 0.25);
         background-color: $boxBgColor;
         width: 100%;
-        margin-bottom: px2rem(20);
+        margin-bottom: px2rem(10);
     }
 
     .product-price-limit {
@@ -754,30 +754,50 @@ const onBtnClick = async () => {
         justify-content: flex-start;
         align-items: center;
 
+        &.creator-box {
+            display: flex;
+            flex-flow: nowrap row;
+            justify-content: space-between;
+            align-items: center;
+
+            .title {
+                font-size: px2rem(24);
+                margin-bottom: 0;
+            }
+
+            .content {
+                padding-bottom: 0;
+                flex: unset;
+            }
+
+        }
+
         .title {
             margin-bottom: px2rem(20);
             color: $glodTextColor;
             position: relative;
-            font-size: px2rem(20);
+            font-size: px2rem(24);
             z-index: 0;
+            font-weight: bold;
 
-            &::after {
-                content: "";
-                position: absolute;
-                bottom: px2rem(-6);
-                left: calc(-5%);
-                right: calc(-5%);
-                background-color: #353535;
-                height: px2rem(12);
-                z-index: -1;
-                // width: 110%;
-            }
+            // &::after {
+            //     content: "";
+            //     position: absolute;
+            //     bottom: px2rem(-6);
+            //     left: calc(-5%);
+            //     right: calc(-5%);
+            //     background-color: #353535;
+            //     height: px2rem(12);
+            //     z-index: -1;
+            //     // width: 110%;
+            // }
         }
     }
 
     .detail {
         .content {
-            width: 100%;
+            // width: 100%;
+            flex: 1;
             padding-bottom: px2rem(8);
             box-sizing: border-box;
 

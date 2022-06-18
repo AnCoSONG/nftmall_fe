@@ -38,6 +38,14 @@ export const hidePhone = (phone: string) => {
     }
 };
 
+export const hash = (text: string) => {
+    return CryptoJS.MD5(text)
+}
+
+export const randomCode = () => {
+    return CryptoJS.lib.WordArray.random(16).toString()
+}
+
 /**
  * 图像地址原样返回，cos key解析后返回
  * @param src 图像地址或者cos key
