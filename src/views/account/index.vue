@@ -135,8 +135,8 @@ const uploadImg = (event: Event) => {
     //@ts-ignore
     reader.onload = img => {
         clipic.getImage({
-            width: 150,
-            height: 150,
+            width: 400,
+            height: 400,
             name: cropped_name,
             //@ts-ignore
             src: img.target.result,
