@@ -5,6 +5,7 @@
         <CellItem text="关于BSN文昌链" right-icon="arrow" @click="router.push({path: '/doc/bsn'})"></CellItem>
         <CellItem text="关于晋元数字" right-icon="arrow" @click="router.push({path: '/doc/jinyuanshuzi'})"></CellItem>
         <CellItem text="商务合作" right-icon="arrow" @click="onCooperation"></CellItem>
+        <!-- <CellItem text="开启开发者模式" right-icon="arrow" v-if="user.data.role === 'official'"></CellItem> -->
         <!-- 登录后才显示 -->
         <DangerBtn text="退出登录" :loading="logoutLoading" @click="logout()" v-if="user.isLogin"/>
     </div>

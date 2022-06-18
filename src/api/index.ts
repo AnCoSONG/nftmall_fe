@@ -52,7 +52,8 @@ export const fetchBanners = async () => {
 export const fetchHotProducts = async (
     with_relation: boolean,
     page: number,
-    limit: number
+    limit: number,
+    scope: string
 ) => {
     const res = await request
         .get<
@@ -63,7 +64,7 @@ export const fetchHotProducts = async (
                 limit: number;
             }>
         >("/products/list", {
-            params: { with_relation, page, limit },
+            params: { with_relation, page, limit, scope },
         })
         .catch((err) => {
             console.error(err);
@@ -88,7 +89,8 @@ export const fetchHotProducts = async (
 export const fetchProducts = async (
     page: number,
     limit: number,
-    with_relation: boolean
+    with_relation: boolean,
+    scope: string
 ) => {
     const res = await request
         .get<
@@ -99,7 +101,7 @@ export const fetchProducts = async (
                 limit: number;
             }>
         >("/products/list", {
-            params: { with_relation: with_relation, page: page, limit: limit },
+            params: { with_relation: with_relation, page: page, limit: limit, scope },
         })
         .catch((err) => {
             console.error(err);

@@ -20,11 +20,11 @@ import { computed, inject, ref } from 'vue';
 import { px2rem } from '../../../../utils';
 import { onMountedOrActivated } from '@vant/use';
 import { fetchHotProducts } from '../../../../api/index';
-const axios = useAxios()
+import { useUserStore } from '../../../../stores/user';
 onMountedOrActivated(() => {
     onRefresh();
 })
-
+const user = useUserStore()
 const list = ref<Product[]>([])
 const loading = ref(false);
 const refreshing = ref(false);
@@ -61,7 +61,7 @@ const onLoadMore = async () => {
     /**
      * todo: 后端调整，返回hot数据
      */
-    const data = await fetchHotProducts(true, page.value, limit);
+    const data = await fetchHotProducts(true, page.value, limit, user.data.role && user.data.role === 'official' ? 'all' : 'user');
     if (data) {
         for (const item of data.data) {
             list.value.push(item)

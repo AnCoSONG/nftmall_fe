@@ -92,6 +92,7 @@ declare type User = {
     real_id?: string;
     is_verified: boolean;
     credit: number;
+    role: string;
 };
 
 //todo: 根据后端调整

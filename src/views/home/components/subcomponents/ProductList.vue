@@ -1,10 +1,9 @@
 <template>
     <van-pull-refresh v-model="refreshing" @refresh="onRefresh()">
-        <van-list v-model:loading="loading" :finished="finished" @load="onLoadMore()"
-            v-if="list.length > 0">
+        <van-list v-model:loading="loading" :finished="finished" @load="onLoadMore()" v-if="list.length > 0">
             <ProductCard :data="item" v-for="(item, index) in list" :is-last="index == list.length - 1"></ProductCard>
             <template #finished>
-                <UniversalDivider/>
+                <UniversalDivider />
             </template>
         </van-list>
         <Empty v-else />
@@ -18,7 +17,9 @@ import { ref } from 'vue';
 import { onMountedOrActivated } from '@vant/use';
 import { fetchProducts } from '../../../../api';
 import { computed } from '@vue/reactivity';
+import { useUserStore } from '../../../../stores/user';
 
+const user = useUserStore()
 const finished = ref(false)
 const loading = ref(false)
 const refreshing = ref(false)
@@ -42,7 +43,7 @@ const onLoadMore = async () => {
         total.value = 0;
     }
     loading.value = true;
-    const data = await fetchProducts(page.value, limit, true);
+    const data = await fetchProducts(page.value, limit, true, user.data.role && user.data.role === 'official' ? 'all' : 'user');
     if (data) {
         for (const item of data.data) {
             list.value.push(item)
