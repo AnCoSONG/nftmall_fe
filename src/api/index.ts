@@ -713,7 +713,7 @@ export const updateUser = async (data: Partial<User>) => {
         console.error(err);
         Toast({
             type: 'fail',
-            message: err.response.data.message,
+            message: '请更改内容后重试！',
         })
         return null;
     })
