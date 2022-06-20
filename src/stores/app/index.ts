@@ -5,7 +5,7 @@ export const useAppStore = defineStore("app", {
     state: () => {
         return {
             title: "晋元数字",
-            mall_name: "晋元数字藏品商城",
+            mall_name: "晋元数字馆",
             isWx: false,
             openid: '',
         };

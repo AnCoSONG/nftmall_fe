@@ -8,7 +8,7 @@
 </template>
 <script setup lang='ts'>
 import { useAppStore } from '../../../../stores/app';
-import logo from "../../../../assets/logo-ddd.png";
+import logo from "../../../../assets/logo_new1.png";
 const app = useAppStore()
 </script>
 <style lang="scss" scoped>
@@ -17,7 +17,7 @@ const app = useAppStore()
     // font-family: serif;
     // background-color: #fff;
     margin-bottom: px2rem(20);
-    font-size: px2rem(22);
+    font-size: px2rem(24);
     color: $normalTextColor;
     display: flex;
     flex-flow: nowrap row;
@@ -34,6 +34,8 @@ const app = useAppStore()
 
     .text {
         // display: inline-block;
+        color: #ccc;
+        font-weight: bold;
         
     }
 }

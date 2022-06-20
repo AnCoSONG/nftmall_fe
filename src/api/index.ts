@@ -101,7 +101,12 @@ export const fetchProducts = async (
                 limit: number;
             }>
         >("/products/list", {
-            params: { with_relation: with_relation, page: page, limit: limit, scope },
+            params: {
+                with_relation: with_relation,
+                page: page,
+                limit: limit,
+                scope,
+            },
         })
         .catch((err) => {
             console.error(err);
@@ -244,16 +249,17 @@ export const fetchUserInfo = async () => {
 };
 
 export const checkSession = async () => {
-    const res = await request.get<Response<true>>("/auth/checkSession")
-    .catch(err => {
-        return null;
-    })
+    const res = await request
+        .get<Response<true>>("/auth/checkSession")
+        .catch((err) => {
+            return null;
+        });
     if (res) {
         return true;
     } else {
         return false;
     }
-}
+};
 
 export const idCheck = async (name: string, id_card: string) => {
     console.log(encrypt(name));
@@ -691,16 +697,21 @@ export const fetchPaymentStatus = async (order_id: string) => {
 };
 
 export const queryPayment = async (trade_no: string) => {
-    const res = await request.get<Response<{code: number, message?: string}>>(`/affair/queryPayment`, {
-        params: { trade_no },
-    }).catch(err => {
-        console.error(err);
-        Toast({
-            type: 'fail',
-            message: err.response.data.message,
-        })
-        return null;
-    })
+    const res = await request
+        .get<Response<{ code: number; message?: string }>>(
+            `/affair/queryPayment`,
+            {
+                params: { trade_no },
+            }
+        )
+        .catch((err) => {
+            console.error(err);
+            Toast({
+                type: "fail",
+                message: err.response.data.message,
+            });
+            return null;
+        });
     if (res) {
         return res.data.data;
     } else {
@@ -709,17 +720,32 @@ export const queryPayment = async (trade_no: string) => {
 };
 
 export const updateUser = async (data: Partial<User>) => {
-    const res = await request.patch(`/collectors/update`, data).catch(err => {
+    const res = await request.patch(`/collectors/update`, data).catch((err) => {
         console.error(err);
         Toast({
-            type: 'fail',
-            message: '请更改内容后重试！',
-        })
+            type: "fail",
+            message: "请更改内容后重试！",
+        });
         return null;
-    })
+    });
     if (res) {
         return res.data.data;
     } else {
         return null;
     }
-}
+};
+
+export const fetchDoc = async (title: string) => {
+    const res = await request.get<Response<Doc[]>>(`/documents/byTitle`, { params: { title } }).catch(err => {
+        console.error(err);
+        Toast({
+            type: 'fail',
+            message: err.response.data.message
+        })
+        return null;
+    })
+    if (res) {
+        return res.data.data[0]
+    } else
+        return null;
+};

@@ -14,7 +14,7 @@
                         <div class="name-tag-count">
                             <div class="name">{{ orderDetail.product_item?.product?.name }}</div>
                             <div class="tags">
-                                <Tag :data="item" v-for="item in orderDetail.product_item?.product?.tags" />
+                                <Tag :data="item" v-for="item in orderDetail.product_item?.product?.tags" :key="item.name" />
                             </div>
                             <!-- 目前只能购买一个 -->
                             <div class="count">数量 x1</div>

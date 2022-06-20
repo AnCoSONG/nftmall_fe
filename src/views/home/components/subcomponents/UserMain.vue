@@ -4,7 +4,7 @@
         <CellItem icon="gem-o" right-icon="arrow"  text="我的藏品" @click="routeTo('collection')"></CellItem>
         <!-- <CellItem icon="send-gift-o" right-icon="arrow"  text="我的转赠"></CellItem> -->
         <CellItem icon="service-o" right-icon="arrow"  text="联系客服" @click="showService = true"></CellItem>
-        <CellItem icon="info-o" right-icon="arrow"  text="关于商城" @click="showAbout"></CellItem>
+        <CellItem icon="info-o" right-icon="arrow"  text="常见问题" @click="routeTo('/doc/faq')"></CellItem>
         <van-dialog class="dialog" v-model:show="showService">
             <template #title>
                 <div class="title">请添加客服微信</div>
@@ -24,13 +24,6 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 const router = useRouter()
 const showService = ref(false);
-
-const showAbout = () => {
-    Dialog({
-        title: '关于晋元数字藏品商城',
-        message: '这是本商城的介绍文案'
-    })
-}
 
 const routeTo = (path: string) => {
     router.push(path)

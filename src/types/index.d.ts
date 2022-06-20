@@ -124,3 +124,9 @@ declare type Banner = {
     src: string;
     link?: string;
 };
+
+declare type Doc = {
+    id: string;
+    title: string;
+    content: string;
+}

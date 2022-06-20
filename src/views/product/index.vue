@@ -754,23 +754,23 @@ const onBtnClick = async () => {
         justify-content: flex-start;
         align-items: center;
 
-        &.creator-box {
-            display: flex;
-            flex-flow: nowrap row;
-            justify-content: space-between;
-            align-items: center;
+        // &.creator-box {
+        //     display: flex;
+        //     flex-flow: nowrap row;
+        //     justify-content: space-between;
+        //     align-items: center;
 
-            .title {
-                font-size: px2rem(24);
-                margin-bottom: 0;
-            }
+        //     .title {
+        //         font-size: px2rem(24);
+        //         margin-bottom: 0;
+        //     }
 
-            .content {
-                padding-bottom: 0;
-                flex: unset;
-            }
+        //     .content {
+        //         padding-bottom: 0;
+        //         flex: unset;
+        //     }
 
-        }
+        // }
 
         .title {
             margin-bottom: px2rem(20);
@@ -780,17 +780,17 @@ const onBtnClick = async () => {
             z-index: 0;
             font-weight: bold;
 
-            // &::after {
-            //     content: "";
-            //     position: absolute;
-            //     bottom: px2rem(-6);
-            //     left: calc(-5%);
-            //     right: calc(-5%);
-            //     background-color: #353535;
-            //     height: px2rem(12);
-            //     z-index: -1;
-            //     // width: 110%;
-            // }
+            &::after {
+                content: "";
+                position: absolute;
+                bottom: px2rem(-6);
+                left: calc(-5%);
+                right: calc(-5%);
+                background-color: #353535;
+                height: px2rem(12);
+                z-index: -1;
+                // width: 110%;
+            }
         }
     }
 

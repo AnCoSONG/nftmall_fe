@@ -1,7 +1,8 @@
 <template>
 <Subpage title="设置">
     <div class="setting">
-        <CellItem text="用户协议" right-icon="arrow" @click="router.push({path: '/doc/agreement'})"></CellItem>
+        <CellItem text="平台协议" right-icon="arrow" @click="router.push({path: '/doc/platform_agreement'})"></CellItem>
+        <CellItem text="隐私协议" right-icon="arrow" @click="router.push({path: '/doc/privacy_agreement'})"></CellItem>
         <CellItem text="关于BSN文昌链" right-icon="arrow" @click="router.push({path: '/doc/bsn'})"></CellItem>
         <CellItem text="关于晋元数字" right-icon="arrow" @click="router.push({path: '/doc/jinyuanshuzi'})"></CellItem>
         <CellItem text="商务合作" right-icon="arrow" @click="onCooperation"></CellItem>
@@ -26,7 +27,7 @@ const logoutLoading = ref(false);
 const onCooperation = () => {
     Dialog.confirm({
         title: '商务合作',
-        message: '请联系邮箱: xxxx@test.com',
+        message: '商务合作请邮件联系: 837709707@qq.com ',
         showCancelButton: false,
     })
 }

@@ -64,7 +64,7 @@
             </div>
             <Price
                 :small-size="(px2rem(20) as string)"
-                :integral-size="(px2rem(30) as string)"
+                :integral-size="(px2rem(32) as string)"
                 money-type="¥"
                 :price="props.data.price"
             />
@@ -250,14 +250,14 @@ const statusText = computed(() => {
             overflow: hidden;
 
             .title {
-                font-size: px2rem(22);
+                font-size: px2rem(24);
                 color: $glodTextColor;
                 font-weight: bold;
             }
 
             .tags {
                 margin-top: px2rem(12);
-                font-size: px2rem(10);
+                font-size: px2rem(12);
                 display: flex;
                 flex-flow: wrap row;
                 justify-content: flex-start;

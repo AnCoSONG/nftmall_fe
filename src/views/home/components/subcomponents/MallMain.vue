@@ -30,6 +30,17 @@ const active = ref(0);
         box-sizing: border-box;
     }
 }
+
+.mall-main .van-tab--line {
+    &.van-tab--active {
+        .van-tab__text {
+            font-size: px2rem(18)
+        }
+    }
+    .van-tab__text {
+        font-size: px2rem(14)
+    }
+}
 .mall-main .van-tab--active {
     .van-tab__text {
         font-size: px2rem(18);
