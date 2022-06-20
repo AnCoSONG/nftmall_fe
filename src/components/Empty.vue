@@ -5,7 +5,7 @@
 <script setup lang='ts'>
 import { px2rem } from '../utils';
 type PropType = {
-    description: string
+    description?: string
 }
 const props = defineProps<PropType>()
 </script>
