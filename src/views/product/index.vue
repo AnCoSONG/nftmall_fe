@@ -1,14 +1,14 @@
 <template>
     <Subpage title="藏品详情" back-to="/">
         <van-skeleton :loading="!product" :row="20">
-            <img src="https://mall-1308324841.file.myqcloud.com/productBg2.png" class="product-bg" alt=""
+            <img src="https://mall-1308324841.file.myqcloud.com/productBg3.png" class="product-bg" alt=""
                 :style="{ opacity: bgLoaded ? 1 : 0 }" @load="bgLoaded = true" />
             <div class="product" v-if="product">
                 <div class="product-preview">
                     <ProductViewer :src="product.preview_src" :rotate_mode="0" :backup_img="product.preview_img">
                     </ProductViewer>
                 </div>
-                <div class="timeline box" @click="onStepClick">
+                <div class="timeline box" @click="onStepClick" v-if="product.attribute !== 'gift'">
                     <!-- todo: click 显示时间细则 -->
                     <van-config-provider :theme-vars="theme.product_timeline">
                         <van-steps active-color="#E5E798" :active="currentActive" inactive-color="#888">
@@ -45,8 +45,11 @@
                     <Price :small-size="(px2rem(20) as string)" :integral-size="(px2rem(32) as string)" money-type="¥"
                         :price="product.price" />
 
-                    <div class="limit">
+                    <div class="limit" v-if="product.attribute !== 'gift'">
                         每人限购 <b color="gold">{{ product.limit }}</b> 份
+                    </div>
+                    <div class="limit" v-else>
+                        仅符合条件的用户可获赠
                     </div>
                 </div>
                 <div class="product-info box">
@@ -146,7 +149,7 @@ import Subpage from "../../components/Subpage.vue";
 import Price from "../../components/Price.vue";
 import Tag from "../../components/Tag.vue";
 import TypeIcon from "../../components/TypeIcon.vue";
-import { px2rem, TIME_FORMAT } from "../../utils";
+import { px2rem, setupSharing, TIME_FORMAT } from "../../utils";
 import { useRoute, useRouter } from "vue-router";
 import { computed, ref, toRef, watch, watchEffect } from "vue";
 import { onMountedOrActivated, useCountDown } from "@vant/use";
@@ -166,6 +169,8 @@ import { Dialog, Notify, Toast } from "vant";
 import dayjs from "dayjs";
 import { useUserStore } from "../../stores/user";
 import { useThemeStore } from "../../stores/theme";
+import { useAppStore } from "../../stores/app";
+const app = useAppStore()
 
 // 背景
 const bgLoaded = ref(false)
@@ -351,10 +356,19 @@ onMountedOrActivated(async () => {
         console.log(data);
         if (data) {
             product.value = { ...data };
+            if (app.isWx) {
+                await setupSharing(
+                    product.value.name,
+                    product.value.description,
+                    product.value.preview_img,
+                    `https://www.jinyuanshuzi.com/redirect?to=${window.location.toString()}`
+                )
+            }
         } else {
             // 404
             router.push("/404");
         }
+
     }
     await fetchInit();
 })
@@ -362,6 +376,16 @@ onMountedOrActivated(async () => {
 watchEffect(() => {
     if (!product.value) {
         statusText.value = "请刷新页面";
+        return;
+    }
+    if (product.value.attribute === 'gift') {
+        if (!user.isLogin) {
+            btnClickable.value = true;
+            statusText.value = "请先登录";
+        } else {
+            btnClickable.value = false
+            statusText.value = '赠品不支持购买'
+        }
         return;
     }
     const now = dayjs().valueOf();
@@ -620,13 +644,14 @@ const onBtnClick = async () => {
 </script>
 <style lang="scss" scoped>
 .product-bg {
-    // object-fit: contain;
     width: 100%;
+    max-width: 550px;
+    left: 50%;
+    transform: translate(-50%);
     position: absolute;
-    top: px2rem(-108);
-    left: 0;
-    right: 0;
+    top: px2rem(-60);
     transition: opacity 0.3s ease-in-out;
+    z-index: 0;
     // z-index: 
 }
 

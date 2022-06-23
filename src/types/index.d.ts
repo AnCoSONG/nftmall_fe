@@ -5,6 +5,8 @@ declare type Tag = {
     mode?: DisplayMode;
 };
 
+declare module "weixin-js-sdk";
+
 declare namespace WeixinJSBridge {
     interface WxBridgeInvoke {
         appId: string;
@@ -26,6 +28,7 @@ declare namespace WeixinJSBridge {
 declare type SupportPayment = "weixin" | "alipay";
 declare type PaymentStatus = "unpaid" | "paid" | "canceled";
 declare type onChainStatus = "success" | "processing" | "failed" | "pending";
+declare type ProductAttribute = "normal" | "gift"
 
 declare type Genre = {
     id: number;
@@ -54,6 +57,8 @@ declare type Product = {
     publisher?: Publisher;
     items?: ProductItem[];
     details: string[];
+    poster: string;
+    attribute: ProductAttribute;
     price: string;
     limit: number;
     tags: Tag[];

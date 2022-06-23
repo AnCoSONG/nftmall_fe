@@ -1,6 +1,6 @@
 <template>
     <!-- todo: 待实现 -->
-    <Subpage title="订单详情">
+    <Subpage title="订单详情" back-to="/order">
         <van-skeleton title avatar :row="10" :loading="!orderDetail">
             <div class="order-detail" v-if="orderDetail">
                 <div class="order-detail-card">

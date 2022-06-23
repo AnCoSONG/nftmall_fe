@@ -10,6 +10,8 @@ import router from "./routers";
 import { createPinia } from "pinia";
 import { vueCos } from "./plugins/cos-sdk";
 
+import wx from 'weixin-js-sdk'
+
 const app = createApp(App);
 
 app.use(router);

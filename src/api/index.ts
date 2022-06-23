@@ -639,6 +639,33 @@ export const fetchOpenid = async (code: string) => {
         return null;
     }
 };
+
+export const fetchSignature = async (url: string) => {
+    const res = await request
+        .get<
+            Response<{
+                signature: string;
+                timestamp: number;
+                nonceStr: string;
+                appId: string;
+            }>
+        >("/auth/fetchSignature", {
+            params: { url: url.split("#")[0] },
+        })
+        .catch((err) => {
+            console.error(err);
+            Toast({
+                type: "fail",
+                message: err.response.data.message,
+            });
+            return null;
+        });
+    if (res) {
+        return res.data.data;
+    } else {
+        return null;
+    }
+};
 type H5PayRes = {
     h5_url: string;
 };
@@ -736,16 +763,17 @@ export const updateUser = async (data: Partial<User>) => {
 };
 
 export const fetchDoc = async (title: string) => {
-    const res = await request.get<Response<Doc[]>>(`/documents/byTitle`, { params: { title } }).catch(err => {
-        console.error(err);
-        Toast({
-            type: 'fail',
-            message: err.response.data.message
-        })
-        return null;
-    })
+    const res = await request
+        .get<Response<Doc[]>>(`/documents/byTitle`, { params: { title } })
+        .catch((err) => {
+            console.error(err);
+            Toast({
+                type: "fail",
+                message: err.response.data.message,
+            });
+            return null;
+        });
     if (res) {
-        return res.data.data[0]
-    } else
-        return null;
+        return res.data.data[0];
+    } else return null;
 };

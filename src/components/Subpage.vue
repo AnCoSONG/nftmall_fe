@@ -1,10 +1,11 @@
 <template>
     <div class="subpage-layout">
-        <div class="subpage-header" :style="{backdropFilter: `blur(${blurPx}px)`}">
+        <div class="subpage-header" :style="{ backdropFilter: `blur(${blurPx}px)` }">
             <van-icon name="arrow-left" class="icon" @click="routeBack" />
             <div class="title" :style="{ visibility: props.title === '' ? 'hidden' : 'visible' }">{{ props.title }}
             </div>
-            <van-icon name="share-o" :style="{ visibility: props.shareable ? 'visible' : 'hidden' }" />
+            <van-icon name="share-o" :style="{ visibility: props.shareable ? 'visible' : 'hidden' }"
+                @click="() => onShareClick()" />
         </div>
         <div class="subpage-content">
             <slot></slot>
@@ -19,13 +20,15 @@ const router = useRouter()
 type PropType = {
     title: string,
     shareable?: boolean,
-    backTo?: string,
+    backTo?: string
 }
 const blurPx = ref(0)
 const props = defineProps<PropType>()
 
+const emit = defineEmits(['onShareClick'])
+
 const routeBack = () => {
-    if(props.backTo !== undefined && props.backTo !== null) {
+    if (props.backTo !== undefined && props.backTo !== null) {
         router.push(props.backTo)
     } else {
         router.back()
@@ -40,6 +43,10 @@ const handleScroll = () => {
     if (blurPx.value >= 20) {
         blurPx.value = 20;
     }
+}
+
+const onShareClick = () => {
+    emit('onShareClick')
 }
 
 onMountedOrActivated(() => {
@@ -75,7 +82,7 @@ onUnmounted(() => {
         top: 0;
         backdrop-filter: blur(20px);
         background: transparent;
-        
+
         .title {
             font-size: px2rem(18);
         }
@@ -87,6 +94,7 @@ onUnmounted(() => {
         padding: px2rem(17) px2rem(17);
         box-sizing: border-box;
         padding-top: 0;
+
         .test-box {
             width: 100%;
             height: 400px;

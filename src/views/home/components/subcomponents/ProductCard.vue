@@ -17,7 +17,7 @@
             </van-image>
             <!-- todo: 发售状态组件 -->
             <div class="product-status" v-show="loaded">
-                {{ statusText }}
+                {{ props.data.attribute === 'gift'?'🎁 赠品':statusText }}
                 <span v-if="isCountdown">
                     &nbsp;{{
                         `${countDownRef.hours

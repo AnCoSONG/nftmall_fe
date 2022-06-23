@@ -19,9 +19,13 @@
 <script setup lang="ts">
 import { useAppStore } from "../../stores/app";
 import { storeToRefs } from "pinia";
-import { ref, watch } from "vue";
+import { onActivated, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { v4 } from "uuid";
+import wx from "weixin-js-sdk";
+import { fetchSignature } from "../../api";
+import { setupSharing } from "../../utils";
+import { onMountedOrActivated } from "@vant/use";
 const app = useAppStore();
 const { title } = storeToRefs(app);
 const route = useRoute();
@@ -47,6 +51,17 @@ const items = ref([
         text: "我的",
     },
 ]);
+
+onMountedOrActivated(async () => {
+    if (app.isWx) {
+        await setupSharing(
+            "晋元数字",
+            "在晋元数字开始数字收藏!",
+            "https://mall-1308324841.file.myqcloud.com/1.jpg",
+            "https://www.jinyuanshuzi.com/redirect?to=https://www.jinyuanshuzi.com/"
+        );
+    }
+})
 </script>
 <style lang="scss">
 .home {

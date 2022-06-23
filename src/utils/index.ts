@@ -39,12 +39,12 @@ export const hidePhone = (phone: string) => {
 };
 
 export const hash = (text: string) => {
-    return CryptoJS.MD5(text)
-}
+    return CryptoJS.MD5(text);
+};
 
 export const randomCode = () => {
-    return CryptoJS.lib.WordArray.random(16).toString()
-}
+    return CryptoJS.lib.WordArray.random(16).toString();
+};
 
 /**
  * 图像地址原样返回，cos key解析后返回
@@ -125,12 +125,12 @@ export const notSupport = () => {
 
 export const getQuerys = (e: string) => {
     if (!e) return {};
-    let t:Record<string, string> = {},
+    let t: Record<string, string> = {},
         r = [],
         n = "",
         a = "";
     try {
-        let i:string[] = [];
+        let i: string[] = [];
         if (
             (e.indexOf("?") >= 0 &&
                 (i = e.substring(e.indexOf("?") + 1, e.length).split("&")),
@@ -143,3 +143,77 @@ export const getQuerys = (e: string) => {
     }
     return t;
 };
+
+import wx from "weixin-js-sdk";
+import { fetchSignature } from "../api";
+export const setupSharing = async (
+    title: string,
+    desc: string,
+    imgUrl: string,
+    link: string
+) => {
+    const r = await fetchSignature(window.location.toString());
+    if (r) {
+        wx.config({
+            debug: false, // 开启调试模式,调用的所有 api 的返回值会在客户端 alert 出来，若要查看传入的参数，可以在 pc 端打开，参数信息会通过 log 打出，仅在 pc 端时才会打印。
+            appId: r.appId, // 必填，公众号的唯一标识
+            timestamp: r.timestamp, // 必填，生成签名的时间戳
+            nonceStr: r.nonceStr, // 必填，生成签名的随机串
+            signature: r.signature, // 必填，签名
+            jsApiList: [
+                "updateAppMessageShareData",
+                "updateTimelineShareData",
+                "onMenuShareAppMessage",
+                "onMenuShareTimeline",
+                "onMenuShareQQ",
+                "onMenuShareQZone",
+            ], // 必填，需要使用的 JS 接口列表
+        });
+        wx.ready(() => {
+            wx.onMenuShareTimeline({
+                title, // 分享标题
+                link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号 JS 安全域名一致
+                imgUrl, // 分享图标
+                success: function () {
+                    // 用户点击了分享后执行的回调函数
+                    Toast({
+                        type: "success",
+                        message: "分享成功!",
+                    });
+                },
+            });
+            wx.onMenuShareAppMessage({
+                title,
+                desc,
+                link,
+                imgUrl,
+                success: function () {
+                    Toast({
+                        type: "success",
+                        message: "分享成功!",
+                    });
+                },
+            });
+        });
+    }
+};
+
+//* 设置保护
+export const setupProtection = async () => {
+    const r = await fetchSignature(window.location.toString());
+    if (r) {
+        wx.config({
+            debug: false, // 开启调试模式,调用的所有 api 的返回值会在客户端 alert 出来，若要查看传入的参数，可以在 pc 端打开，参数信息会通过 log 打出，仅在 pc 端时才会打印。
+            appId: r.appId, // 必填，公众号的唯一标识
+            timestamp: r.timestamp, // 必填，生成签名的时间戳
+            nonceStr: r.nonceStr, // 必填，生成签名的随机串
+            signature: r.signature, // 必填，签名
+            jsApiList: [
+                "hideAllNonBaseMenuItem"
+            ], // 必填，需要使用的 JS 接口列表
+        });
+        wx.ready(() => {
+            wx.hideAllNonBaseMenuItem()
+        })
+    }
+}

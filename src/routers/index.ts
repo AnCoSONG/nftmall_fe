@@ -29,6 +29,12 @@ const router = createRouter({
             ],
         },
         {
+            path: '/redirect',
+            name: 'redirect',
+            component: () => import("views/redirect/index.vue"),
+            props: (route) => ({ to: route.query.to })
+        },
+        {
             path: "/login",
             name: "login",
             component: () => import("views/login/index.vue"),
@@ -152,7 +158,9 @@ router.beforeEach(async (to, from, next) => {
     // console.log(to, from)
     NProgress.start();
     document.title = to.meta.title ? (to.meta.title as string) : defaultTitle;
-    // console.log(to.matched);
+    if (to.path === '/redirect') {
+        next()
+    }
     if (to.matched.some((route) => route.meta.requireAuth === "required")) {
         const data = await checkSession(); // jwt检测
         if (!data) {

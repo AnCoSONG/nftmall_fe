@@ -31,7 +31,8 @@ import {
     Steps,
     Step,
     CountDown,
-    Popup
+    Popup,
+    ImagePreview,
 } from "vant";
 
 export default function (app: App) {
@@ -66,4 +67,5 @@ export default function (app: App) {
     app.use(Step);
     app.use(CountDown);
     app.use(Popup);
+    app.use(ImagePreview);
 }

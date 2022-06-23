@@ -38,7 +38,8 @@ const props = defineProps<PropType>()
 const data = toRef(props, 'data')
 
 const noText = computed(() => {
-    return `#${data.value.no.toString().padStart(4, '0')}`
+    const len = String(data.value.product?.publish_count).length
+    return `#${data.value.no.toString().padStart(len, '0')}`
 })
 </script>
 <style lang="scss" scoped>
@@ -111,8 +112,8 @@ const noText = computed(() => {
             box-shadow: 0 px2rem(4) px2rem(4) rgba(0, 0, 0, .25);
             border-radius: px2rem(8);
             text-align: center;
-            padding: px2rem(2);
-            width: px2rem(85);
+            padding: px2rem(3) px2rem(8);
+            min-width: px2rem(84);
             color: black;
             font-size: px2rem(12);
             margin-bottom: px2rem(12);
