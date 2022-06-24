@@ -1,7 +1,7 @@
 <template>
     <Subpage title="藏品详情" back-to="/">
         <van-skeleton :loading="!product" :row="20">
-            <img src="https://mall-1308324841.file.myqcloud.com/productBg3.png" class="product-bg" alt=""
+            <img src="https://mall-1308324841.file.myqcloud.com/productBg4.png" class="product-bg" alt=""
                 :style="{ opacity: bgLoaded ? 1 : 0 }" @load="bgLoaded = true" />
             <div class="product" v-if="product">
                 <div class="product-preview">
@@ -649,7 +649,7 @@ const onBtnClick = async () => {
     left: 50%;
     transform: translate(-50%);
     position: absolute;
-    top: px2rem(-60);
+    top: px2rem(-65);
     transition: opacity 0.3s ease-in-out;
     z-index: 0;
     // z-index: 

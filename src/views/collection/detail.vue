@@ -2,7 +2,7 @@
     <Subpage title="藏品详情" shareable back-to="/collection" @on-share-click="() => onShareClickCallback()">
         <van-skeleton :loading="!productItemData" :row="10">
             <div class="collection-detail" v-if="productItemData">
-                <img src="https://mall-1308324841.file.myqcloud.com/productBg3.png" class="product-bg" alt=""
+                <img src="https://mall-1308324841.file.myqcloud.com/productBg4.png" class="product-bg" alt=""
                     :style="{ opacity: bgLoaded ? 1 : 0 }" @load="bgLoaded = true" />
                 <ProductViewer :src="productItemData.product?.src!" :backup_img="productItemData.product?.preview_img!"
                     :rotate_mode="0"></ProductViewer>
@@ -145,11 +145,11 @@ onDeactivated(() => {
 .product-bg {
     // object-fit: contain;
     width: 100%;
-    max-width: 550px;
+    max-width: 500px;
     left: 50%;
     transform: translate(-50%);
     position: absolute;
-    top: px2rem(-110);
+    top: px2rem(-108);
     transition: opacity 0.3s ease-in-out;
     z-index: 0;
 }
