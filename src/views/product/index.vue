@@ -1,7 +1,7 @@
 <template>
     <Subpage title="藏品详情" back-to="/">
         <van-skeleton :loading="!product" :row="20">
-            <img src="https://mall-1308324841.file.myqcloud.com/productBg4.png" class="product-bg" alt=""
+            <img src="https://mall-1308324841.file.myqcloud.com/productBg5.png" class="product-bg" alt=""
                 :style="{ opacity: bgLoaded ? 1 : 0 }" @load="bgLoaded = true" />
             <div class="product" v-if="product">
                 <div class="product-preview">
@@ -92,14 +92,13 @@
                     </div>
                 </div>
                 <div class="must-know box">
+                    <div class="title">权益须知</div>
+                    <div class="content" v-html="previllageMustKnowHtml">
+                    </div>
+                </div>
+                <div class="must-know box">
                     <div class="title">购买须知</div>
-                    <div class="content">
-                        数字藏品为虚拟数字商品，而非实物，仅限实名认真为年满14
-                        周岁的中国大陆用户购买。数字藏品的版权由发行方或原创者
-                        拥有，除另行取得版权拥有者书面同意外，用户不得将数字藏
-                        品用于任何商业用途。本商品一经售出，不支持退换。本商品
-                        源文件不支持本地下载。请勿对数字藏品进行炒作、场外交易
-                        、欺诈，或以任何其他非法方式进行使用。
+                    <div class="content" v-html="buyMustKnowHtml">
                     </div>
                 </div>
                 <div class="bottom-bar">
@@ -164,9 +163,11 @@ import {
     seckill,
     fetchUnpaid,
     fetchProductBoughtCount,
+    fetchDoc
 } from "../../api";
 import { Dialog, Notify, Toast } from "vant";
 import dayjs from "dayjs";
+import Dompurify from 'dompurify';
 import { useUserStore } from "../../stores/user";
 import { useThemeStore } from "../../stores/theme";
 import { useAppStore } from "../../stores/app";
@@ -174,7 +175,6 @@ const app = useAppStore()
 
 // 背景
 const bgLoaded = ref(false)
-
 
 const theme = useThemeStore()
 
@@ -185,12 +185,13 @@ const props = defineProps({
         default: "",
     },
 });
+
 const user = useUserStore();
 const id = toRef(props, "id");
 const product = ref<Product>();
 const route = useRoute();
 const router = useRouter();
-const popup_show = ref(false)
+const popup_show = ref(false);
 
 const onStepClick = () => {
     // todo: 使用Popup实现展示效果
@@ -289,6 +290,11 @@ const unpaid = ref<{ code: number; order_id?: string }>({ code: 0 });
 const bounght_count = ref(0);
 const stock_count = ref(0);
 const statusText = ref("");
+const buyMustKnow = ref("")
+const previllageMustKnow = ref("")
+
+const buyMustKnowHtml = computed(() => Dompurify.sanitize(buyMustKnow.value ?? ''))
+const previllageMustKnowHtml = computed(() => Dompurify.sanitize(previllageMustKnow.value ?? ''))
 
 const fetchDraw = async () => {
     isLoading.value = true;
@@ -334,13 +340,15 @@ const fetchInit = async () => {
         stock_count.value = stockRes;
         return;
     }
-    const [drawRes, luckyRes, unpaidRes, stockRes, bounghtCountRes] =
+    const [drawRes, luckyRes, unpaidRes, stockRes, bounghtCountRes, buyMustKnowRes, previllageMustKnowRes] =
         await Promise.all([
             fetchIsDraw(user.data.id, id.value),
             fetchIsLucky(user.data.id, id.value),
             fetchUnpaid(user.data.id, id.value),
             get_stock_count(id.value, "redis"),
             fetchProductBoughtCount(user.data.id, id.value),
+            fetchDoc('购买须知'),
+            fetchDoc('权益须知')
         ]);
     isLoading.value = false;
     isLucky.value = luckyRes;
@@ -348,12 +356,20 @@ const fetchInit = async () => {
     unpaid.value = unpaidRes;
     stock_count.value = stockRes;
     bounght_count.value = bounghtCountRes ?? 0;
+    if (buyMustKnowRes) {
+        buyMustKnow.value = buyMustKnowRes.content
+    }
+    if (previllageMustKnowRes) {
+        previllageMustKnow.value = previllageMustKnowRes.content
+    }
+
+
 };
 
 onMountedOrActivated(async () => {
     if (id.value !== "") {
         const data = await fetchProduct(id.value, true);
-        console.log(data);
+        // console.log(data);
         if (data) {
             product.value = { ...data };
             if (app.isWx) {
@@ -647,9 +663,10 @@ const onBtnClick = async () => {
     width: 100%;
     max-width: 550px;
     left: 50%;
+    // max-height: 900px;
     transform: translate(-50%);
     position: absolute;
-    top: px2rem(-65);
+    top: px2rem(-60);
     transition: opacity 0.3s ease-in-out;
     z-index: 0;
     // z-index: 
@@ -663,11 +680,6 @@ const onBtnClick = async () => {
     align-items: center;
     justify-content: center;
     margin-bottom: px2rem(72);
-    background-size: contain;
-    background-image: url();
-    background-repeat: no-repeat;
-
-
 
     .box {
         padding: px2rem(12) px2rem(16);

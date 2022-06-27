@@ -1,11 +1,11 @@
 <template>
     <Subpage title="藏品详情" shareable back-to="/collection" @on-share-click="() => onShareClickCallback()">
         <van-skeleton :loading="!productItemData" :row="10">
+            <img src="https://mall-1308324841.file.myqcloud.com/productBg5.png" class="product-bg" alt=""
+                :style="{ opacity: bgLoaded ? 1 : 0 }" @load="bgLoaded = true" />
             <div class="collection-detail" v-if="productItemData">
-                <img src="https://mall-1308324841.file.myqcloud.com/productBg4.png" class="product-bg" alt=""
-                    :style="{ opacity: bgLoaded ? 1 : 0 }" @load="bgLoaded = true" />
-                <ProductViewer :src="productItemData.product?.src!" :backup_img="productItemData.product?.preview_img!"
-                    :rotate_mode="0"></ProductViewer>
+                <ProductViewer :src="is3DSrc ? productItemData.product!.src : productItemData.product!.preview_src"
+                    :backup_img="productItemData.product?.preview_img!" :rotate_mode="0"></ProductViewer>
                 <div class="box">
                     <div class="product-item-name">
                         {{ productItemData.product?.name ?? '...' }}
@@ -13,6 +13,7 @@
                     <div class="product-item-no">
                         {{ noText ?? '...' }}
                     </div>
+                    <div class="product-item-btn" @click="onBtnClick" v-if="!is3DSrc">查看原始资源</div>
                 </div>
                 <div class="box">
                     <van-image class="avatar" :src="productItemData.product?.publisher?.avatar" round>
@@ -50,6 +51,16 @@
                     <KeyValueLine key-text="交易哈希" :value="productItemData.tx_hash ?? '...'" :copy="true" />
                 </div>
             </div>
+            <van-overlay class="player" :show="isPlayerVisible" :z-index="100">
+                <div class="player-wrapper" style="width: 100%; height: 100%;">
+                    <video ref="videoPlayer" id="video-player" controls style="width: 80%;" preload="metadata"
+                        controlslist="nodownload" :src="playerSrc" v-if="isVideo">
+                    </video>
+                    <audio ref="audioPlayer" :src="playerSrc" v-if="isAudio" id="audio-player" style="width: 80%;"
+                        controls preload="metadata" controlslist="nodownload"></audio>
+                    <div class="btn" @click="isPlayerVisible = false">关闭</div>
+                </div>
+            </van-overlay>
 
         </van-skeleton>
     </Subpage>
@@ -61,16 +72,17 @@ export default {
 </script>
 <script setup lang='ts'>
 import dayjs from 'dayjs';
-import { computed, onDeactivated, ref, toRef } from 'vue';
+import { computed, onDeactivated, ref, toRef, watch } from 'vue';
 import Subpage from '../../components/Subpage.vue';
 import ProductViewer from '../../components/ProductViewer.vue';
 import { onMountedOrActivated } from '@vant/use'
 import ImageLoader from '../../components/ImageLoader.vue';
 import KeyValueLine from '../../components/KeyValueLine.vue';
 import { fetchProductItemDetail } from '../../api';
-import { onChainStatus, setupProtection, SupportType, TIME_FORMAT } from '../../utils';
+import { extract_suffix, onChainStatus, setupProtection, SupportType, TIME_FORMAT, px2rem } from '../../utils';
 import { useAppStore } from '../../stores/app';
 import { ImagePreview } from 'vant';
+import { authSrc } from '../../plugins/cos-sdk';
 const app = useAppStore()
 const bgLoaded = ref(false);
 const props = defineProps({
@@ -132,11 +144,67 @@ const productOnChainTimeFormat = computed(() => {
     }
 })
 
+const is3DSrc = computed(() => {
+    if (productItemData.value && productItemData.value.product) {
+        if (['glb', 'gltf'].indexOf(extract_suffix(productItemData.value.product.src)) !== -1) {
+            return true
+        } else {
+            return false
+        }
+    }
+})
+
 const onShareClickCallback = () => {
     if (productItemData.value) {
         ImagePreview([productItemData.value.product!.poster])
     }
 }
+
+const isImage = computed((suffix: string) => {
+    if (productItemData.value && productItemData.value.product) {
+        const suffix = extract_suffix(productItemData.value.product.src)
+        return ['apng', 'avif', 'bmp', 'gif', 'ico', 'cur', 'jpg', 'jpeg', 'jfif', 'pjpeg', 'pjp', 'png', 'svg', 'tif', 'tiff', 'webp'].indexOf(suffix.toLowerCase()) !== -1
+    } else {
+        return false;
+    }
+})
+
+const isVideo = computed(() => {
+    if (productItemData.value && productItemData.value.product) {
+        const suffix = extract_suffix(productItemData.value.product.src)
+        return ['mp4', 'avi', 'mkv', 'hevc', 'wmv', 'mov', 'asf', 'flv', 'rmvb', 'rm', '3gb', 'vob', 'mpeg', 'm4v', 'webm'].indexOf(suffix.toLowerCase()) !== -1
+    }
+    return false
+})
+
+const isAudio = computed(() => {
+    if (productItemData.value && productItemData.value.product) {
+        const suffix = extract_suffix(productItemData.value.product.src)
+        return ['mp3', 'flac', 'wav', 'm4a'].indexOf(suffix.toLowerCase()) !== -1
+    }
+    return false
+})
+
+const isPlayerVisible = ref(false)
+const playerSrc = ref("")
+const videoPlayer = ref()
+const audioPlayer = ref()
+
+watch(isPlayerVisible, (newVal) => {
+    if (newVal) {
+        // 显示
+        playerSrc.value = authSrc(productItemData.value!.product!.src)
+    } else {
+        // 隐藏
+        videoPlayer.value?.pause()
+        audioPlayer.value?.pause()
+    }
+})
+
+const onBtnClick = () => {
+    isPlayerVisible.value = true
+}
+
 onDeactivated(() => {
     productItemData.value = undefined
 })
@@ -145,17 +213,24 @@ onDeactivated(() => {
 .product-bg {
     // object-fit: contain;
     width: 100%;
-    max-width: 500px;
+    max-width: 550px;
     left: 50%;
     transform: translate(-50%);
     position: absolute;
-    top: px2rem(-108);
+    top: px2rem(-60);
     transition: opacity 0.3s ease-in-out;
     z-index: 0;
 }
 
 .collection-detail {
     // position: relative;
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-flow: nowrap column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: px2rem(72);
 
     .box {
         position: relative;
@@ -189,6 +264,19 @@ onDeactivated(() => {
             color: black;
             font-size: px2rem(16);
             font-weight: bold;
+        }
+
+        .product-item-btn {
+            margin-top: px2rem(10);
+
+            // background: linear-gradient(90.23deg, #49432B 6.42%, #3A3523 99.92%);
+            color: $glodTextColor;
+            background-color: $boxBgColor;
+            font-size: px2rem(14);
+            padding: px2rem(8);
+            box-sizing: border-box;
+            border-radius: px2rem(8);
+            box-shadow: inset 0 px2rem(4) px2rem(4) rgba(0, 0, 0, .25);
         }
 
         .avatar {
@@ -258,6 +346,33 @@ onDeactivated(() => {
 
     .collection-info {
         font-size: px2rem(14);
+    }
+}
+
+.player-wrapper {
+    display: flex;
+    flex-flow: nowrap column;
+    justify-content: center;
+    align-items: center;
+
+    #video-player {
+        border-radius: px2rem(8);
+        overflow: hidden;
+        box-shadow: 0 px2rem(4) px2rem(4) rgba(0, 0, 0, 0.25);
+
+    }
+
+    .btn {
+        font-size: px2rem(16);
+        color: $normalTextColor;
+        background-color: $boxBgColorLight;
+        padding: px2rem(8) px2rem(16);
+        margin-top: px2rem(34);
+        box-sizing: border-box;
+        border-radius: px2rem(8);
+        box-shadow: inset 0 px2rem(4) px2rem(4) rgba(0, 0, 0, 0.25);
+
+
     }
 }
 </style>
