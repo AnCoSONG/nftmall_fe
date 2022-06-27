@@ -1,16 +1,21 @@
 <template>
-<Subpage title="设置">
-    <div class="setting">
-        <CellItem text="平台协议" right-icon="arrow" @click="router.push({path: '/doc/platform_agreement'})"></CellItem>
-        <CellItem text="隐私协议" right-icon="arrow" @click="router.push({path: '/doc/privacy_agreement'})"></CellItem>
-        <CellItem text="关于BSN文昌链" right-icon="arrow" @click="router.push({path: '/doc/bsn'})"></CellItem>
-        <CellItem text="关于晋元数字" right-icon="arrow" @click="router.push({path: '/doc/jinyuanshuzi'})"></CellItem>
-        <CellItem text="商务合作" right-icon="arrow" @click="onCooperation"></CellItem>
-        <!-- <CellItem text="开启开发者模式" right-icon="arrow" v-if="user.data.role === 'official'"></CellItem> -->
-        <!-- 登录后才显示 -->
-        <DangerBtn text="退出登录" :loading="logoutLoading" @click="logout()" v-if="user.isLogin"/>
-    </div>
-</Subpage>
+    <Subpage title="设置">
+        <div class="setting">
+            <CellItem text="平台协议" right-icon="arrow" @click="router.push({ path: '/doc', query: { t: '平台协议' } })">
+            </CellItem>
+            <CellItem text="隐私协议" right-icon="arrow" @click="router.push({ path: '/doc', query: { t: '隐私协议' } })">
+            </CellItem>
+            <CellItem text="关于BSN文昌链" right-icon="arrow"
+                @click="router.push({ path: '/doc', query: { t: '关于BSN文昌链' } })">
+            </CellItem>
+            <CellItem text="关于晋元数字" right-icon="arrow" @click="router.push({ path: '/doc', query: { t: '关于晋元数字' } })">
+            </CellItem>
+            <CellItem text="商务合作" right-icon="arrow" @click="onCooperation"></CellItem>
+            <!-- <CellItem text="开启开发者模式" right-icon="arrow" v-if="user.data.role === 'official'"></CellItem> -->
+            <!-- 登录后才显示 -->
+            <DangerBtn text="退出登录" :loading="logoutLoading" @click="logout()" v-if="user.isLogin" />
+        </div>
+    </Subpage>
 </template>
 <script setup lang='ts'>
 import Subpage from '../../components/Subpage.vue';

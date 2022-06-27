@@ -1,11 +1,12 @@
 <template>
-    <div class="user-main" >
+    <div class="user-main">
         <CellItem icon="bill-o" right-icon="arrow" text="我的订单" @click="routeTo('order')"></CellItem>
-        <CellItem icon="gem-o" right-icon="arrow"  text="我的藏品" @click="routeTo('collection')"></CellItem>
+        <CellItem icon="gem-o" right-icon="arrow" text="我的藏品" @click="routeTo('collection')"></CellItem>
         <!-- <CellItem icon="send-gift-o" right-icon="arrow"  text="我的转赠"></CellItem> -->
-        <CellItem icon="service-o" right-icon="arrow"  text="联系客服" @click="showService = true"></CellItem>
-        <CellItem icon="info-o" right-icon="arrow"  text="常见问题" @click="routeTo('/doc/faq')"></CellItem>
-        <van-dialog class="dialog" v-model:show="showService">
+        <CellItem icon="service-o" right-icon="arrow" text="联系客服" @click="router.push({path: '/doc', query: { t: '联系客服'}})"></CellItem>
+        <CellItem icon="info-o" right-icon="arrow" text="常见问题"
+            @click="router.push({ path: '/doc', query: { t: '常见问题' } })"></CellItem>
+        <!-- <van-dialog class="dialog" v-model:show="showService">
             <template #title>
                 <div class="title">请添加客服微信</div>
             </template>
@@ -14,7 +15,7 @@
                     <van-loading type="spinner" size="20" />
                 </template>
             </van-image>
-        </van-dialog>
+        </van-dialog> -->
     </div>
 </template>
 <script setup lang='ts'>
