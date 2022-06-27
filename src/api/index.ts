@@ -335,7 +335,6 @@ export const get_stock_count = async (
 export const fetchIsDraw = async (collector_id: number, product_id: string) => {
     const res = await request
         .post(`/collectors/isdraw`, {
-            collector_id,
             product_id,
         })
         .catch((err) => {
@@ -355,7 +354,6 @@ export const fetchIsLucky = async (
 ) => {
     const res = await request
         .post<Response<number>>(`/collectors/islucky`, {
-            collector_id,
             product_id,
         })
         .catch((err) => {
@@ -377,7 +375,6 @@ export const fetchUnpaid = async (collector_id: number, product_id: string) => {
             `/orders/is_unpaid`,
             {
                 params: {
-                    collector_id,
                     product_id,
                 },
             }
@@ -503,7 +500,7 @@ export const fetchProductItems = async (
                 page: number;
                 offset: number;
             }>
-        >(`/product-items/list/${collector_id}`, {
+        >(`/product-items/list`, {
             params: {
                 page,
                 limit,
@@ -530,7 +527,7 @@ export const fetchProductItemDetail = async (
     with_relation = true
 ) => {
     const res = await request
-        .get<Response<ProductItem>>(`/product-items/${product_item_id}`, {
+        .get<Response<ProductItem>>(`/product-items/findOneByUser/${product_item_id}`, {
             params: { with_relation },
         })
         .catch((err) => {
@@ -553,7 +550,7 @@ export const fetchProductBoughtCount = async (
 ) => {
     const res = await request
         .get<Response<number>>(
-            `/product-items/get_collection_count/${collector_id}`,
+            `/product-items/get_collection_count`,
             {
                 params: {
                     product_id,
