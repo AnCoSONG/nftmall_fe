@@ -8,7 +8,8 @@ import { vueAxios } from "./plugins/axios";
 import useClipboard from "./plugins/clipboard";
 import router from "./routers";
 import { createPinia } from "pinia";
-import { vueCos } from "./plugins/cos-sdk";
+import { authSrc, vueCos } from "./plugins/cos-sdk";
+import { VueMasonryPlugin } from 'vue-masonry'
 
 import wx from 'weixin-js-sdk'
 
@@ -20,4 +21,5 @@ app.use(useVant);
 app.use(vueAxios);
 app.use(vueCos);
 app.use(useClipboard);
+app.use(VueMasonryPlugin);
 app.mount("#app");

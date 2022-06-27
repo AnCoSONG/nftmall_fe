@@ -5,9 +5,11 @@
         </div>
         <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
             <!-- todo: 自定义 finished text 槽 -->
-            <van-list class="grid" v-model:loading="loading" :finished="finished" finished-text="已显示所有藏品"
+            <van-list class="grid" id="mansoryGrid" v-model:loading="loading" :finished="finished" finished-text="已显示所有藏品"
                 v-if="list.length > 0" @load="onLoadMore">
-                <CollectionItem v-for="item in list" :data="item" />
+                <div class="mansory-container" v-masonry transition-duration="0.3s" item-selector=".mansory-item" :column-width="px2rem(175, true)">
+                    <CollectionItem v-for="item in list" :data="item" class="mansory-item" v-masonry-tile/>
+                </div>
             </van-list>
             <Empty v-else />
         </van-pull-refresh>
@@ -17,7 +19,7 @@
 import CollectionItem from './CollectionItem.vue';
 import Empty from '../../../components/Empty.vue';
 import { computed, ref } from 'vue';
-import { onChainStatus } from '../../../utils';
+import { onChainStatus, px2rem } from '../../../utils';
 import { useUserStore } from '../../../stores/user';
 import { fetchProductItems } from '../../../api';
 import { onMountedOrActivated } from '@vant/use';
