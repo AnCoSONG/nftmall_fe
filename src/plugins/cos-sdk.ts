@@ -64,25 +64,48 @@ export const getObjectUrlPromisify = async (
 
 export const putObjectPromisify = async (key: string, file: File) => {
     return new Promise((resolve, reject) => {
-        cos.putObject({
-            Bucket,
-            Region,
-            Key: `avatar/${key}`,
-            StorageClass: 'STANDARD',
-            Body: file
-        }, function(err, data) {
-            if (err) {
-                reject(err)
-            } else {
-                resolve(true)
+        cos.putObject(
+            {
+                Bucket,
+                Region,
+                Key: `avatar/${key}`,
+                StorageClass: "STANDARD",
+                Body: file,
+            },
+            function (err, data) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(true);
+                }
             }
-        })
-        
-    })
-}
+        );
+    });
+};
 
 export const cdnTransform = (key: string) => {
     return `https://mall-1308324841.file.myqcloud.com/${key}`;
+};
+
+import MD5 from "crypto-js/md5";
+import { randStr } from "../utils";
+
+export const authSrc = (originalStr: string) => {
+    const url = new URL(originalStr);
+    const path = url.pathname;
+    const origin = url.origin
+
+    const secret =
+        Math.random() > 0.5
+            ? import.meta.env.VITE_CDN_MAIN_SECRET
+            : import.meta.env.VITE_CDN_BACKUP_SECRET;
+    const param = import.meta.env.VITE_CDN_PARAMETER;
+    const now = Date.now();
+    const now_ms = Math.floor(now / 1000);
+    const rand_str = randStr(Math.floor(Math.random() * 50))
+
+    const md5sign = MD5(`${path}-${now_ms}-${rand_str}-${0}-${secret}`).toString();
+    return `${origin}${path}?${param}=${now_ms}-${rand_str}-0-${md5sign}`
 };
 
 export const vueCos = (app: App) => {

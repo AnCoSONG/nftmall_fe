@@ -102,7 +102,7 @@ const isCountdown = ref(false);
 const stock_count = ref(0);
 // 加载
 const stock_count_res = await get_stock_count(props.data.id as string, "redis");
-console.log(stock_count_res);
+// console.log(stock_count_res);
 stock_count.value = stock_count_res;
 
 // todo: statusText优化

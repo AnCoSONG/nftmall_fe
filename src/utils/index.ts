@@ -94,7 +94,7 @@ export enum onChainStatus {
 
 export const encrypt = (data: string) => {
     // console.log(AES, Utf8, Pkcs7)
-    return AES.encrypt(data, "8992c282-ddff-11ec-9d64-0242ac120002", {
+    return AES.encrypt(data, import.meta.env.VITE_SECRET, {
         mode: ECB,
         padding: Pkcs7,
     }).toString();
@@ -216,4 +216,20 @@ export const setupProtection = async () => {
             wx.hideAllNonBaseMenuItem()
         })
     }
+}
+
+export const extract_suffix = (filename: string) => {
+    const temp = filename.trim().split('.')
+    const res = temp[temp.length - 1].trim().toLowerCase()
+    console.log(temp, res)
+    return res
+}
+
+/**
+ * 
+ * @param num 生成数量是num的2倍
+ * @returns 
+ */
+export const randStr = (num: number) => {
+    return CryptoJS.lib.WordArray.random(num).toString()
 }

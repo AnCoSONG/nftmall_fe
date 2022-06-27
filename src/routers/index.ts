@@ -29,10 +29,10 @@ const router = createRouter({
             ],
         },
         {
-            path: '/redirect',
-            name: 'redirect',
+            path: "/redirect",
+            name: "redirect",
             component: () => import("views/redirect/index.vue"),
-            props: (route) => ({ to: route.query.to })
+            props: (route) => ({ to: route.query.to }),
         },
         {
             path: "/login",
@@ -114,11 +114,11 @@ const router = createRouter({
             component: () => import("views/verification/index.vue"),
         },
         {
-            path: "/doc/:type",
+            path: "/doc",
             name: "doc",
             meta: { title: "文档" },
             component: () => import("views/doc/index.vue"),
-            props: true,
+            props: (route) => ({ title: route.query.t }),
         },
         {
             path: "/test",
@@ -158,8 +158,8 @@ router.beforeEach(async (to, from, next) => {
     // console.log(to, from)
     NProgress.start();
     document.title = to.meta.title ? (to.meta.title as string) : defaultTitle;
-    if (to.path === '/redirect') {
-        next()
+    if (to.path === "/redirect") {
+        next();
     }
     if (to.matched.some((route) => route.meta.requireAuth === "required")) {
         const data = await checkSession(); // jwt检测

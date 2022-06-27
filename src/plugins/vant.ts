@@ -68,4 +68,5 @@ export default function (app: App) {
     app.use(CountDown);
     app.use(Popup);
     app.use(ImagePreview);
+    app.use(Overlay);
 }
