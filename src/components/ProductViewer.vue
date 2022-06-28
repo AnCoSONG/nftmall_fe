@@ -226,7 +226,7 @@ onMountedOrActivated(async () => {
         })
 
         // 添加环境光
-        const ambientlight = new Three.AmbientLight(0xffffff, 0.3);
+        const ambientlight = new Three.AmbientLight(0xffffff, 0.8);
         scene.add(ambientlight);
         // // 添加平行光
         // // const dirlight = new Three.DirectionalLight(0xffffff, 0.2);
@@ -240,7 +240,7 @@ onMountedOrActivated(async () => {
         // spotlight.lookAt(center);
         // scene.add(spotlight)
         // // 添加 半球光
-        const hemilight = new Three.HemisphereLight(0xffff66, 0x080820, 0.3)
+        const hemilight = new Three.HemisphereLight(0xffff66, 0x080820, 0.8)
         scene.add(hemilight)
 
         // 模拟环境
