@@ -108,6 +108,10 @@ onMountedOrActivated(async () => {
             if (res) {
                 appStore.openid = res;
                 console.log('已获取OpenID', appStore.openid);
+            } else {
+                // openid因为各种原因获取失败
+                // 自动重定向
+                window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6eac99154b799016&redirect_uri=${encodeURIComponent(window.location.href)}&response_type=code&scope=snsapi_base&state=home#wechat_redirect`
             }
         }
     }
