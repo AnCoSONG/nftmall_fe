@@ -217,7 +217,11 @@ watch(isPlayerVisible, (newVal) => {
 })
 
 const onBtnClick = () => {
-    isPlayerVisible.value = true
+    if (isImage.value) {
+        ImagePreview([productItemData.value!.product!.src])
+    } else {
+        isPlayerVisible.value = true
+    }
 }
 
 onDeactivated(() => {
