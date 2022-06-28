@@ -41,6 +41,7 @@ banners.value = [...data];
 
 // 打开新页面或者路由至指定页面
 const openNewUrl = (url: string) => {
+    url = url.trim()
     if (url[0] !== "/") {
         window.open(url, "_blank");
     } else {
