@@ -65,5 +65,11 @@ onDeactivated(() => {
         color: white;
         text-decoration: underline;
     }
+
+    img {
+        width: 100%;
+        display: block;
+        height: auto;
+    }
 }
 </style>
