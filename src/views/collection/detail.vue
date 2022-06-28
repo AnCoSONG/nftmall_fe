@@ -44,11 +44,15 @@
                     <KeyValueLine key-text="拥有者" :value="productItemData.owner?.username ?? '...'" :copy="false" />
                     <KeyValueLine key-text="拥有者钱包地址" :value="productItemData.owner?.bsn_address ?? '...'"
                         :copy="true" />
-                    <KeyValueLine key-text="上链状态" :value="onChainStatusText ?? '...'" :copy="true" />
+                    <KeyValueLine key-text="上链状态" :value="onChainStatusText ?? '...'" :copy="false" />
                     <KeyValueLine key-text="藏品系列链上ID" :value="productItemData.nft_class_id ?? '...'" :copy="true" />
                     <KeyValueLine key-text="藏品链上ID" :value="productItemData.nft_id ?? '...'" :copy="true" />
                     <KeyValueLine key-text="藏品链上交易ID" :value="productItemData.operation_id ?? '...'" :copy="true" />
                     <KeyValueLine key-text="交易哈希" :value="productItemData.tx_hash ?? '...'" :copy="true" />
+                </div>
+                <div class="box must-know">
+                    <div class="title">权益须知</div>
+                    <div class="content" v-html="cleanPrevillageMustKnowHtml"></div>
                 </div>
             </div>
             <van-overlay class="player" :show="isPlayerVisible" :z-index="100">
@@ -72,13 +76,14 @@ export default {
 </script>
 <script setup lang='ts'>
 import dayjs from 'dayjs';
+import DOMPurify from 'dompurify';
 import { computed, onDeactivated, ref, toRef, watch } from 'vue';
 import Subpage from '../../components/Subpage.vue';
 import ProductViewer from '../../components/ProductViewer.vue';
 import { onMountedOrActivated } from '@vant/use'
 import ImageLoader from '../../components/ImageLoader.vue';
 import KeyValueLine from '../../components/KeyValueLine.vue';
-import { fetchProductItemDetail } from '../../api';
+import { fetchDoc, fetchProductItemDetail } from '../../api';
 import { extract_suffix, onChainStatus, setupProtection, SupportType, TIME_FORMAT, px2rem } from '../../utils';
 import { useAppStore } from '../../stores/app';
 import { ImagePreview } from 'vant';
@@ -94,10 +99,20 @@ const props = defineProps({
 
 const id = toRef(props, 'id')
 const productItemData = ref<ProductItem>()
+const previllageMustKnow = ref("")
+const cleanPrevillageMustKnowHtml = computed(() => {
+    return DOMPurify.sanitize(previllageMustKnow.value)
+})
 onMountedOrActivated(async () => {
-    const res = await fetchProductItemDetail(id.value, true)
+    const [res, previllageMustKnowRes] = await Promise.all([
+        fetchProductItemDetail(id.value, true),
+        fetchDoc('权益须知')
+    ])
     if (res) {
         productItemData.value = res;
+    }
+    if (previllageMustKnowRes) {
+        previllageMustKnow.value = previllageMustKnowRes.content
     }
     if (app.isWx)
         await setupProtection()
@@ -291,7 +306,8 @@ onDeactivated(() => {
             font-size: px2rem(18);
         }
 
-        &.detail {
+        &.detail,
+        &.must-know {
             display: flex;
             flex-flow: nowrap column;
             justify-content: flex-start;
@@ -311,7 +327,8 @@ onDeactivated(() => {
                     bottom: px2rem(-6);
                     left: calc(-5%);
                     right: calc(-5%);
-                    // background-color: $backgroundColor;
+                    background-color: #272727;
+
                     height: px2rem(12);
                     z-index: -1;
                     // width: 110%;
@@ -340,6 +357,21 @@ onDeactivated(() => {
                         border-bottom-right-radius: px2rem(8);
                     }
                 }
+            }
+        }
+
+        &.must-know {
+
+            .title {
+                margin-bottom: 0;
+            }
+
+            .content {
+                font-size: px2rem(14);
+                color: $greyTextColor;
+                line-height: px2rem(18);
+                // text-indent: 2em;
+                word-break: break-all;
             }
         }
     }
