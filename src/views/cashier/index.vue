@@ -194,14 +194,14 @@ const pay = async () => {
                 setTimeout(() => {
                     toastInstance.clear()
                     // 用户完成支付
-                    router.push({ path: '/payment_waiting', query: { order_id: order.value?.id, trade_no: order.value?.trade_no } })
+                    router.replace({ path: '/payment_waiting', query: { order_id: order.value?.id, trade_no: order.value?.trade_no } })
                 }, 500)
             } else if (jspay_res == 'cancel') {
                 // 用户取消支付
                 toastInstance.message = '您已取消支付';
                 setTimeout(() => {
                     toastInstance.clear()
-                    router.push('/order')
+                    router.replace('/order')
                 }, 500)
             }
         }
