@@ -20,9 +20,9 @@ import { useUserStore } from '../../../stores/user';
 const router = useRouter()
 const user = useUserStore()
 // todo: 用户态!!!
-onMountedOrActivated(async () => {
-    await user.fetchUserInfo();
-})
+// onMountedOrActivated(async () => {
+//     await user.fetchUserInfo();
+// })
 </script>
 <style lang="scss" scoped>
 .user {
