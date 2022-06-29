@@ -59,7 +59,7 @@
                     v-model="isAgree"
                     checked-color="green"
                 >
-                    <span class="text">我已阅读并同意《<router-link to="/doc/platform_agreement">平台协议</router-link>》以及《<router-link to="/doc/privacy_agreement">隐私协议</router-link>》</span>
+                    <span class="text">我已阅读并同意《<router-link to="/doc?t=平台协议">平台协议</router-link>》以及《<router-link to="/doc?=隐私协议">隐私协议</router-link>》</span>
                 </van-checkbox>
             </div>
             <div class="btn" @click="() => login()">登录</div>
