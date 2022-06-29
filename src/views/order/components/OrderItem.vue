@@ -1,5 +1,5 @@
 <template>
-    <div class="order-item">
+    <div class="order-item" v-if="visible">
         <div class="product-wrapper" :class="{ withBottomRadius: order_status === 'canceled' }">
             <div class="purchase-info">
                 <van-image class="img" :src="data.product_item?.product?.preview_img" fit="cover">
@@ -77,6 +77,7 @@ type PropType = {
 const props = defineProps<PropType>();
 const emit = defineEmits(['needRefresh'])
 const data = toRef(props, "data");
+const visible = ref(true)
 const beginFlag = ref(false);
 const countDown = useCountDown({
     time: 1000 * 60 * 5, // time 后端生成
@@ -160,6 +161,8 @@ if (!data.value.product_item) {
     const product_item_data = await fetchProductItemDetail(data.value.backup_product_item_id!, true)
     if (product_item_data) {
         data.value.product_item = product_item_data;
+    } else {
+        visible.value = false // 隐藏自己
     }
 }
 

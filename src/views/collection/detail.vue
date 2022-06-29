@@ -83,7 +83,7 @@ import ProductViewer from '../../components/ProductViewer.vue';
 import { onMountedOrActivated } from '@vant/use'
 import ImageLoader from '../../components/ImageLoader.vue';
 import KeyValueLine from '../../components/KeyValueLine.vue';
-import { fetchDoc, fetchProductItemDetail } from '../../api';
+import { fetchDoc, fetchUserCollectionItem } from '../../api';
 import { extract_suffix, onChainStatus, setupProtection, SupportType, TIME_FORMAT, px2rem } from '../../utils';
 import { useAppStore } from '../../stores/app';
 import { ImagePreview } from 'vant';
@@ -105,7 +105,7 @@ const cleanPrevillageMustKnowHtml = computed(() => {
 })
 onMountedOrActivated(async () => {
     const [res, previllageMustKnowRes] = await Promise.all([
-        fetchProductItemDetail(id.value, true),
+        fetchUserCollectionItem(id.value, true),
         fetchDoc('权益须知')
     ])
     if (res) {

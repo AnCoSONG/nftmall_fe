@@ -148,7 +148,7 @@ import Subpage from "../../components/Subpage.vue";
 import Price from "../../components/Price.vue";
 import Tag from "../../components/Tag.vue";
 import TypeIcon from "../../components/TypeIcon.vue";
-import { px2rem, setupSharing, TIME_FORMAT } from "../../utils";
+import { px2rem, redirectForOpenid, setupSharing, TIME_FORMAT } from "../../utils";
 import { useRoute, useRouter } from "vue-router";
 import { computed, ref, toRef, watch, watchEffect } from "vue";
 import { onMountedOrActivated, useCountDown } from "@vant/use";
@@ -192,6 +192,12 @@ const product = ref<Product>();
 const route = useRoute();
 const router = useRouter();
 const popup_show = ref(false);
+
+// for test
+// if (app.isWx && app.openid === '') {
+//     // 如果是微信且用户没有Openid，重定向
+//     redirectForOpenid()
+// }
 
 const onStepClick = () => {
     // todo: 使用Popup实现展示效果
@@ -292,6 +298,7 @@ const stock_count = ref(0);
 const statusText = ref("");
 const buyMustKnow = ref("")
 const previllageMustKnow = ref("")
+const isResultShowed = ref(false)
 
 const buyMustKnowHtml = computed(() => Dompurify.sanitize(buyMustKnow.value ?? ''))
 const previllageMustKnowHtml = computed(() => Dompurify.sanitize(previllageMustKnow.value ?? ''))
@@ -448,7 +455,7 @@ watchEffect(() => {
         countDown.reset(draw_end_timestamp + 1 * 60 * 1000 - now);
         countDown.start();
         isCountdown.value = true;
-        statusText.value = "正在结算"; // 本质上draw_end_timestamp时就应该已完成结算
+        statusText.value = "正在统计"; // 本质上draw_end_timestamp时就应该已完成结算
     } else if (sale_timestamp - now >= 0) {
         currentStage.value = 4;
         if (!user.isLogin) {
@@ -460,10 +467,24 @@ watchEffect(() => {
                 countDown.start();
                 isCountdown.value = true;
                 btnClickable.value = false;
-                statusText.value = "即将发售";
+                statusText.value = "🎉您已中签";
+                if (!isResultShowed.value) {
+                    Dialog.alert({
+                        title: '恭喜🎉',
+                        message: '您已中签！请关注发售时间，准时前来购买哦！'
+                    })
+                    isResultShowed.value = true
+                }
             } else if (isLucky.value === 0) {
                 btnClickable.value = false;
                 statusText.value = "您未中签";
+                if (!isResultShowed.value) {
+                    Dialog.alert({
+                        title: '很遗憾🥀',
+                        message: '您未中签，本藏品您无购买资格！'
+                    })
+                    isResultShowed.value = true
+                }
             } else if (isLucky.value === -1) {
                 btnClickable.value = true;
                 statusText.value = "查看抽签结果";
@@ -634,6 +655,7 @@ const onBtnClick = async () => {
     } else if (statusText.value === "查看抽签结果") {
         isLoading.value = true;
         isLucky.value = await fetchIsLucky(user.data.id, id.value);
+        isResultShowed.value = true
         if (isLucky.value === 1) {
             Dialog.alert({
                 title: '查看抽签结果',

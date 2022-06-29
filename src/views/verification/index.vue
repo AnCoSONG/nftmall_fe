@@ -1,5 +1,5 @@
 <template>
-    <Subpage title="实名认证">
+    <Subpage title="实名认证" back-to="/account">
         <div class="verification">
             <div class="tips">
                 为了购买数字藏品，您需要先完成实名认证。您的信息仅用作实名认证，我们承诺保护您的隐私安全。

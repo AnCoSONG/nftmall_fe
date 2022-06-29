@@ -3,7 +3,7 @@
         <van-skeleton title :row="5" :loading="loading || !product || !order">
             <div class="cashier">
                 <div class="order">
-                    <van-image class="img" src="https://picsum.photos/150/150">
+                    <van-image class="img" :src="product?.preview_img">
                         <template #loading>
                             <ImageLoader />
                         </template>
@@ -57,11 +57,11 @@ export default {
 <script setup lang="ts">
 import { ref, toRef } from "vue";
 import { onMountedOrActivated } from "@vant/use";
-import { Notify, Toast } from "vant";
+import { Dialog, Notify, Toast } from "vant";
 import ImageLoader from "../../components/ImageLoader.vue";
 import { useRouter } from "vue-router";
 import Subpage from "../../components/Subpage.vue";
-import { px2rem } from "../../utils";
+import { px2rem, redirectForOpenid } from "../../utils";
 import Price from "../../components/Price.vue";
 import { fetchOrderDetail, fetchProduct, requestPay } from "../../api";
 import { useAppStore } from "../../stores/app";
@@ -84,6 +84,10 @@ const order = ref<Order>();
 const product = ref<Product>();
 const order_id = toRef(props, "order_id");
 const product_id = toRef(props, "product_id")
+// if (app.isWx && app.openid === '') {
+//     // 如果是微信且用户没有Openid，重定向
+//     redirectForOpenid()
+// }
 onMountedOrActivated(async () => {
     //todo: 进来先检查订单是否支付过，支付过就不允许继续支付，直接跳转回首页
     loading.value = true;
@@ -164,6 +168,13 @@ const pay = async () => {
         message: '请稍等...',
         duration: 0
     })
+    if (app.isWx && app.openid === '') {
+        Dialog.alert({
+            message: '已为您下单藏品，但您的支付环境异常无法完成支付。请您退出本页面，重新从公众号进入本平台完成支付。'
+        })
+        toastInstance.clear()
+        return;
+    }
     // console.log(app.openid)
     const res = await requestPay(order.value.id, 'jsapi', app.openid)
     if (res) {

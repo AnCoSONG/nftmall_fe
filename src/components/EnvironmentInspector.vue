@@ -41,7 +41,7 @@ import { useAppStore } from "../stores/app";
 import { useUserStore } from "../stores/user";
 import { onMountedOrActivated } from "@vant/use";
 import { Notify, Toast } from "vant";
-import { getQuerys } from "../utils";
+import { getQuerys, redirectForOpenid } from "../utils";
 import axios from "axios";
 import { fetchOpenid } from "../api";
 
@@ -111,7 +111,8 @@ onMountedOrActivated(async () => {
             } else {
                 // openid因为各种原因获取失败
                 // 自动重定向
-                window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6eac99154b799016&redirect_uri=${encodeURIComponent(window.location.href)}&response_type=code&scope=snsapi_base&state=home#wechat_redirect`
+                redirectForOpenid()
+                // window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6eac99154b799016&redirect_uri=${encodeURIComponent(window.location.href)}&response_type=code&scope=snsapi_base&state=home#wechat_redirect`
             }
         }
     }

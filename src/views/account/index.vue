@@ -1,5 +1,5 @@
 <template>
-    <Subpage title="账户信息">
+    <Subpage title="账户信息" back-to="/user">
         <div class="account" v-if="user.data">
             <CellItem text="头像" right-icon="arrow" @click="openFileChooser()">
                 <template #value>
@@ -21,7 +21,7 @@
                 @click="edit('邮箱')"
             ></CellItem> -->
             <CellItem text="UID" :value="`#${user.data.id.toString().padStart(5, '0')}`"></CellItem>
-            <CellItem text="OPENID" :value="app.openid"></CellItem>
+            <CellItem text="OPENID" :value="app.openid === ''?'点击获取':app.openid" right-icon="arrow" @click="fetchOpenid"></CellItem>
             <CellItem text="积分" :value="user.data.credit"></CellItem>
             <CellItem text="区块链地址" :right-icon="copySvg" v-clipboard:copy="user.data.bsn_address"
                 v-clipboard:success="onCopySuccess" v-clipboard:error="onCopyError" v-if="user.data.bsn_address">
@@ -65,7 +65,7 @@ import copySvg from "assets/copy.svg";
 import DangerBtn from "../../components/DangerBtn.vue";
 import { useUserStore } from "../../stores/user";
 import { useRouter } from "vue-router";
-import { hidePhone, onCopySuccess, onCopyError, notSupport, hash, randomCode } from "../../utils";
+import { hidePhone, onCopySuccess, onCopyError, notSupport, hash, randomCode, redirectForOpenid } from "../../utils";
 import { Notify } from "vant";
 import { ref } from "vue";
 import { onMountedOrActivated } from "@vant/use";
@@ -174,6 +174,12 @@ const uploadImg = (event: Event) => {
                 }
             }
         })
+    }
+}
+
+const fetchOpenid = () => {
+    if (app.isWx && app.openid === '') {
+        redirectForOpenid()
     }
 }
 </script>

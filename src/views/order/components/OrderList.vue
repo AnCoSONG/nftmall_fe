@@ -4,7 +4,7 @@
             <!-- todo: 自定义 finished text 槽 -->
             <van-list v-model:loading="loading" :finished="finished" finished-text="已显示所有订单" v-if="list.length > 0"
                 @load="onLoadMore">
-                <OrderItem v-for="item in list" :data="item" @need-refresh="onRefresh"/>
+                <OrderItem v-for="item in list" :data="item" @need-refresh="onRefresh" />
             </van-list>
             <Empty v-else />
         </van-pull-refresh>

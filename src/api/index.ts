@@ -527,6 +527,28 @@ export const fetchProductItemDetail = async (
     with_relation = true
 ) => {
     const res = await request
+        .get<Response<ProductItem>>(`/product-items/${product_item_id}`, {
+            params: { with_relation },
+        })
+        .catch((err) => {
+            Toast({
+                type: "fail",
+                message: err.response.data.message,
+            });
+            return null;
+        });
+    if (res) {
+        return res.data.data;
+    } else {
+        return null;
+    }
+};
+
+export const fetchUserCollectionItem = async (
+    product_item_id: string,
+    with_relation = true
+) => {
+    const res = await request
         .get<Response<ProductItem>>(`/product-items/findOneByUser/${product_item_id}`, {
             params: { with_relation },
         })

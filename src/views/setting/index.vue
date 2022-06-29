@@ -1,5 +1,5 @@
 <template>
-    <Subpage title="设置">
+    <Subpage title="设置" back-to="/user">
         <div class="setting">
             <CellItem text="平台协议" right-icon="arrow" @click="router.push({ path: '/doc', query: { t: '平台协议' } })">
             </CellItem>

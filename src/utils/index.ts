@@ -208,28 +208,32 @@ export const setupProtection = async () => {
             timestamp: r.timestamp, // 必填，生成签名的时间戳
             nonceStr: r.nonceStr, // 必填，生成签名的随机串
             signature: r.signature, // 必填，签名
-            jsApiList: [
-                "hideAllNonBaseMenuItem"
-            ], // 必填，需要使用的 JS 接口列表
+            jsApiList: ["hideAllNonBaseMenuItem"], // 必填，需要使用的 JS 接口列表
         });
         wx.ready(() => {
-            wx.hideAllNonBaseMenuItem()
-        })
+            wx.hideAllNonBaseMenuItem();
+        });
     }
-}
+};
 
 export const extract_suffix = (filename: string) => {
-    const temp = filename.trim().split('.')
-    const res = temp[temp.length - 1].trim().toLowerCase()
-    console.log(temp, res)
-    return res
-}
+    const temp = filename.trim().split(".");
+    const res = temp[temp.length - 1].trim().toLowerCase();
+    console.log(temp, res);
+    return res;
+};
 
 /**
- * 
+ *
  * @param num 生成数量是num的2倍
- * @returns 
+ * @returns
  */
 export const randStr = (num: number) => {
-    return CryptoJS.lib.WordArray.random(num).toString()
-}
+    return CryptoJS.lib.WordArray.random(num).toString();
+};
+
+export const redirectForOpenid = () => {
+    window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6eac99154b799016&redirect_uri=${encodeURIComponent(
+        window.location.href
+    )}&response_type=code&scope=snsapi_base&state=home#wechat_redirect`;
+};
