@@ -21,6 +21,7 @@
                 @click="edit('邮箱')"
             ></CellItem> -->
             <CellItem text="UID" :value="`#${user.data.id.toString().padStart(5, '0')}`"></CellItem>
+            <CellItem text="OPENID" :value="app.openid"></CellItem>
             <CellItem text="积分" :value="user.data.credit"></CellItem>
             <CellItem text="区块链地址" :right-icon="copySvg" v-clipboard:copy="user.data.bsn_address"
                 v-clipboard:success="onCopySuccess" v-clipboard:error="onCopyError" v-if="user.data.bsn_address">
@@ -71,7 +72,8 @@ import { onMountedOrActivated } from "@vant/use";
 import { updateUser } from "../../api";
 import { cdnTransform, putObjectPromisify } from '../../plugins/cos-sdk'
 import ImageLoader from "../../components/ImageLoader.vue";
-
+import { useAppStore } from "../../stores/app";
+const app = useAppStore()
 //@ts-ignore
 import Clipic from 'clipic'
 const user = useUserStore();
