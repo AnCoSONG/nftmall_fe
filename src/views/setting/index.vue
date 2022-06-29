@@ -45,6 +45,7 @@ const logout = async () => {
             Notify({
                 type: 'success',
                 message: '退出成功',
+                background: '#aaaaaa',
             });
         }
         router.replace("/")

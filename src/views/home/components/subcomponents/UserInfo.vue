@@ -56,7 +56,7 @@ const onCreateChainAccount = async () => {
         if (res.code === 0) {
             Toast({
                 type: 'success',
-                message: res.message
+                message: res.message,
             })
             // 刷新页面
             router.go(0);

@@ -21,7 +21,8 @@
                 @click="edit('邮箱')"
             ></CellItem> -->
             <CellItem text="UID" :value="`#${user.data.id.toString().padStart(5, '0')}`"></CellItem>
-            <CellItem text="OPENID" :value="app.openid === ''?'点击获取':app.openid" right-icon="arrow" @click="fetchOpenid"></CellItem>
+            <CellItem text="OPENID" :value="app.openid === '' ? '点击获取' : app.openid" right-icon="arrow"
+                @click="fetchOpenid"></CellItem>
             <CellItem text="积分" :value="user.data.credit"></CellItem>
             <CellItem text="区块链地址" :right-icon="copySvg" v-clipboard:copy="user.data.bsn_address"
                 v-clipboard:success="onCopySuccess" v-clipboard:error="onCopyError" v-if="user.data.bsn_address">
@@ -109,7 +110,9 @@ const onConfirm = async (action: string): Promise<boolean> => {
     if (r) {
         Notify({
             type: 'success',
-            message: '编辑成功'
+            message: '编辑成功',
+            background: '#aaaaaa',
+
         })
         await user.fetchUserInfo() // 刷新用户信息
     }
@@ -167,7 +170,9 @@ const uploadImg = (event: Event) => {
                     if (r) {
                         Notify({
                             type: 'success',
-                            message: '更新成功'
+                            message: '更新成功',
+                            background: '#aaaaaa',
+
                         })
                         await user.fetchUserInfo()
                     }

@@ -90,7 +90,8 @@ onMountedOrActivated(async () => {
         if (user.firstBack) {
             Notify({
                 type: 'success',
-                message: "欢迎回来, " + user.data.username
+                message: "欢迎回来, " + user.data.username,
+                background: '#aaaaaa',
             })
             // Toast({
             //     type: 'success',

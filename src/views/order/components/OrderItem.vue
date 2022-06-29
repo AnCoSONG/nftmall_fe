@@ -190,7 +190,7 @@ const onCancelBtnClick = () => {
                 Toast({
                     type: 'success',
                     message: '取消成功',
-                    duration: 750
+                    duration: 750,
                 })
                 // 
                 setTimeout(() => {

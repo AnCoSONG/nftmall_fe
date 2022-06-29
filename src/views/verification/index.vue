@@ -44,7 +44,7 @@ const isChecked = await fetchIsIdCheck();
 if (isChecked) {
     Toast({
         type: 'success',
-        message: '已通过实名认证'
+        message: '已通过实名认证',
     })
     router.push('/user')
 }
@@ -78,6 +78,7 @@ const verify = async () => {
         Notify({
             type: "success",
             message: "验证成功",
+            background: '#aaaaaa'
         });
         user.data.real_name = realname.value;
         user.data.real_id = realid.value;

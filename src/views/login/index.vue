@@ -1,11 +1,7 @@
 <template>
     <div class="login">
         <!-- <van-icon name="arrow-left"></van-icon> -->
-        <van-image
-            :src="logoFff"
-            class="logo"
-            @click="router.push('/')"
-        ></van-image>
+        <van-image :src="logoFff" class="logo" @click="router.push('/')"></van-image>
         <div class="product-name" @click="router.push('/')">
             {{ app.mall_name }}
         </div>
@@ -16,19 +12,9 @@
             </div>
             <div class="input">
                 <div class="prefix">+86</div>
-                <input
-                    class="inner-input"
-                    type="text"
-                    label="请输入手机号"
-                    v-model="phone"
-                />
+                <input class="inner-input" type="text" label="请输入手机号" v-model="phone" />
                 <!-- todo 完善获取验证码按钮的逻辑，三种状态 待发送，已发送，输入有误或者时间没到不能发送 -->
-                <div
-                    class="suffix"
-                    :data-disabled="disabled"
-                    @click="getVerification()"
-                    v-if="!showingCountDown"
-                >
+                <div class="suffix" :data-disabled="disabled" @click="getVerification()" v-if="!showingCountDown">
                     获取验证码
                 </div>
                 <div class="suffix" v-else>
@@ -44,33 +30,21 @@
                 <van-icon :name="lockSvg" class="icon"></van-icon>
                 <span class="text">验证码</span>
             </div>
-            <van-password-input
-                class="code-input"
-                :value="verifiedCode"
-                :mask="false"
-                :focused="showKeyboard"
-                @focus="showKeyboard = true"
-            />
+            <van-password-input class="code-input" :value="verifiedCode" :mask="false" :focused="showKeyboard"
+                @focus="showKeyboard = true" />
         </div>
         <div class="login-btn">
             <div class="agreement">
-                <van-checkbox
-                    shape="square"
-                    v-model="isAgree"
-                    checked-color="green"
-                >
-                    <span class="text">我已阅读并同意《<router-link to="/doc?t=平台协议">平台协议</router-link>》以及《<router-link to="/doc?=隐私协议">隐私协议</router-link>》</span>
+                <van-checkbox shape="square" v-model="isAgree" checked-color="green">
+                    <span class="text">我已阅读并同意《<router-link to="/doc?t=平台协议">平台协议</router-link>》以及《<router-link
+                            to="/doc?=隐私协议">隐私协议</router-link>》</span>
                 </van-checkbox>
             </div>
             <div class="btn" @click="() => login()">登录</div>
             <div class="info">未注册账户将自动注册。</div>
         </div>
     </div>
-    <van-number-keyboard
-        v-model="verifiedCode"
-        :show="showKeyboard"
-        @blur="showKeyboard = false"
-    />
+    <van-number-keyboard v-model="verifiedCode" :show="showKeyboard" @blur="showKeyboard = false" />
 </template>
 <script setup lang="ts">
 import { computed, onDeactivated } from "vue";
@@ -164,6 +138,7 @@ const getVerification = async () => {
         Notify({
             type: "success",
             message: "验证码已发送",
+            background: '#aaaaaa'
         });
         countDown.start();
         showingCountDown.value = true;
@@ -203,12 +178,13 @@ const login = async () => {
     const res = await user.login(phone.value, verifiedCode.value);
     toast.clear();
     if (res) {
-        if (!user.firstBack) { 
+        if (!user.firstBack) {
             // 如果用户都没有进入首页就登录成功
             // 会导致两个Notify同时出现，所以这里要判断一下
             Notify({
                 type: "success",
                 message: "登录成功",
+                background: "#aaaaaa"
             })
         }
         router.push(props.backTo);
