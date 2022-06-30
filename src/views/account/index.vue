@@ -67,7 +67,7 @@ import DangerBtn from "../../components/DangerBtn.vue";
 import { useUserStore } from "../../stores/user";
 import { useRouter } from "vue-router";
 import { hidePhone, onCopySuccess, onCopyError, notSupport, hash, randomCode, redirectForOpenid } from "../../utils";
-import { Notify } from "vant";
+import { Notify, Toast } from "vant";
 import { ref } from "vue";
 import { onMountedOrActivated } from "@vant/use";
 import { updateUser } from "../../api";
@@ -155,12 +155,17 @@ const uploadImg = (event: Event) => {
             type: 'jpeg',
             //@ts-ignore
             onDone: async (fileObj: File) => {
+                const toastInstance = Toast.loading({
+                    forbidClick: true,
+                    message: '请稍等...',
+                    duration: 0
+                })
                 console.log(fileObj)
                 const res = await putObjectPromisify(fileObj.name, fileObj).catch(err => {
                     console.error(err)
                     Notify({
                         type: 'danger',
-                        message: '上传COS出错: ' + err.statusCode
+                        message: '上传图像出错: ' + err.statusCode
                     })
                     return null
                 }) as boolean | null
@@ -178,11 +183,11 @@ const uploadImg = (event: Event) => {
                             type: 'success',
                             message: '更新成功',
                             background: '#aaaaaa',
-
                         })
                         await user.fetchUserInfo()
                     }
                 }
+                toastInstance.clear()
             }
         })
     }
