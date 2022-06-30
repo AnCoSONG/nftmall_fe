@@ -91,6 +91,12 @@ const field2text: Record<string, string> = {
 const clipic = new Clipic()
 onMountedOrActivated(async () => {
     await user.fetchUserInfo();
+    window.onpopstate = () => {
+        if (clipic && clipic.options) {
+            clipic.cancel()
+        }
+        // clipic.cancle()
+    }
 })
 
 const edit = (field: string) => {
