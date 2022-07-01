@@ -9,7 +9,7 @@
         <div class="text" v-if="!loading">
              {{ prop.text }}
         </div>
-        <van-loading v-else color="#ddd" :size="px2rem(18)">加载中...</van-loading>
+        <van-loading v-else color="#ddd" :size="px2rem(20)">加载中...</van-loading>
     </div>
 </template>
 <script setup lang="ts">
