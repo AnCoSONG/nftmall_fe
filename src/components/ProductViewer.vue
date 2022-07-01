@@ -212,7 +212,7 @@ onMountedOrActivated(async () => {
         controls.maxDistance = size / 0.5
         controls.minDistance = size / 1.2
         controls.autoRotate = true
-        controls.autoRotateSpeed = 10
+        controls.autoRotateSpeed = 5
         camera.lookAt(center)
         scene.add(object);
         productModel = object
