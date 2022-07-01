@@ -24,6 +24,8 @@ export const useThemeStore = defineStore("theme", {
                 radioDisabledBackgroundColor: '#666',
                 radioDisabledIconColor: '#666',
                 imagePlaceholderBackgroundColor: '#272727',
+                dividerFontSize: px2rem(12),
+                dividerMargin: px2rem(12)
                 // stepCircleColor: '#272727',
             },
             announcement: {

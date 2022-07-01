@@ -9,8 +9,8 @@
 </script>
 <style lang="scss" scoped>
 .additional-info {
-    margin-top: px2rem(40);
-    font-size: px2rem(16);
+    margin-top: px2rem(20);
+    font-size: px2rem(12);
     width: 100%;
     display: flex;
     flex-flow: nowrap column;
