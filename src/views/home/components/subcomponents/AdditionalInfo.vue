@@ -9,7 +9,7 @@
 </script>
 <style lang="scss" scoped>
 .additional-info {
-    margin-top: px2rem(20);
+    margin: px2rem(20) 0;
     font-size: px2rem(12);
     width: 100%;
     display: flex;

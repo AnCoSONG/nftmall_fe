@@ -43,7 +43,7 @@ import { onMountedOrActivated } from "@vant/use";
 import { Notify, Toast } from "vant";
 import { getQuerys, redirectForOpenid } from "../utils";
 import axios from "axios";
-import { fetchOpenid } from "../api";
+import { fetchOpenid, updateUser } from "../api";
 
 // theme begin
 const themeStore = useThemeStore();
@@ -118,6 +118,35 @@ onMountedOrActivated(async () => {
     //         }
     //     }
     // }
+    if (appStore.isWx) {
+        if (!user.isLogin) return;
+        // 请求Openid
+        const querys = getQuerys(location.href)
+        if ('code' in querys) {
+            console.log('bind wxopenid')
+            const res = await fetchOpenid(querys['code'])
+            if (res) {
+                user.data.wx_openid = res;
+                const updateRes = await updateUser({ wx_openid: res })
+                if (updateRes) {
+                    Toast({
+                        type: 'success',
+                        message: '已成功绑定'
+                    })
+                } else {
+                    Toast({
+                        type: 'fail',
+                        message: '绑定失败:无法更新'
+                    })
+                }
+            } else {
+                Toast({
+                    type: 'fail',
+                    message: '绑定失败:无法获取Openid'
+                })
+            }
+        }
+    }
 });
 
 </script>

@@ -233,7 +233,14 @@ export const randStr = (num: number) => {
 };
 
 export const redirectForOpenid = () => {
-    window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6eac99154b799016&redirect_uri=${encodeURIComponent(
-        window.location.href
-    )}&response_type=code&scope=snsapi_base&state=home#wechat_redirect`;
+    // window.location.replace(
+    //     `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6eac99154b799016&redirect_uri=${encodeURIComponent(
+    //         window.location.href
+    //     )}&response_type=code&scope=snsapi_base&state=home#wechat_redirect`
+    // );
+    window.location.replace(
+        `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6eac99154b799016&redirect_uri=${encodeURIComponent(
+            'https://www.jinyuanshuzi.com'
+        )}&response_type=code&scope=snsapi_base&state=home#wechat_redirect`
+    );
 };

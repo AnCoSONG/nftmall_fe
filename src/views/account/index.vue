@@ -235,36 +235,36 @@ const bindOpenid = () => {
     }
 }
 
-onMountedOrActivated(async() => {
-    if (app.isWx) {
-        // 请求Openid
-        const querys = getQuerys(location.href)
-        if ('code' in querys) {
-            console.log('bind wxopenid')
-            const res = await fetchOpenid(querys['code'])
-            if (res) {
-                user.data.wx_openid = res;
-                const updateRes = await updateUser({wx_openid: res })
-                if (updateRes) {
-                    Toast({
-                        type: 'success',
-                        message: '已成功绑定'
-                    })
-                } else {
-                    Toast({
-                        type: 'fail',
-                        message: '绑定失败:无法更新'
-                    })
-                }
-            } else {
-                Toast({
-                    type: 'fail',
-                    message: '绑定失败:无法获取Openid'
-                })
-            }
-        }
-    }
-})
+// onMountedOrActivated(async() => {
+//     if (app.isWx) {
+//         // 请求Openid
+//         const querys = getQuerys(location.href)
+//         if ('code' in querys) {
+//             console.log('bind wxopenid')
+//             const res = await fetchOpenid(querys['code'])
+//             if (res) {
+//                 user.data.wx_openid = res;
+//                 const updateRes = await updateUser({wx_openid: res })
+//                 if (updateRes) {
+//                     Toast({
+//                         type: 'success',
+//                         message: '已成功绑定'
+//                     })
+//                 } else {
+//                     Toast({
+//                         type: 'fail',
+//                         message: '绑定失败:无法更新'
+//                     })
+//                 }
+//             } else {
+//                 Toast({
+//                     type: 'fail',
+//                     message: '绑定失败:无法获取Openid'
+//                 })
+//             }
+//         }
+//     }
+// })
 </script>
 <style lang="scss" scoped>
 .account {
