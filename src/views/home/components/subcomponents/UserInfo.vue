@@ -3,12 +3,14 @@
         <div class="basic" v-if="user.isLogin">
             <van-image :src="user.data.avatar" class="avatar" round>
                 <template #loading>
-                    <ImageLoader/>
+                    <ImageLoader />
                 </template>
             </van-image>
             <div class="name-credit">
                 <div class="name">{{ user.data.username }}</div>
-                <div class="credit">积分: {{ user.data.credit }}</div>
+                <div class="credit">
+                    <van-icon name="points" />&nbsp;积分: {{ user.data.credit }}
+                </div>
             </div>
             <!-- todo 用户信息详情页 -->
             <div class="right" @click="router.push('/account')">
@@ -24,7 +26,8 @@
                 <van-icon :name="copySvg" />
             </div>
         </div>
-        <div class="not-on-chain" v-else-if="user.isLogin && user.data.bsn_address == null" @click="onCreateChainAccount">
+        <div class="not-on-chain" v-else-if="user.isLogin && user.data.bsn_address == null"
+            @click="onCreateChainAccount">
             申请区块链账户
         </div>
         <!-- <div v-else-if="user.data.bsn_address == null">
@@ -58,8 +61,8 @@ const onCreateChainAccount = async () => {
                 type: 'success',
                 message: res.message,
             })
-            // 刷新页面
-            router.go(0);
+            // 刷新数据
+            await user.fetchUserInfo()
         } else if (res.code === 1) {
             Toast({
                 type: 'text',
