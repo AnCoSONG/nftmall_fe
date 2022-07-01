@@ -38,19 +38,26 @@ const onCooperation = () => {
 }
 
 const logout = async () => {
-    logoutLoading.value = true;
-    const res = await user.logout();
-    if (res) {
-        if (user.firstBack) {
-            Notify({
-                type: 'success',
-                message: '退出成功',
-                background: '#aaaaaa',
-            });
+    Dialog.confirm({
+        title: '提示',
+        message: '确定退出登录?'
+    }).then(async () => {
+        logoutLoading.value = true;
+        const res = await user.logout();
+        if (res) {
+            if (user.firstBack) {
+                Notify({
+                    type: 'success',
+                    message: '退出成功',
+                    background: '#aaaaaa',
+                });
+            }
+            router.replace("/")
         }
-        router.replace("/")
-    }
-    logoutLoading.value = false;
+        logoutLoading.value = false;
+    }).catch(() => {
+        // do nothing
+    })
 }
 </script>
 <style lang="scss" scoped>
