@@ -49,6 +49,7 @@
                     <KeyValueLine key-text="藏品链上ID" :value="productItemData.nft_id ?? '...'" :copy="true" />
                     <KeyValueLine key-text="藏品链上交易ID" :value="productItemData.operation_id ?? '...'" :copy="true" />
                     <KeyValueLine key-text="交易哈希" :value="productItemData.tx_hash ?? '...'" :copy="true" />
+                    <div class="verify" @click="goVerify">验证藏品所有权</div>
                 </div>
                 <div class="box must-know">
                     <div class="title">权益须知</div>
@@ -86,7 +87,7 @@ import KeyValueLine from '../../components/KeyValueLine.vue';
 import { fetchDoc, fetchUserCollectionItem } from '../../api';
 import { extract_suffix, onChainStatus, setupProtection, SupportType, TIME_FORMAT, px2rem } from '../../utils';
 import { useAppStore } from '../../stores/app';
-import { ImagePreview } from 'vant';
+import { Dialog, ImagePreview } from 'vant';
 import { authSrc } from '../../plugins/cos-sdk';
 const app = useAppStore()
 const bgLoaded = ref(false);
@@ -222,6 +223,17 @@ const onBtnClick = () => {
     } else {
         isPlayerVisible.value = true
     }
+}
+
+const goVerify = () => {
+    Dialog.confirm({
+        title: '提示',
+        message: '请您复制上方的藏品信息如交易哈希、藏品链上ID等,在文昌链浏览器内的目录下进行查询鉴权。'
+    }).then(() => {
+        window.location.href = 'https://explorer.testnet.bianjie.ai/' // todo: 待修改为正式链
+    }).catch(() => {
+        // do nothing
+    })
 }
 
 onDeactivated(() => {
@@ -378,10 +390,26 @@ onDeactivated(() => {
                 word-break: break-all;
             }
         }
+
+        // &.verify {
+        //     font-size: px2rem(14);
+        //     color: $glodTextColor;
+        //     background: linear-gradient(90.23deg, #3e3928 6.42%, #35301f 99.92%);
+        // }
     }
 
     .collection-info {
         font-size: px2rem(14);
+        width: 100%;
+
+        .verify {
+            margin-top: px2rem(8);
+            padding: px2rem(8.5) px2rem(17);
+            border-radius: px2rem(4);
+            font-size: px2rem(14);
+            color: black;
+            background: linear-gradient(94.63deg, #E8D9A6 14.59%, #DBC782 92.35%);
+        }
     }
 }
 

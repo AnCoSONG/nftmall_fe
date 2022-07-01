@@ -1,5 +1,6 @@
 <template>
     <div class="user-main">
+        <CellItem icon="search" right-icon="arrow" text="文昌链浏览器" @click="openBSN"></CellItem>
         <CellItem icon="bill-o" right-icon="arrow" text="我的订单" @click="routeTo('order')"></CellItem>
         <CellItem icon="gem-o" right-icon="arrow" text="我的藏品" @click="routeTo('collection')"></CellItem>
         <!-- <CellItem icon="send-gift-o" right-icon="arrow"  text="我的转赠"></CellItem> -->
@@ -28,6 +29,17 @@ const showService = ref(false);
 
 const routeTo = (path: string) => {
     router.push(path)
+}
+
+const openBSN = () => {
+    Dialog.confirm({
+        title: '提示',
+        message: '即将前往BSN文昌链浏览器, 您可在该页面完成您藏品权利的验证。点击”确定“继续。'
+    }).then(() => {
+        window.location.href = 'https://explorer.testnet.bianjie.ai/' // todo: 待修改为正式链
+    }).catch(() => {
+        // do nothing
+    })
 }
 </script>
 <style lang="scss" scoped>
