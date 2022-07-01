@@ -45,6 +45,7 @@ export const useUserStore = defineStore("user", {
             const data = await api.logout(Number(this.data.id));
             if (data === 200) {
                 this.initState();
+                this.firstBack = true;
                 return true;
             } else {
                 return false;
