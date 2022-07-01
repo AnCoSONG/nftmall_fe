@@ -89,15 +89,17 @@ declare type ProductItem = {
 declare type User = {
     id: number;
     username: string;
-    bsn_address?: string;
+    bsn_address: string;
     phone: string;
-    email: string;
+    email: string | null;
     avatar: string;
     real_name?: string;
     real_id?: string;
     is_verified: boolean;
     credit: number;
     role: string;
+    wx_openid: string | null;
+    delivery_address: string | null;
 };
 
 //todo: 根据后端调整
