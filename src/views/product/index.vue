@@ -384,7 +384,8 @@ onMountedOrActivated(async () => {
                     product.value.name,
                     product.value.description,
                     product.value.preview_img,
-                    `https://www.jinyuanshuzi.com/redirect?to=${window.location.toString()}`
+                    // `https://www.jinyuanshuzi.com/redirect?to=${window.location.toString()}`
+                    window.location.href
                 )
             }
         } else {
