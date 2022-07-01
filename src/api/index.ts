@@ -596,7 +596,7 @@ export const fetchProductBoughtCount = async (
 
 export const createChainAccount = async () => {
     const res = await request
-        .get<Response<{ code: number; message: string }>>(
+        .post<Response<{ code: number; message: string }>>(
             `/collectors/applyBsnAccount`
         )
         .catch((err) => {
