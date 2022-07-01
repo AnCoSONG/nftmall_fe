@@ -3,7 +3,7 @@
         <van-skeleton title row="10" :loading="loading">
             <div v-html="cleanHtml" v-if="docData" class="doc">
             </div>
-            <Empty v-else :description="'暂无文档内容'"/>
+            <Empty v-else :description="'暂无文档内容'" />
         </van-skeleton>
     </Subpage>
 </template>
@@ -25,11 +25,11 @@ type DocType = {
     title: string
 }
 const prop = defineProps<DocType>()
-
 const loading = ref(true)
 const docData = ref('')
 onMountedOrActivated(async () => {
     // 向后端请求文档内容并渲染
+    document.title = prop.title
     loading.value = true
     const r = await fetchDoc(prop.title)
     if (r) {
