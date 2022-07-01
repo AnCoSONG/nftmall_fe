@@ -102,7 +102,7 @@ export const authSrc = (originalStr: string) => {
     const param = import.meta.env.VITE_CDN_PARAMETER;
     const now = Date.now();
     const now_ms = Math.floor(now / 1000);
-    const rand_str = randStr(Math.floor(Math.random() * 50))
+    const rand_str = randStr(Math.floor((Math.random() * 4 + 4))) // 生成 8 - 16 位随机数
 
     const md5sign = MD5(`${path}-${now_ms}-${rand_str}-${0}-${secret}`).toString();
     return `${origin}${path}?${param}=${now_ms}-${rand_str}-0-${md5sign}`
