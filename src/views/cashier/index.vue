@@ -65,8 +65,10 @@ import { px2rem, redirectForOpenid } from "../../utils";
 import Price from "../../components/Price.vue";
 import { fetchOrderDetail, fetchProduct, requestPay } from "../../api";
 import { useAppStore } from "../../stores/app";
+import { useUserStore } from "../../stores/user";
 const router = useRouter();
 const app = useAppStore();
+const user = useUserStore();
 // 支付相关的功能
 // 接受订单号，完成支付
 const loading = ref(false);
@@ -168,15 +170,22 @@ const pay = async () => {
         message: '请稍等...',
         duration: 0
     })
-    if (app.isWx && app.openid === '') {
-        Dialog.alert({
-            message: '已为您下单藏品，但您的支付环境异常无法完成支付。请您退出本页面，重新从公众号进入本平台完成支付。'
-        })
+    if (!user.data.wx_openid) {
         toastInstance.clear()
+        Dialog.confirm({
+            title: '提示',
+            message: '因微信限制，您需要先完成微信绑定才能使用微信支付。请放心，您购买的藏品将为您保留10分钟。',
+            confirmButtonText: '前往绑定',
+            cancelButtonText: '稍后绑定'
+        }).then(() => {
+            router.replace('/account')
+        }).catch(() => {
+            router.replace('/order')
+        })
         return;
     }
     // console.log(app.openid)
-    const res = await requestPay(order.value.id, 'jsapi', app.openid)
+    const res = await requestPay(order.value.id, 'jsapi', user.data.wx_openid)
     if (res) {
         // 下单成功
         // h5 支付 跳转至 h5_url

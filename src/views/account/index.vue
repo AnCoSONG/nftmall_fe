@@ -25,7 +25,7 @@
             ></CellItem> -->
             <CellItem text="UID" :value="`#${user.data.id.toString().padStart(5, '0')}`"></CellItem>
             <CellItem text="微信绑定"
-                :value="user.data.wx_openid === null || user.data.wx_openid === '' ? '点此绑定当前账号' : user.data.wx_openid"
+                :value="user.data.wx_openid === null || user.data.wx_openid === '' ? '点此绑定当前账号' : '已绑定 ✔'"
                 right-icon="arrow" @click="bindOpenid"></CellItem>
             <CellItem text="积分" :value="user.data.credit"></CellItem>
             <CellItem text="区块链地址" :right-icon="copySvg" v-clipboard:copy="user.data.bsn_address"
@@ -243,8 +243,6 @@ onMountedOrActivated(async() => {
             console.log('bind wxopenid')
             const res = await fetchOpenid(querys['code'])
             if (res) {
-                app.openid = res;
-                
                 user.data.wx_openid = res;
                 const updateRes = await updateUser({wx_openid: res })
                 if (updateRes) {
@@ -255,13 +253,13 @@ onMountedOrActivated(async() => {
                 } else {
                     Toast({
                         type: 'fail',
-                        message: '绑定失败'
+                        message: '绑定失败:无法更新'
                     })
                 }
             } else {
                 Toast({
                     type: 'fail',
-                    message: '更新失败'
+                    message: '绑定失败:无法获取Openid'
                 })
             }
         }
