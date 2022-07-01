@@ -1,7 +1,7 @@
 <template>
-    <div class="mall-info">
-        <img class="logo" :src="logo"/>
-        <div class="text">
+    <div class="mall-info" :style="{marginBottom: px2rem(props.marginBottom)}">
+        <img class="logo" :src="logo" :style="{ height: px2rem(props.infoSize) }" />
+        <div class="text" :style="{ fontSize: px2rem(props.infoSize) }">
             {{ app.mall_name }}
         </div>
     </div>
@@ -9,7 +9,18 @@
 <script setup lang='ts'>
 import { useAppStore } from '../../../../stores/app';
 import logo from "../../../../assets/logo_new1.png";
+import { px2rem } from '../../../../utils';
 const app = useAppStore()
+const props = defineProps({
+    infoSize: {
+        type: Number,
+        default: 24
+    },
+    marginBottom: {
+        type: Number,
+        default: 20
+    }
+})
 </script>
 <style lang="scss" scoped>
 .mall-info {
@@ -17,7 +28,7 @@ const app = useAppStore()
     // font-family: serif;
     // background-color: #fff;
     margin-bottom: px2rem(20);
-    font-size: px2rem(24);
+    // font-size: px2rem(32);
     color: $normalTextColor;
     display: flex;
     flex-flow: nowrap row;
@@ -27,7 +38,7 @@ const app = useAppStore()
 
     .logo {
         // width: px2rem(32);
-        height: px2rem(24);
+        // height: px2rem(32);
         display: block;
         margin-right: px2rem(10);
     }
@@ -36,7 +47,7 @@ const app = useAppStore()
         // display: inline-block;
         color: #ccc;
         font-weight: bold;
-        
+
     }
 }
 </style>

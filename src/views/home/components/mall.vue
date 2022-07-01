@@ -1,7 +1,7 @@
 <template>
     <div class="mall outer-box">
         <Announcement></Announcement>
-        <MallInfo></MallInfo>
+        <MallInfo :info-size="24"></MallInfo>
         <BannerWrapper></BannerWrapper>
         <MallMain></MallMain>
     </div>

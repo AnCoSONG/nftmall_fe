@@ -1,10 +1,11 @@
 <template>
     <div class="login">
         <!-- <van-icon name="arrow-left"></van-icon> -->
-        <van-image :src="logoFff" class="logo" @click="router.push('/')"></van-image>
+        <!-- <van-image :src="logoFff" class="logo" @click="router.push('/')"></van-image>
         <div class="product-name" @click="router.push('/')">
             {{ app.mall_name }}
-        </div>
+        </div> -->
+        <MallInfo :infoSize="32" :marginBottom="60" @click="router.push({path: '/'})"/>
         <div class="form phone">
             <div class="label">
                 <van-icon :name="phoneSvg" class="icon"></van-icon>
@@ -61,6 +62,7 @@ import { useRouter } from "vue-router";
 import { useAxios } from "../../plugins/axios";
 import { Notify, Toast } from "vant";
 import { useRoute } from "vue-router";
+import MallInfo from "../home/components/subcomponents/MallInfo.vue";
 const props = defineProps({
     backTo: {
         type: String,
