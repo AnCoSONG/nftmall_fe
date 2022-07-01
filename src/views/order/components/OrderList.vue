@@ -1,6 +1,6 @@
 <template>
     <div class="order-list">
-        <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+        <van-pull-refresh v-model="refreshing" @refresh="onRefresh" success-text="刷新成功">
             <!-- todo: 自定义 finished text 槽 -->
             <van-list v-model:loading="loading" :finished="finished" finished-text="已显示所有订单" v-if="list.length > 0"
                 @load="onLoadMore">

@@ -1,5 +1,5 @@
 <template>
-    <van-pull-refresh v-model="refreshing" @refresh="onRefresh()">
+    <van-pull-refresh v-model="refreshing" @refresh="onRefresh()" success-text="刷新成功">
         <van-list v-model:loading="loading" :finished="finished" @load="onLoadMore()" v-if="list.length > 0">
             <ProductCard :data="item" v-for="(item, index) in list" :is-last="index == list.length - 1"></ProductCard>
             <template #finished>
