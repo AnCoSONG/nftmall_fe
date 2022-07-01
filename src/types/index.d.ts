@@ -48,6 +48,7 @@ declare type Product = {
     preview_img: string; // 首页藏品卡片预览资源
     preview_src: string; // 藏品预览资源（购买页、详情页）
     src: string; // 藏品真实资源
+    chain_src: string;
     description: string;
     type: SupportType;
     genres: Genre[];
@@ -59,6 +60,7 @@ declare type Product = {
     details: string[];
     poster: string;
     attribute: ProductAttribute;
+    is_soldout: boolean;
     price: string;
     limit: number;
     tags: Tag[];

@@ -107,7 +107,7 @@ stock_count.value = stock_count_res;
 
 // todo: statusText优化
 const statusText = computed(() => {
-    if (props.data.stock_count === 0) {
+    if (props.data.stock_count === 0 || props.data.is_soldout) {
         return "🪧 已售罄";
     }
     const now = dayjs().valueOf();

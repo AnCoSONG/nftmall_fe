@@ -505,7 +505,7 @@ watchEffect(() => {
             btnClickable.value = true;
             statusText.value = "待支付";
         } else {
-            if (stock_count.value === 0) {
+            if (stock_count.value === 0 || product.value.is_soldout) {
                 btnClickable.value = false;
                 statusText.value = "已售罄";
             } else {
