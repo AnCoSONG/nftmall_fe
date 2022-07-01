@@ -1,10 +1,12 @@
 <template>
     <!-- todo: optim this implementation -->
     <div class="cell-btn">
-        <div class="icon" v-show="prop.icon != null">
-            <van-icon :name="prop.icon"></van-icon>
+        <div class="left">
+            <div class="icon" v-show="prop.icon != null">
+                <van-icon :name="prop.icon"></van-icon>
+            </div>
+            <div class="text">{{ prop.text }}</div>
         </div>
-        <div class="text">{{ prop.text }}</div>
         <!-- todo：增强右侧，可以显示其他图案 -->
         <div class="right">
             <slot name="value"></slot>
@@ -45,16 +47,23 @@ const prop = defineProps<Prop>()
         background-color: $boxBgColor;
     }
 
-    .icon {
-        font-size: px2rem(20);
-        margin-right: px2rem(12);
+    .left {
+        display: flex;
+        align-items: center;
+        flex-flow: nowrap row;
+        justify-content: center;
+        .icon {
+            font-size: px2rem(20);
+            margin-right: px2rem(12);
+        }
+    
+        .text {
+            // flex: 1;
+            max-width: px2rem(150);
+            font-size: px2rem(18);
+        }
     }
 
-    .text {
-        // flex: 1;
-        max-width: px2rem(150);
-        font-size: px2rem(18);
-    }
 
     .right {
         flex: 1;
