@@ -8,7 +8,6 @@
 </template>
 <script setup lang='ts'>
 import { useAppStore } from '../../../../stores/app';
-import logo from "../../../../assets/logo_new1.png";
 import { px2rem } from '../../../../utils';
 const app = useAppStore()
 const props = defineProps({
@@ -21,6 +20,7 @@ const props = defineProps({
         default: 20
     }
 })
+const logo = 'https://mall-1308324841.file.myqcloud.com/static/mall_logo.png'
 </script>
 <style lang="scss" scoped>
 .mall-info {
