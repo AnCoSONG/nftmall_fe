@@ -56,7 +56,7 @@ onMountedOrActivated(async () => {
     if (app.isWx) {
         await setupSharing(
             "晋元数字",
-            "在晋元数字开始数字收藏!",
+            "来晋元数字开启您的元宇宙之旅！",
             "https://mall-1308324841.file.myqcloud.com/static/mall_logo.jpeg",
             // "https://www.jinyuanshuzi.com/redirect?to=https://www.jinyuanshuzi.com/"
             "https://www.jinyuanshuzi.com"
