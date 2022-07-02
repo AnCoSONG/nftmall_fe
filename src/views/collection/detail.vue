@@ -1,7 +1,7 @@
 <template>
     <Subpage title="藏品详情" shareable back-to="/collection" @on-share-click="() => onShareClickCallback()">
         <van-skeleton :loading="!productItemData" :row="10">
-            <img src="https://mall-1308324841.file.myqcloud.com/productBg5.png" class="product-bg" alt=""
+            <img src="https://mall-1308324841.file.myqcloud.com/static/product_bg.png" class="product-bg" alt=""
                 :style="{ opacity: bgLoaded ? 1 : 0 }" @load="bgLoaded = true" />
             <div class="collection-detail" v-if="productItemData">
                 <ProductViewer :src="is3DSrc ? productItemData.product!.src : productItemData.product!.preview_src"

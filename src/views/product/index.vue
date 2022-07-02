@@ -1,7 +1,7 @@
 <template>
     <Subpage title="藏品详情" back-to="/">
         <van-skeleton :loading="!product" :row="20">
-            <img src="https://mall-1308324841.file.myqcloud.com/productBg5.png" class="product-bg" alt=""
+            <img src="https://mall-1308324841.file.myqcloud.com/static/product_bg.png" class="product-bg" alt=""
                 :style="{ opacity: bgLoaded ? 1 : 0 }" @load="bgLoaded = true" />
             <div class="product" v-if="product">
                 <div class="product-preview">

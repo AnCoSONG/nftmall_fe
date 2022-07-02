@@ -123,7 +123,7 @@ const getCubeMapTexture = (environment: any): Promise<{ envMap: any }> => {
 }
 
 const setupEnvironment = async () => {
-    const environment = { path: 'https://mall-1308324841.file.myqcloud.com/venice_sunset_1k.hdr' }
+    const environment = { path: 'https://mall-1308324841.file.myqcloud.com/static/venice_sunset_1k.hdr' }
     const { envMap } = await getCubeMapTexture(environment)
     if (scene) {
         scene.environment = envMap;
@@ -209,8 +209,8 @@ onMountedOrActivated(async () => {
         // camera.position.y += size / 5.0
         camera.position.z += size / 0.75
         console.log(camera.position)
-        controls.maxDistance = size / 0.5
-        controls.minDistance = size / 1.2
+        controls.maxDistance = size / 0.75
+        controls.minDistance = size / 1.05
         controls.autoRotate = true
         controls.autoRotateSpeed = 5
         camera.lookAt(center)
