@@ -587,6 +587,38 @@ const onBtnClick = async () => {
             });
         }
     } else if (statusText.value === "购买") {
+        if (!user.data.is_verified) {
+            Dialog.confirm({
+                title: '提示',
+                message: '应监管要求，您在购买前需完成实名认证。',
+                confirmButtonText: '进行实名认证',
+                cancelButtonColor: '暂不购买'
+            }).then(() => {
+                router.push('/verification')
+            }).catch(() => {
+                Toast({
+                    type: 'text',
+                    message: '稍后可在个人中心页面完成实名认证'
+                })
+            })
+            return;
+        }
+        if (!user.data.bsn_address) {
+            Dialog.confirm({
+                title: '提示',
+                message: '您在购买前需申请区块链账户。',
+                confirmButtonText: '获取区块链账户',
+                cancelButtonColor: '暂不购买'
+            }).then(() => {
+                router.push('/user')
+            }).catch(() => {
+                Toast({
+                    type: 'text',
+                    message: '稍后可在个人页面申请区块链账户'
+                })
+            })
+            return;
+        }
         isLoading.value = true;
         const res = await seckill(id.value);
         if (res) {
