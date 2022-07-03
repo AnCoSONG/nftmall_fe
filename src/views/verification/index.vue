@@ -80,8 +80,7 @@ const verify = async () => {
             message: "验证成功",
             background: '#aaaaaa'
         });
-        user.data.real_name = realname.value;
-        user.data.real_id = realid.value;
+        await user.fetchUserInfo();
         router.back()
     } else {
         // 已处理
