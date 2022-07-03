@@ -26,7 +26,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GUI } from "dat.gui";
-import { onBeforeUnmount, onDeactivated, ref, toRefs } from "vue";
+import { onDeactivated, onUnmounted, ref, toRefs } from "vue";
 import { onMountedOrActivated } from "@vant/use";
 import { px2rem, extract_suffix } from "../utils";
 import { Dialog, Toast } from "vant";
@@ -92,16 +92,19 @@ const loadModel = async (model_url: string) => {
     const loader = new GLTFLoader();
     const suffix = extract_suffix(model_url)
     if (['glb', 'gltf'].indexOf(suffix) !== -1) {
-        console.log('true')
+        // console.log('true')
         const model = await loader.loadAsync(authSrc(model_url), (event) => {
             loadProgress.value = (event.loaded / event.total) * 100;
-            console.log(`已加载: ${loadProgress.value}% `);
+            // console.log(`已加载: ${loadProgress.value}% `);
         });
-        console.log(model_url, model);
+        // console.log(model_url, model);
         return model;
     } else if (['cjysc'].indexOf(suffix) !== -1) {
         // 加密文件，揭秘后使用
         alert('TODO: 文件解密')
+        return null;
+    } else {
+        alert('不支持该文件格式')
         return null;
     }
 };
@@ -208,12 +211,12 @@ onMountedOrActivated(async () => {
         camera.near = size / 100
         camera.far = size * 100
         camera.updateProjectionMatrix()
-        console.log(size, center)
+        // console.log(size, center)
         camera.position.copy(center)
         // camera.position.x += size / 2.0
         // camera.position.y += size / 5.0
         camera.position.z += size / 0.75
-        console.log(camera.position)
+        // console.log(camera.position)
         controls.maxDistance = size / 0.75
         controls.minDistance = size / 1.05
         controls.autoRotate = true
@@ -221,7 +224,7 @@ onMountedOrActivated(async () => {
         camera.lookAt(center)
         scene.add(object);
         productModel = object
-        console.log(scene);
+        // console.log(scene);
 
         // 创建动作渲染器
         mixer = new Three.AnimationMixer(object);
@@ -385,8 +388,8 @@ const releaseRender = function (renderer: Three.WebGLRenderer | null, scene: Thr
     Three.Cache.clear();
 }
 
-onBeforeUnmount(() => {
-    console.log('on unmount')
+onUnmounted(() => {
+    // console.log('on unmount')
     if (gui) {
         gui.destroy()
     }
@@ -394,6 +397,7 @@ onBeforeUnmount(() => {
     // clear()
     controls?.dispose()
     controls = null;
+    camera?.clear()
     camera = null;
     if (mixer) {
         mixer.stopAllAction()
@@ -409,6 +413,33 @@ onBeforeUnmount(() => {
     // scene = null;
     loadProgress.value = 0;
 });
+
+onDeactivated(() => {
+    if (gui) {
+        gui.destroy()
+    }
+    if (renderer && scene) {
+        releaseRender(renderer, scene);
+    }
+    // clear()
+    controls?.dispose()
+    controls = null;
+    camera?.clear()
+    camera = null;
+    if (mixer) {
+        mixer.stopAllAction()
+        mixer.uncacheRoot(mixer.getRoot())
+        mixer = null;
+    }
+    // if (animationId) {
+    //     cancelAnimationFrame(animationId)
+    // }
+    // renderer?.clear()
+    // renderer?.dispose()
+    // renderer = null;
+    // scene = null;
+    loadProgress.value = 0;
+})
 
 
 
@@ -456,7 +487,12 @@ const onWindowResize = () => {
     }
 };
 
-onBeforeUnmount(() => {
+onDeactivated(() => {
+    window.removeEventListener("deviceorientation", handler);
+    window.removeEventListener("resize", onWindowResize);
+})
+
+onUnmounted(() => {
     window.removeEventListener("deviceorientation", handler);
     window.removeEventListener("resize", onWindowResize);
 })

@@ -219,7 +219,7 @@ export const setupProtection = async () => {
 export const extract_suffix = (filename: string) => {
     const temp = filename.trim().split(".");
     const res = temp[temp.length - 1].trim().toLowerCase();
-    console.log(temp, res);
+    // console.log(temp, res);
     return res;
 };
 

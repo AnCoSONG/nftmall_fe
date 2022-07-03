@@ -5,7 +5,7 @@
         <div class="product-name" @click="router.push('/')">
             {{ app.mall_name }}
         </div> -->
-        <MallInfo :infoSize="32" :marginBottom="60" @click="router.push({path: '/'})"/>
+        <MallInfo :infoSize="32" :marginBottom="60" @click="router.push({ path: '/' })" />
         <div class="form phone">
             <div class="label">
                 <van-icon :name="phoneSvg" class="icon"></van-icon>
@@ -48,7 +48,7 @@
     <van-number-keyboard v-model="verifiedCode" :show="showKeyboard" @blur="showKeyboard = false" />
 </template>
 <script setup lang="ts">
-import { computed, onDeactivated } from "vue";
+import { computed, onDeactivated, onUnmounted } from "vue";
 import { ref, watch } from "vue";
 import logoFff from "../../assets/logo-fff.png";
 import phoneSvg from "../../assets/phone.svg";
@@ -117,6 +117,14 @@ onMountedOrActivated(() => {
     }
 });
 onDeactivated(() => {
+    phone.value = "";
+    verifiedCode.value = "";
+    disabled.value = true;
+    showKeyboard.value = false;
+    isAgree.value = false;
+})
+
+onUnmounted(() => {
     // init
     phone.value = "";
     verifiedCode.value = "";
@@ -145,7 +153,7 @@ const getVerification = async () => {
         countDown.start();
         showingCountDown.value = true;
     } else {
-        console.log("验证码发送失败, 请稍后重试");
+        // console.log("验证码发送失败, 请稍后重试");
     }
 };
 // console.log(props.backTo, route.params);

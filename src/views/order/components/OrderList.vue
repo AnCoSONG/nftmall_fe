@@ -11,7 +11,7 @@
     </div>
 </template>
 <script setup lang='ts'>
-import { computed, onDeactivated, ref, toRef } from 'vue';
+import { computed, onDeactivated, onUnmounted, ref, toRef } from 'vue';
 import OrderItem from './OrderItem.vue'
 import Empty from '../../../components/Empty.vue'
 import { useUserStore } from '../../../stores/user';
@@ -46,7 +46,7 @@ const onLoadMore = async () => {
     }
     loading.value = true;
     const data = await fetchOrders(page.value, limit, true, query.value);
-    console.log(data);
+    // console.log(data);
     if (data) {
         for (const item of data.data) {
             list.value.push(item)
@@ -67,6 +67,12 @@ onMountedOrActivated(async () => {
 })
 
 onDeactivated(() => {
+    refreshing.value = false
+    loading.value = false
+    finished.value = false
+})
+
+onUnmounted(() => {
     refreshing.value = false
     loading.value = false
     finished.value = false

@@ -38,7 +38,7 @@ const routeBack = () => {
 // https://codeantenna.com/a/XHbHc3eCZZ
 const handleScroll = () => {
     const scrollTop = document.getElementById('app')?.scrollTop ?? 0;
-    console.log(scrollTop)
+    // console.log(scrollTop)
     blurPx.value = scrollTop * 0.05;
     if (blurPx.value >= 20) {
         blurPx.value = 20;

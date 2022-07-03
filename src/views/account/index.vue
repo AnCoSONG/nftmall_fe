@@ -145,7 +145,7 @@ const onConfirm = async (action: string): Promise<boolean> => {
 // });
 
 const openFileChooser = () => {
-    console.log(uploadFileRef.value)
+    // console.log(uploadFileRef.value)
     uploadFileRef.value.click()
 }
 const uploadImg = (event: Event) => {
@@ -172,7 +172,7 @@ const uploadImg = (event: Event) => {
                     message: '请稍等...',
                     duration: 0
                 })
-                console.log(fileObj)
+                // console.log(fileObj)
                 const res = await putObjectPromisify(fileObj.name, fileObj).catch(err => {
                     console.error(err)
                     Notify({
@@ -183,7 +183,7 @@ const uploadImg = (event: Event) => {
                 }) as boolean | null
                 if (res) {
                     const r = await updateUser({ avatar: cdnTransform('avatar/' + cropped_name) }).catch(err => {
-                        console.log(err)
+                        // console.log(err)
                         Notify({
                             type: 'danger',
                             message: '更新出错: ' + err.response.data.message

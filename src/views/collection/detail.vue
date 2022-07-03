@@ -78,7 +78,7 @@ export default {
 <script setup lang='ts'>
 import dayjs from 'dayjs';
 import DOMPurify from 'dompurify';
-import { computed, onDeactivated, ref, toRef, watch } from 'vue';
+import { computed, onDeactivated, onUnmounted, ref, toRef, watch } from 'vue';
 import Subpage from '../../components/Subpage.vue';
 import ProductViewer from '../../components/ProductViewer.vue';
 import { onMountedOrActivated } from '@vant/use'
@@ -237,6 +237,10 @@ const goVerify = () => {
 }
 
 onDeactivated(() => {
+    productItemData.value = undefined
+})
+
+onUnmounted(() => {
     productItemData.value = undefined
 })
 </script>

@@ -49,7 +49,7 @@ const onLoadMore = async () => {
     }
     loading.value = true
     const data = await fetchProductItems(user.data.id, page.value, limit, true)
-    console.log('藏品', data)
+    // console.log('藏品', data)
     if (data) {
         for (const item of data.data) {
             list.value.push(item)

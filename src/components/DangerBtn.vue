@@ -20,7 +20,7 @@ type PropType = {
     loading?: boolean;
 };
 const prop = defineProps<PropType>();
-console.log(prop.loading)
+// console.log(prop.loading)
 </script>
 <style lang="scss" scoped>
 .danger-btn {

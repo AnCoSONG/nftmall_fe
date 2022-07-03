@@ -17,9 +17,8 @@ export default {
 import Subpage from '../../components/Subpage.vue';
 import Empty from '../../components/Empty.vue';
 import Dompurify from 'dompurify';
-import { computed, ref } from 'vue';
+import { computed, onDeactivated, onUnmounted, ref } from 'vue';
 import { onMountedOrActivated } from '@vant/use';
-import { onDeactivated } from 'vue'
 import { fetchDoc } from '../../api'
 type DocType = {
     title: string
@@ -45,6 +44,11 @@ const cleanHtml = computed(() => {
 })
 
 onDeactivated(() => {
+    docData.value = ''
+    loading.value = true
+})
+
+onUnmounted(() => {
     docData.value = ''
     loading.value = true
 })

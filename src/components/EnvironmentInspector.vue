@@ -56,32 +56,32 @@ const orientation = ref<number>(0);
 window.addEventListener("orientationchange", () => {
     // 方向改变前
     orientation.value = window.orientation | screen.orientation.angle;
-    console.log("orientation change", orientation.value);
+    // console.log("orientation change", orientation.value);
 });
 
 // when orientation changes, update the font size
 watch(orientation, (newVal, oldVal) => {
     // console.log(newVal, oldVal);
-    console.log("orientation changed", window.innerWidth, window.innerHeight);
+    // console.log("orientation changed", window.innerWidth, window.innerHeight);
     let pageWidth = window.innerHeight;
     document.querySelector("html")!.style.fontSize = pageWidth / 10 + "px";
-    console.log(document.querySelector("html")!.style.fontSize);
+    // console.log(document.querySelector("html")!.style.fontSize);
 });
 
 // orientation end
 // resize begin
 window.addEventListener("resize", () => {
-    console.log("size changed", window.innerWidth, window.innerHeight);
+    // console.log("size changed", window.innerWidth, window.innerHeight);
     let pageWidth = window.innerWidth;
     document.querySelector("html")!.style.fontSize = pageWidth / 10 + "px";
-    console.log(document.querySelector("html")!.style.fontSize);
+    // console.log(document.querySelector("html")!.style.fontSize);
 });
 // resize end
 
 // onload check
 const isMobile = ref(/Mobi|Android|iPhone/i.test(navigator.userAgent));
 appStore.isWx = /MicroMessenger/i.test(navigator.userAgent);
-console.log('isWX:', appStore.isWx);
+// console.log('isWX:', appStore.isWx);
 
 
 onMountedOrActivated(async () => {

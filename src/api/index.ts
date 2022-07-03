@@ -262,7 +262,7 @@ export const checkSession = async () => {
 };
 
 export const idCheck = async (name: string, id_card: string) => {
-    console.log(encrypt(name));
+    // console.log(encrypt(name));
     const res = await request
         .post<Response<{ code: number; message: string }>>(
             "/collectors/idcheck",
