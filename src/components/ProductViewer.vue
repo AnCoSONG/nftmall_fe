@@ -14,7 +14,11 @@
         </van-image>
     </div>
 </template>
-<script lang="ts"></script>
+<script lang="ts">
+export default {
+    name: "product-viewer"
+}
+</script>
 <script setup lang="ts">
 import WebGL from "../utils/webgl";
 import * as Three from "three";
@@ -22,7 +26,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GUI } from "dat.gui";
-import { onDeactivated, ref, toRefs } from "vue";
+import { onBeforeUnmount, onDeactivated, ref, toRefs } from "vue";
 import { onMountedOrActivated } from "@vant/use";
 import { px2rem, extract_suffix } from "../utils";
 import { Dialog, Toast } from "vant";
@@ -82,6 +86,7 @@ let clips: Three.AnimationClip[] = [];
 let pmremGenerator: PMREMGenerator | null;
 let period_delta = 0;
 let clock: Three.Clock | null;
+let animationId: null | number = null;
 
 const loadModel = async (model_url: string) => {
     const loader = new GLTFLoader();
@@ -251,7 +256,7 @@ onMountedOrActivated(async () => {
         // 创建时钟
         clock = new Three.Clock()
         function animate(time: number) {
-            requestAnimationFrame(animate);
+            animationId = requestAnimationFrame(animate);
             controls!.update()
             mixer && mixer.update(clock!.getDelta())
             renderer!.render(scene!, camera!);
@@ -281,7 +286,7 @@ onMountedOrActivated(async () => {
         //     if (camera) camera.position.z = v;
         // })
         // gui.open()
-        requestAnimationFrame(animate);
+        animationId = requestAnimationFrame(animate);
     } else {
         Toast({
             type: "fail",
@@ -323,23 +328,85 @@ const clear = () => {
 
 }
 
-onDeactivated(() => {
+const releaseRender = function (renderer: Three.WebGLRenderer | null, scene: Three.Scene | null) {
+    let clearScene = function (scene: Three.Scene | null) {
+        let arr = scene?.children.filter(x => x);
+        arr?.forEach((item: any) => {
+            if (item.children.length) {
+                clearScene(item);
+            }
+            else {
+
+                if (item.type === 'Mesh') {
+
+                    item.geometry.dispose();
+
+                    item.material.dispose();
+
+                    !!item.clear && item.clear();
+
+                }
+
+            }
+
+        });
+
+        !!scene?.clear && scene.clear();
+        //@ts-ignore
+        arr = null;
+    }
+
+
+
+    try {
+
+        clearScene(scene);
+
+    }
+
+    catch (e) { }
+
+
+
+    try {
+
+        renderer?.renderLists.dispose();
+
+        renderer?.dispose();
+        renderer?.forceContextLoss();
+        renderer?.domElement.remove()
+        renderer = null;
+
+    } catch (e) { }
+    if (animationId) {
+        cancelAnimationFrame(animationId);
+    }
+
+    Three.Cache.clear();
+}
+
+onBeforeUnmount(() => {
+    console.log('on unmount')
     if (gui) {
         gui.destroy()
     }
-    clear()
-    scene = null;
+    releaseRender(renderer, scene);
+    // clear()
     controls?.dispose()
     controls = null;
     camera = null;
-    renderer?.clear()
-    renderer?.dispose()
-    renderer = null;
     if (mixer) {
         mixer.stopAllAction()
         mixer.uncacheRoot(mixer.getRoot())
         mixer = null;
     }
+    // if (animationId) {
+    //     cancelAnimationFrame(animationId)
+    // }
+    // renderer?.clear()
+    // renderer?.dispose()
+    // renderer = null;
+    // scene = null;
     loadProgress.value = 0;
 });
 
@@ -389,10 +456,10 @@ const onWindowResize = () => {
     }
 };
 
-onDeactivated(() => {
+onBeforeUnmount(() => {
     window.removeEventListener("deviceorientation", handler);
     window.removeEventListener("resize", onWindowResize);
-});
+})
 
 window.addEventListener("resize", onWindowResize);
 </script>

@@ -5,7 +5,7 @@
                 <RouterView v-slot="{ Component }">
                     <template v-if="Component">
                         <KeepAlive
-                            exclude="cashier,payment_waiting,product,verification,order,account,order-detail,collection-detail">
+                            exclude="cashier,payment_waiting,product,product-viewer,verification,order,account,order-detail,collection-detail">
                             <Suspense>
                                 <component :is="Component"></component>
                                 <template #fallback>
