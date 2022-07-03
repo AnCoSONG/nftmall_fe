@@ -94,7 +94,7 @@ const uploadFileRef = ref()
 const field2text: Record<string, string> = {
     username: '用户名',
     email: '邮箱',
-    delivery_address: '收获地址'
+    delivery_address: '收货地址'
 }
 const clipic = new Clipic()
 onMountedOrActivated(async () => {
