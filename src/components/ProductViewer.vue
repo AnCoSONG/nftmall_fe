@@ -87,6 +87,7 @@ let pmremGenerator: PMREMGenerator | null;
 let period_delta = 0;
 let clock: Three.Clock | null;
 let animationId: null | number = null;
+let isUnmounted = false;
 
 const loadModel = async (model_url: string) => {
     const loader = new GLTFLoader();
@@ -265,6 +266,12 @@ onMountedOrActivated(async () => {
             renderer!.render(scene!, camera!);
         }
         webglLoading.value = false;
+        if (isUnmounted) {
+            console.log('product viewer is unmounted')
+            __self_destroy__()
+            return;
+        }
+        // console.log('Is unmounted trigger')
         document
             .querySelector("#product-model-viewer")!
             .appendChild(renderer.domElement);
@@ -388,8 +395,7 @@ const releaseRender = function (renderer: Three.WebGLRenderer | null, scene: Thr
     Three.Cache.clear();
 }
 
-onUnmounted(() => {
-    // console.log('on unmount')
+const __self_destroy__ = () => {
     if (gui) {
         gui.destroy()
     }
@@ -412,34 +418,12 @@ onUnmounted(() => {
     // renderer = null;
     // scene = null;
     loadProgress.value = 0;
-});
+    isUnmounted = true
+}
 
-onDeactivated(() => {
-    if (gui) {
-        gui.destroy()
-    }
-    if (renderer && scene) {
-        releaseRender(renderer, scene);
-    }
-    // clear()
-    controls?.dispose()
-    controls = null;
-    camera?.clear()
-    camera = null;
-    if (mixer) {
-        mixer.stopAllAction()
-        mixer.uncacheRoot(mixer.getRoot())
-        mixer = null;
-    }
-    // if (animationId) {
-    //     cancelAnimationFrame(animationId)
-    // }
-    // renderer?.clear()
-    // renderer?.dispose()
-    // renderer = null;
-    // scene = null;
-    loadProgress.value = 0;
-})
+onUnmounted(__self_destroy__);
+
+onDeactivated(__self_destroy__);
 
 
 
