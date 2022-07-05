@@ -9,7 +9,7 @@
             <div class="name-credit">
                 <div class="name">{{ user.data.username }}</div>
                 <div class="credit">
-                    <van-icon name="points" />&nbsp;积分: {{ user.data.credit }}
+                    <van-icon name="points" />&nbsp;积分: {{ Math.round(user.data.credit / 10) }}
                 </div>
             </div>
             <!-- todo 用户信息详情页 -->

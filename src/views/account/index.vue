@@ -27,7 +27,7 @@
             <CellItem text="微信绑定"
                 :value="user.data.wx_openid === null || user.data.wx_openid === '' ? '点此绑定当前账号' : '已绑定 ✔'"
                 right-icon="arrow" @click="bindOpenid"></CellItem>
-            <CellItem text="积分" :value="user.data.credit"></CellItem>
+            <CellItem text="积分" :value="Math.round(user.data.credit / 10)"></CellItem>
             <CellItem text="区块链地址" :right-icon="copySvg" v-clipboard:copy="user.data.bsn_address"
                 v-clipboard:success="onCopySuccess" v-clipboard:error="onCopyError" v-if="user.data.bsn_address">
                 <template #value>
