@@ -36,7 +36,7 @@ const openBSN = () => {
         title: '提示',
         message: '即将前往BSN文昌链浏览器, 您可在该页面完成您藏品权利的验证。点击”确定“继续。'
     }).then(() => {
-        window.location.href = 'https://explorer.testnet.bianjie.ai/' // todo: 待修改为正式链
+        window.location.href = 'https://explorer.wenchang.bianjie.ai/' // todo: 待修改为正式链
     }).catch(() => {
         // do nothing
     })

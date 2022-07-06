@@ -230,7 +230,7 @@ const goVerify = () => {
         title: '提示',
         message: '请您复制上方的藏品信息如交易哈希、藏品链上ID等,在文昌链浏览器内的目录下进行查询鉴权。'
     }).then(() => {
-        window.location.href = 'https://explorer.testnet.bianjie.ai/' // todo: 待修改为正式链
+        window.location.href = 'https://explorer.wenchang.bianjie.ai/' // todo: 待修改为正式链
     }).catch(() => {
         // do nothing
     })
