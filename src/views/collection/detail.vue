@@ -23,16 +23,6 @@
                     </van-image>
                     <div class="text">创作者：{{ productItemData.product?.publisher?.name }}</div>
                 </div>
-                <div class="detail box">
-                    <div class="title">藏品故事</div>
-                    <div class="content">
-                        <van-image class="img" v-for="item in productItemData.product!.details" :src="item">
-                            <template #loading>
-                                <ImageLoader />
-                            </template>
-                        </van-image>
-                    </div>
-                </div>
                 <div class="box collection-info">
                     <KeyValueLine key-text="藏品名" :value="productItemData.product?.name ?? '...'" :copy="false" />
                     <KeyValueLine key-text="藏品类别" :value="typeText ?? '...'" :copy="false" />
@@ -50,6 +40,16 @@
                     <KeyValueLine key-text="藏品链上交易ID" :value="productItemData.operation_id ?? '...'" :copy="true" />
                     <KeyValueLine key-text="交易哈希" :value="productItemData.tx_hash ?? '...'" :copy="true" />
                     <div class="verify" @click="goVerify">验证藏品所有权</div>
+                </div>
+                <div class="detail box">
+                    <div class="title">藏品故事</div>
+                    <div class="content">
+                        <van-image class="img" v-for="item in productItemData.product!.details" :src="item">
+                            <template #loading>
+                                <ImageLoader />
+                            </template>
+                        </van-image>
+                    </div>
                 </div>
                 <div class="box must-know">
                     <div class="title">权益须知</div>
