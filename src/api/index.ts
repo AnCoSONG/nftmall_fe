@@ -159,7 +159,19 @@ export const sendCode = async (phone: string) => {
             });
         });
     if (res) {
-        return res.data.code;
+        if (res.data.code === 200){
+            if (res.data.data === 'send code success'){
+                return 200;
+            } else if (res.data.data === 'code is send') {
+                return 201;
+            } else if (res.data.data === 'send code success but send flag has not been set') {
+                return 202;
+            } else {
+                return 209;
+            }
+        } else {
+            return res.data.code;
+        }
     } else {
         return 400;
     }
