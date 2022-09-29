@@ -31,6 +31,9 @@
                                 : "本页面仅支持移动设备"
                 }}
             </div>
+            <div class="app-gold-text icp-text" @click="openGXB">
+                晋ICP备2022004760号-1
+            </div>
         </div>
     </div>
 </template>
@@ -41,7 +44,7 @@ import { useAppStore } from "../stores/app";
 import { useUserStore } from "../stores/user";
 import { onMountedOrActivated } from "@vant/use";
 import { Notify, Toast } from "vant";
-import { getQuerys, redirectForOpenid } from "../utils";
+import { getQuerys, openGXB, redirectForOpenid } from "../utils";
 import axios from "axios";
 import { fetchOpenid, updateUser } from "../api";
 
@@ -162,6 +165,7 @@ onMountedOrActivated(async () => {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    position: relative;
 
     background-color: $backgroundColor;
 
@@ -169,6 +173,13 @@ onMountedOrActivated(async () => {
         display: block;
         font-size: px2rem(10);
         text-align: center;
+    }
+
+    .icp-text {
+        font-size: px2rem(6);
+        position: absolute;
+        bottom: px2rem(36);
+        cursor: pointer;
     }
 }
 </style>

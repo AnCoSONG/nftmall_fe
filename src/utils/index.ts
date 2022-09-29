@@ -244,3 +244,7 @@ export const redirectForOpenid = () => {
         )}&response_type=code&scope=snsapi_base&state=home#wechat_redirect`
     );
 };
+
+export const openGXB = () => {
+    window.open('https://beian.miit.gov.cn/', '_blank')
+}
