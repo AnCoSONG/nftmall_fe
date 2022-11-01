@@ -152,7 +152,7 @@ const checkId = async (value: string, rule: any) => {
 }
 
 onDeactivated(() => {
-    console.log('on unmounted')
+    // console.log('on unmounted')
 })
 
 const tipText = computed(() => {
@@ -168,7 +168,7 @@ const tipText = computed(() => {
 })
 
 const completeForm = computed(() => {
-    console.log(transferDto)
+    // console.log(transferDto)
     return transferDto.product_item_id !== '' && transferDto.receiver_id !== ''
 })
 
