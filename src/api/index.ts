@@ -159,12 +159,15 @@ export const sendCode = async (phone: string) => {
             });
         });
     if (res) {
-        if (res.data.code === 200){
-            if (res.data.data === 'send code success'){
+        if (res.data.code === 200) {
+            if (res.data.data === "send code success") {
                 return 200;
-            } else if (res.data.data === 'code is send') {
+            } else if (res.data.data === "code is send") {
                 return 201;
-            } else if (res.data.data === 'send code success but send flag has not been set') {
+            } else if (
+                res.data.data ===
+                "send code success but send flag has not been set"
+            ) {
                 return 202;
             } else {
                 return 209;
@@ -561,9 +564,12 @@ export const fetchUserCollectionItem = async (
     with_relation = true
 ) => {
     const res = await request
-        .get<Response<ProductItem>>(`/product-items/findOneByUser/${product_item_id}`, {
-            params: { with_relation },
-        })
+        .get<Response<ProductItem>>(
+            `/product-items/findOneByUser/${product_item_id}`,
+            {
+                params: { with_relation },
+            }
+        )
         .catch((err) => {
             Toast({
                 type: "fail",
@@ -583,14 +589,11 @@ export const fetchProductBoughtCount = async (
     product_id: string
 ) => {
     const res = await request
-        .get<Response<number>>(
-            `/product-items/get_collection_count`,
-            {
-                params: {
-                    product_id,
-                },
-            }
-        )
+        .get<Response<number>>(`/product-items/get_collection_count`, {
+            params: {
+                product_id,
+            },
+        })
         .catch((err) => {
             console.error(err);
             Toast({
@@ -808,3 +811,95 @@ export const fetchDoc = async (title: string) => {
         return res.data.data[0];
     } else return null;
 };
+
+export const fetchTransferItems = async (
+    page: number,
+    limit: number,
+    with_relation = true
+) => {
+    const res = await request
+        .get<
+            Response<{
+                data: TransferItem[];
+                total: number;
+                page: number;
+                offset: number;
+            }>
+        >(`/product-item-transfer/list`, {
+            params: {
+                page,
+                limit,
+                with_relation,
+            },
+        })
+        .catch((err) => {
+            console.error(err);
+            Toast({
+                type: "fail",
+                message: err.response.data.message,
+            });
+            return null;
+        });
+    if (res) {
+        return res.data.data;
+    } else return null;
+};
+
+export const fetchAllCollections = async () => {
+    const res = await request
+        .get<Response<SimpleProductItem[]>>("/product-items/findAllByUser")
+        .catch((err) => {
+            console.error(err);
+            Toast({
+                type: "fail",
+                message: err.response.data.message,
+            });
+            return null;
+        });
+    if (res) {
+        return res.data.data;
+    } else return [];
+};
+
+export const findCollector = async (id: string) => {
+    const res = await request
+        .get<Response<User>>("/collectors/" + id, {
+            params: { with_relation: false },
+        })
+        .catch((err) => {
+            console.error(err);
+            // Toast({
+            //     type: "fail",
+            //     message: err.response.data.message,
+            // });
+            return null;
+        });
+    if (res) {
+        return res.data.data;
+    } else return null;
+};
+
+export const transferProductItem = async (
+    product_item_id: string,
+    receiver_id: string
+) => {
+    const res = await request
+        .post<Response<TransferItem>>(
+            `/affair/transfer_nft`,
+            {
+                receiver_id,
+                product_item_id,
+            }
+        )
+        .catch((err) => {
+            console.error(err);
+            Toast({
+                type: "fail",
+                message: err.response.data.message,
+            });
+            return null;
+        });
+    if (res) {
+        return res.data.data;
+    } else return null;
+}

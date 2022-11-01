@@ -26,7 +26,12 @@ export const useThemeStore = defineStore("theme", {
                 imagePlaceholderBackgroundColor: '#272727',
                 dividerFontSize: px2rem(12),
                 dividerMargin: px2rem(12),
-                loadingTextFontSize: px2rem(16)
+                loadingTextFontSize: px2rem(16),
+                pickerOptionTextColor: '#343434',
+                pickerTitleFontSize: px2rem(16),
+                fieldLabelColor: '#ddd',
+                fieldInputTextColor: '#ddd',
+                fieldPlaceholderTextColor: '#565656'
                 // stepCircleColor: '#272727',
             },
             announcement: {

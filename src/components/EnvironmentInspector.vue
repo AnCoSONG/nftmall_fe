@@ -2,12 +2,12 @@
     <div class="orientation-inspector" :style="{ height: orientation == 0 && isMobile ? 'auto' : '100%' }">
         <div v-if="orientation == 0 && isMobile">
             <van-config-provider :theme-vars="themeStore.componentVars">
-                <RouterView v-slot="{ Component }">
+                <RouterView v-slot="{ Component, route }">
                     <template v-if="Component">
                         <KeepAlive
-                            exclude="cashier,payment_waiting,product,product-viewer,verification,order,account,order-detail,collection-detail">
+                            exclude="cashier,payment_waiting,product,product-viewer,verification,order,account,order-detail,collection-detail,transfer-apply">
                             <Suspense>
-                                <component :is="Component"></component>
+                                <component :is="Component" :key="route.name"></component>
                                 <template #fallback>
                                     <van-overlay :show="true">
                                         <div class="app-loader">

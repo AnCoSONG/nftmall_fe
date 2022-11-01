@@ -18,9 +18,11 @@ import { onCopyError, onCopySuccess } from '../utils';
 type PropType = {
     keyText: string;
     value: string | number;
-    copy: boolean;
+    copy?: boolean;
 }
-const props = defineProps<PropType>()
+const props = withDefaults(defineProps<PropType>(), {
+    copy: false
+})
 const { keyText, value, copy } = toRefs(props)
 </script>
 <style lang="scss" scoped>

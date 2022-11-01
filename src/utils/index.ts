@@ -92,6 +92,19 @@ export enum onChainStatus {
     PENDING = "pending",
 }
 
+export enum productItemStatus {
+    DEFAULT = 'default',
+    LOCKED = 'locked',
+    TRANSFERED = 'transfered'
+  }
+  
+  export enum productItemSource {
+    TBD = 'TBD',
+    BUY = 'BUY',
+    PLATFORM_GIFT = 'PLATFORM_GIFT',
+    TRANSFER = 'TRANSFER'
+  }
+
 export const encrypt = (data: string) => {
     // console.log(AES, Utf8, Pkcs7)
     return AES.encrypt(data, import.meta.env.VITE_SECRET, {

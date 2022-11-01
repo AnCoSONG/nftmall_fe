@@ -15,6 +15,10 @@
                     </div>
                     <div class="product-item-btn" @click="onBtnClick" v-if="!is3DSrc">查看原始资源</div>
                 </div>
+                <div class="operation box">
+                    <!-- <div class="title">相关操作</div> -->
+                    <GoldBtn @click="router.push({ path: '/transfer/apply', query: { product_item_id: id } })">转赠本藏品</GoldBtn>
+                </div>
                 <div class="box">
                     <van-image class="avatar" :src="productItemData.product?.publisher?.avatar" round>
                         <template #loading>
@@ -26,7 +30,9 @@
                 <div class="box collection-info">
                     <KeyValueLine key-text="藏品名" :value="productItemData.product?.name ?? '...'" :copy="false" />
                     <KeyValueLine key-text="藏品类别" :value="typeText ?? '...'" :copy="false" />
-                    <KeyValueLine key-text="藏品ID" :value="productItemData.product_id ?? '...'" :copy="true" />
+                    <KeyValueLine key-text="藏品系列ID" :value="productItemData.product_id ?? '...'" :copy="true" />
+                    <KeyValueLine key-text="藏品ID" :value="productItemData.id ?? '...'" :copy="true" />
+                    <KeyValueLine key-text="藏品来源" :value="productItemSourceText ?? '...'" :copy="false" />
                     <KeyValueLine key-text="发行方" :value="'晋元数字'" :copy="false" />
                     <KeyValueLine key-text="创作方" :value="productItemData.product?.publisher?.name ?? '...'"
                         :copy="false" />
@@ -73,6 +79,7 @@
 <script lang="ts">
 export default {
     name: "collection-detail",
+    components: { GoldBtn }
 };
 </script>
 <script setup lang='ts'>
@@ -85,10 +92,13 @@ import { onMountedOrActivated } from '@vant/use'
 import ImageLoader from '../../components/ImageLoader.vue';
 import KeyValueLine from '../../components/KeyValueLine.vue';
 import { fetchDoc, fetchUserCollectionItem } from '../../api';
-import { extract_suffix, onChainStatus, setupProtection, SupportType, TIME_FORMAT, px2rem } from '../../utils';
+import { extract_suffix, onChainStatus, setupProtection, SupportType, TIME_FORMAT, px2rem, productItemSource } from '../../utils';
 import { useAppStore } from '../../stores/app';
 import { Dialog, ImagePreview } from 'vant';
 import { authSrc } from '../../plugins/cos-sdk';
+import { useRouter } from 'vue-router';
+import GoldBtn from '../../components/GoldBtn.vue';
+const router = useRouter()
 const app = useAppStore()
 const bgLoaded = ref(false);
 const props = defineProps({
@@ -141,6 +151,20 @@ const typeText = computed(() => {
     }
 })
 
+const productItemSourceText = computed(() => {
+    if (productItemData.value) {
+        if (productItemData.value.source === productItemSource.TBD) {
+            return '待定'
+        } else if (productItemData.value.source === productItemSource.BUY) {
+            return '自行购买'
+        } else if (productItemData.value.source === productItemSource.PLATFORM_GIFT) {
+            return '平台赠送'
+        } else if (productItemData.value.source === productItemSource.TRANSFER) {
+            return '交易转赠'
+        }
+    }
+})
+
 const onChainStatusText = computed(() => {
     if (productItemData.value) {
         if (productItemData.value.on_chain_status === onChainStatus.FAILED) {
@@ -154,6 +178,7 @@ const onChainStatusText = computed(() => {
         }
     }
 })
+
 const productOnChainTimeFormat = computed(() => {
     if (productItemData.value && productItemData.value.on_chain_timestamp) {
         return dayjs(productItemData.value.on_chain_timestamp).format(TIME_FORMAT)
