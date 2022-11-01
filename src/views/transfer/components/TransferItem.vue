@@ -49,7 +49,7 @@
                     <KeyValueLine key-text="操作ID" :value="data.operation_id ?? '...'" :copy="true" />
                     <KeyValueLine key-text="交易哈希" :value="data.tx_hash ?? '...'" :copy="true" />
                     <KeyValueLine key-text="转赠成功时间"
-                        :value="new Date(data.tx_success_time!).toLocaleString() ?? '...'" />
+                        :value="data.tx_success_time ? new Date(data.tx_success_time).toLocaleString() : '...'" />
                 </div>
             </div>
         </div>
