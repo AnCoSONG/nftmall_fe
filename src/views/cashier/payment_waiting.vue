@@ -27,11 +27,11 @@ import { fetchPaymentStatus, queryPayment } from '../../api';
 import { PaymentStatus } from '../../utils';
 const router = useRouter()
 const status = ref('loading')
-onMounted(() => {
-    setTimeout(() => {
-        status.value = 'success'
-    }, 500)
-})
+// onMounted(() => {
+//     setTimeout(() => {
+//         status.value = 'success'
+//     }, 500)
+// })
 type PropType = {
     order_id: string;
     trade_no: string;

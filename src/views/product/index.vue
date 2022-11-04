@@ -68,17 +68,18 @@
                 </div>
 
                 <div class="detail box creator-box">
-                    <div class="title">创作者</div>
-                    <div class="content">
-                        <div class="creator">
-                            <van-image class="avatar" round :src="product.publisher?.avatar">
-                                <template #loading>
-                                    <ImageLoader />
-                                </template>
-                            </van-image>
-                            <div class="name">{{ product.publisher?.name }}</div>
-                        </div>
+                    <!-- <div class="title">创作者</div> -->
+                    <!-- <div class="content"> -->
+                    <div class="creator">
+                        <van-image class="avatar" round :src="product.publisher?.avatar">
+                            <template #loading>
+                                <ImageLoader />
+                            </template>
+                        </van-image>
+                        <div class="creator-text">创作者</div>
+                        <div class="name">{{ product.publisher?.name }}</div>
                     </div>
+                    <!-- </div> -->
                 </div>
                 <div class="detail box">
                     <div class="title">藏品故事</div>
@@ -342,11 +343,23 @@ const fetchLucky = async () => {
 const fetchInit = async () => {
     isLoading.value = true;
     if (!user.isLogin) {
+        // 不登陆也应获取到
         isLoading.value = false;
-        const stockRes = await get_stock_count(id.value, "redis");
+        const [stockRes, buyMustKnowRes, previllageMustKnowRes] = await Promise.all([
+            get_stock_count(id.value, "redis"),
+            fetchDoc('购买须知'),
+            fetchDoc('权益须知')
+        ])
         stock_count.value = stockRes;
+        if (buyMustKnowRes) {
+            buyMustKnow.value = buyMustKnowRes.content
+        }
+        if (previllageMustKnowRes) {
+            previllageMustKnow.value = previllageMustKnowRes.content
+        }
         return;
     }
+
     const [drawRes, luckyRes, unpaidRes, stockRes, bounghtCountRes, buyMustKnowRes, previllageMustKnowRes] =
         await Promise.all([
             fetchIsDraw(user.data.id, id.value),
@@ -369,7 +382,7 @@ const fetchInit = async () => {
     if (previllageMustKnowRes) {
         previllageMustKnow.value = previllageMustKnowRes.content
     }
-
+    return;
 
 };
 
@@ -821,21 +834,31 @@ const onBtnClick = async () => {
     }
 
     .creator {
+        width: 100%;
         display: flex;
         flex-flow: nowrap row;
-        justify-content: center;
+        justify-content: flex-start;
         align-items: center;
 
+
         .avatar {
-            width: px2rem(22);
-            height: px2rem(22);
+            width: px2rem(24);
+            height: px2rem(24);
             overflow: hidden;
             margin-right: px2rem(10);
             border: 1px solid #ddd;
         }
 
+        .creator-text {
+            font-size: px2rem(18);
+            margin-right: 1em;
+            // color: $greyTextColor;
+        }
+
+
         .name {
-            font-size: px2rem(16);
+            font-size: px2rem(18);
+            // color: $greyTextColor;
         }
     }
 

@@ -3,6 +3,7 @@
         <CellItem icon="search" right-icon="arrow" text="文昌链浏览器" @click="openBSN"></CellItem>
         <CellItem icon="bill-o" right-icon="arrow" text="我的订单" @click="routeTo('order')"></CellItem>
         <CellItem icon="gem-o" right-icon="arrow" text="我的藏品" @click="routeTo('collection')"></CellItem>
+        <CellItem icon="send-gift-o" right-icon="arrow" text="我的转赠" @click="routeTo('transfer')"></CellItem>
         <!-- <CellItem icon="send-gift-o" right-icon="arrow"  text="我的转赠"></CellItem> -->
         <CellItem icon="service-o" right-icon="arrow" text="联系客服" @click="router.push({path: '/doc', query: { t: '联系客服'}})"></CellItem>
         <CellItem icon="info-o" right-icon="arrow" text="常见问题"

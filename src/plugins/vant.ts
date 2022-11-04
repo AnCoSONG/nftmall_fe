@@ -33,6 +33,8 @@ import {
     CountDown,
     Popup,
     ImagePreview,
+    Form,
+    Picker,
 } from "vant";
 
 export default function (app: App) {
@@ -69,4 +71,6 @@ export default function (app: App) {
     app.use(Popup);
     app.use(ImagePreview);
     app.use(Overlay);
+    app.use(Form);
+    app.use(Picker);
 }

@@ -75,6 +75,25 @@ const router = createRouter({
             props: (route) => ({ id: route.params.id }),
         },
         {
+            path: "/transfer",
+            name: "transfer",
+            meta: { title: "我的转赠", requireAuth: "required" },
+            component: () => import("views/transfer/index.vue")
+        },
+        // {
+        //     path: "/transfer/:id",
+        //     name: "transfer-detail",
+        //     meta: { title: "转赠详情", requireAuth: "required" },
+        //     component: () => import("views/transfer/detail.vue"),
+        // },
+        {
+            path: "/transfer/apply",
+            name: "transfer-apply",
+            meta: { title: "发起转赠", requireAuth: "required" },
+            component: () => import("views/transfer/apply.vue"),
+            props: (route) => ({ product_item_id: route.query.product_item_id }),
+        },
+        {
             path: "/setting",
             name: "setting",
             meta: { title: "设置" },

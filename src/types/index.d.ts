@@ -28,7 +28,7 @@ declare namespace WeixinJSBridge {
 declare type SupportPayment = "weixin" | "alipay";
 declare type PaymentStatus = "unpaid" | "paid" | "canceled";
 declare type onChainStatus = "success" | "processing" | "failed" | "pending";
-declare type ProductAttribute = "normal" | "gift"
+declare type ProductAttribute = "normal" | "gift";
 
 declare type Genre = {
     id: number;
@@ -86,7 +86,15 @@ declare type ProductItem = {
     tx_hash?: string;
     on_chain_status: onChainStatus;
     on_chain_timestamp?: string;
+    source: "TBD" | "BUY" | "PLATFORM_GIFT" | "TRANSFER";
+    status: "default" | "locked" | "transfered";
 };
+
+declare type SimpleProductItem = {
+    id: string;
+    status: "default" | "locked" | "transfered";
+    name: string;
+}
 
 declare type User = {
     id: number;
@@ -138,4 +146,41 @@ declare type Doc = {
     id: string;
     title: string;
     content: string;
+};
+
+declare enum TransferLaunchType {
+    USER = "user",
+    DINGBLOCK = "dingblock",
+    OTHER = "other",
 }
+
+declare enum TransferStatus {
+    SUCCESS = "success", // 成功
+    PROCESSING = "processing", // 处理中
+    FAILED = "failed", // 转赠失败
+    PENDING = "pending", // 待处理
+}
+
+declare type TransferItem = {
+    id: string;
+    out_trade_id?: string;
+    launch_type: TransferLaunchType;
+    sender_id: number;
+    sender?: User;
+    receiver_id: number;
+    receiver?: User;
+    nft_id: string;
+    nft_class_id: string;
+    original_product_item_id: string;
+    original_product_item: ProductItem;
+    target_product_item_id?: string | null;
+    target_product_item?: ProductItem;
+    operation_id?: string | null;
+    status: TransferStatus;
+    tx_hash?: string | null;
+    tx_success_time?: string;
+    version: number;
+    create_date: Date;
+    update_date: Date;
+    delete_date: Date;
+};

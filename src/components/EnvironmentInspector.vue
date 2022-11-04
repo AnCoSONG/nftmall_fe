@@ -2,12 +2,12 @@
     <div class="orientation-inspector" :style="{ height: orientation == 0 && isMobile ? 'auto' : '100%' }">
         <div v-if="orientation == 0 && isMobile">
             <van-config-provider :theme-vars="themeStore.componentVars">
-                <RouterView v-slot="{ Component }">
+                <RouterView v-slot="{ Component, route }">
                     <template v-if="Component">
                         <KeepAlive
-                            exclude="cashier,payment_waiting,product,product-viewer,verification,order,account,order-detail,collection-detail">
+                            exclude="cashier,payment_waiting,product,product-viewer,verification,order,account,order-detail,collection-detail,transfer-apply">
                             <Suspense>
-                                <component :is="Component"></component>
+                                <component :is="Component" :key="route.name"></component>
                                 <template #fallback>
                                     <van-overlay :show="true">
                                         <div class="app-loader">
@@ -31,6 +31,9 @@
                                 : "本页面仅支持移动设备"
                 }}
             </div>
+            <div class="app-gold-text icp-text" @click="openGXB">
+                晋ICP备2022004760号-1
+            </div>
         </div>
     </div>
 </template>
@@ -41,7 +44,7 @@ import { useAppStore } from "../stores/app";
 import { useUserStore } from "../stores/user";
 import { onMountedOrActivated } from "@vant/use";
 import { Notify, Toast } from "vant";
-import { getQuerys, redirectForOpenid } from "../utils";
+import { getQuerys, openGXB, redirectForOpenid } from "../utils";
 import axios from "axios";
 import { fetchOpenid, updateUser } from "../api";
 
@@ -162,6 +165,7 @@ onMountedOrActivated(async () => {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    position: relative;
 
     background-color: $backgroundColor;
 
@@ -169,6 +173,13 @@ onMountedOrActivated(async () => {
         display: block;
         font-size: px2rem(10);
         text-align: center;
+    }
+
+    .icp-text {
+        font-size: px2rem(6);
+        position: absolute;
+        bottom: px2rem(36);
+        cursor: pointer;
     }
 }
 </style>

@@ -152,8 +152,23 @@ const getVerification = async () => {
         });
         countDown.start();
         showingCountDown.value = true;
+    } else if (data == 201) {
+        Notify({
+            type: 'warning',
+            message: '验证码已发送，请检查短信',
+            // background: '#aaaaaa'
+        })
+    } else if (data === 209) {
+        Notify({
+            type: 'warning',
+            message: "验证码已发送，但服务可能异常"
+        })
+        countDown.start();
+        showingCountDown.value = true;
     } else {
+        // do nothing because send code has error handlers
         // console.log("验证码发送失败, 请稍后重试");
+        
     }
 };
 // console.log(props.backTo, route.params);
