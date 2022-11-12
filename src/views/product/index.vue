@@ -13,8 +13,8 @@
                     <van-config-provider :theme-vars="theme.product_timeline">
                         <van-steps active-color="#E5E798" :active="currentActive" inactive-color="#888">
                             <van-step>藏品上架</van-step>
-                            <van-step>抽签开放</van-step>
-                            <van-step>抽签结束</van-step>
+                            <van-step v-if="product.attribute != 'notShowLottery'">抽签开放</van-step>
+                            <van-step v-if="product.attribute != 'notShowLottery'">抽签结束</van-step>
                             <van-step>开放抢购</van-step>
                         </van-steps>
                     </van-config-provider>
@@ -26,11 +26,11 @@
                                 <div>藏品上架</div>
                                 <div>{{ productCreateTimeFormat }}</div>
                             </van-step>
-                            <van-step>
+                            <van-step v-if="product.attribute != 'notShowLottery'">
                                 <div>抽签开放</div>
                                 <div>{{ drawTimeFormat }}</div>
                             </van-step>
-                            <van-step>
+                            <van-step v-if="product.attribute != 'notShowLottery'">
                                 <div>抽签结束</div>
                                 <div>{{ drawEndTimeFormat }}</div>
                             </van-step>
