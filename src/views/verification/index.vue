@@ -16,6 +16,18 @@
                     <input class="realinput" type="text" v-model="realid" />
                 </div>
             </div>
+            <div class="input-wrapper">
+              <div class="label">当前登陆手机号</div>
+              <div class="input">
+                <input class="realinput" type="number" v-model="phoneNO" />
+              </div>
+            </div>
+            <div class="input-wrapper">
+              <div class="label">银行卡号</div>
+              <div class="input">
+                <input class="realinput" type="number" v-model="bankCardNO" />
+              </div>
+            </div>
             <DangerBtn icon="lock" text="验证身份" @click="verify" :loading="isLoading"></DangerBtn>
         </div>
     </Subpage>
@@ -27,7 +39,7 @@ export default {
 </script>
 <script setup lang="ts">
 import { ref } from "vue";
-import { realnameTest, realidTest } from "../../utils";
+import {realnameTest, realidTest, phoneTest, bankCardTest} from "../../utils";
 import Subpage from "../../components/Subpage.vue";
 import DangerBtn from "../../components/DangerBtn.vue";
 import { Notify, Toast } from "vant";
@@ -37,6 +49,8 @@ import { useRouter } from "vue-router";
 const router = useRouter()
 const realname = ref("");
 const realid = ref("");
+const phoneNO = ref("");
+const bankCardNO = ref("");
 const user = useUserStore();
 const isLoading = ref(false)
 
@@ -50,6 +64,7 @@ if (isChecked) {
 }
 
 const verify = async () => {
+    if (isLoading.value === true){return;}
     isLoading.value = true;
     // 正则检查realname和realid
     if (!realnameTest(realname.value)) {
@@ -68,11 +83,30 @@ const verify = async () => {
         isLoading.value = false;
         return;
     }
-    // 验证：
+    if (!phoneTest(phoneNO.value) || user.data.phone != phoneNO.value) {
+      Notify({
+        type: "danger",
+        message: "请输入注册手机号码",
+      });
+      isLoading.value = false;
+      return;
+    }
+
+    if (!bankCardTest(bankCardNO.value)) {
+      Notify({
+        type: "danger",
+        message: "请输入正确的银行卡号",
+      });
+      isLoading.value = false;
+      return;
+    }
+
+
+  // 验证：
     // 如果通过验证，自动返回，没通过的话就警告用户
     const res = await idCheck(
         realname.value,
-        realid.value
+        realid.value,
     );
     if (res) {
         Notify({

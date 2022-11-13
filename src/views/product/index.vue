@@ -431,6 +431,22 @@ watchEffect(() => {
         product.value.draw_end_timestamp
     ).valueOf();
     const sale_timestamp = dayjs(product.value.sale_timestamp).valueOf();
+    if (product.value.attribute === 'notShowLottery') {
+      if (now < sale_timestamp){
+        btnClickable.value = false;
+        statusText.value = "敬请期待";
+      }else{
+        if (!user.isLogin) {
+          btnClickable.value = true;
+          statusText.value = "请先登录";
+        } else {
+          btnClickable.value = true
+          statusText.value = '购买'
+        }
+      }
+      return;
+    }
+
     if (draw_timestamp - now >= 24 * 60 * 60 * 1000) {
         currentStage.value = 0;
         btnClickable.value = false;
@@ -737,7 +753,7 @@ const onBtnClick = async () => {
     top: px2rem(-60);
     transition: opacity 0.3s ease-in-out;
     z-index: 0;
-    // z-index: 
+    // z-index:
 }
 
 .product {

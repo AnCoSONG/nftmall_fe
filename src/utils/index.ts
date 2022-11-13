@@ -30,6 +30,10 @@ export const realidTest = (id: string) => {
     );
 };
 
+export const bankCardTest = (cardNo: string) => {
+    return /^([1-9]{1})(\d{15}|\d{16}|\d{18})$/.test(cardNo);
+};
+
 export const hidePhone = (phone: string) => {
     if (phoneTest(phone)) {
         return phone.replace(/(\d{3})\d{4}(\d{4})/, "$1****$2");
@@ -97,7 +101,7 @@ export enum productItemStatus {
     LOCKED = 'locked',
     TRANSFERED = 'transfered'
   }
-  
+
   export enum productItemSource {
     TBD = 'TBD',
     BUY = 'BUY',
