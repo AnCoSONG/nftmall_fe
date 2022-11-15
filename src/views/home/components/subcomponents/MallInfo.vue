@@ -20,7 +20,7 @@ const props = defineProps({
         default: 20
     }
 })
-const logo = 'https://mall-1308324841.file.myqcloud.com/static/mall_logo.png'
+const logo = 'https://mall-1308324841.file.myqcloud.com/static/mall_logo_1.png'
 </script>
 <style lang="scss" scoped>
 .mall-info {
