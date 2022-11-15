@@ -1,15 +1,7 @@
 <template>
-    <div
-        class="product-card"
-        @click="router.push(`/product/${props.data.id}`)"
-        :data-last="props.isLast === true"
-    >
+    <div class="product-card" @click="router.push(`/product/${props.data.id}`)" :data-last="props.isLast === true">
         <div class="img-wrapper">
-            <van-image
-                :src="props.data.preview_img"
-                class="img"
-                @load="loaded = true"
-            >
+            <van-image :src="props.data.preview_img" class="img" @load="loaded = true">
                 <template v-slot:loading>
                     <ImageLoader></ImageLoader>
                 </template>
@@ -17,34 +9,29 @@
             </van-image>
             <!-- todo: 发售状态组件 -->
             <div class="product-status" v-show="loaded">
-                {{ props.data.attribute === 'gift'?'🎁 赠品':statusText }}
+                {{ props.data.attribute === 'gift' ? '🎁 赠品' : statusText }}
                 <span v-if="isCountdown">
                     &nbsp;{{
-                        `${countDownRef.hours
-                            .toString()
-                            .padStart(2, "0")}:${countDownRef.minutes
-                            .toString()
-                            .padStart(2, "0")}:${countDownRef.seconds
-                            .toString()
-                            .padStart(2, "0")}`
-                    }}</span
-                >
+                            `${countDownRef.hours
+                                .toString()
+                                .padStart(2, "0")}:${countDownRef.minutes
+                                    .toString()
+                                    .padStart(2, "0")}:${countDownRef.seconds
+                                        .toString()
+                                        .padStart(2, "0")}`
+                    }}</span>
             </div>
             <!-- todo: 图像类型组件 -->
             <div class="product-type" v-show="loaded">
                 <TypeIcon :type="props.data.type"></TypeIcon>
             </div>
             <div class="product-creator" v-show="loaded">
-                <van-image
-                    :src="
-                        props.data.publisher?.avatar ??
-                        'https://avatars.dicebear.com/api/pixel-art/random.svg'
-                    "
-                    round
-                    class="product-creator-img"
-                >
+                <van-image :src="
+                    props.data.publisher?.avatar ??
+                    'https://avatars.dicebear.com/api/pixel-art/random.svg'
+                " round class="product-creator-img">
                     <template #loading>
-                        <ImageLoader/>
+                        <ImageLoader />
                     </template>
                 </van-image>
                 <div class="product-creator-name">
@@ -62,12 +49,8 @@
                     <Tag v-for="tag in props.data.tags" :data="tag" />
                 </div>
             </div>
-            <Price
-                :small-size="(px2rem(20) as string)"
-                :integral-size="(px2rem(32) as string)"
-                money-type="¥"
-                :price="props.data.price"
-            />
+            <Price :small-size="(px2rem(20) as string)" :integral-size="(px2rem(32) as string)" money-type="¥"
+                :price="props.data.price" />
         </div>
     </div>
 </template>
@@ -114,6 +97,22 @@ const statusText = computed(() => {
     const draw_timestamp = dayjs(props.data.draw_timestamp).valueOf();
     const draw_end_timestamp = dayjs(props.data.draw_end_timestamp).valueOf();
     const sale_timestamp = dayjs(props.data.sale_timestamp).valueOf();
+
+    if (props.data.attribute === 'notShowLottery') {
+        if (now < sale_timestamp) {
+            if (sale_timestamp - now > 24 * 60 * 60 * 1000) {
+                return "🌟 敬请期待";
+            } else {
+                isCountdown.value = true;
+                countDown.reset(sale_timestamp - now);
+                countDown.start();
+                return "📢 抢购马上开始";
+            }
+        } else {
+            return "🔥 火热抢购中";
+        }
+
+    }
 
     if (now < draw_timestamp) {
         if (draw_timestamp - now > 24 * 60 * 60 * 1000) {
