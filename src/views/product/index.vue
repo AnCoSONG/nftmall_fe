@@ -433,9 +433,11 @@ watchEffect(() => {
     const sale_timestamp = dayjs(product.value.sale_timestamp).valueOf();
     if (product.value.attribute === 'notShowLottery') {
       if (now < sale_timestamp){
+        currentStage.value = 0;
         btnClickable.value = false;
         statusText.value = "敬请期待";
       }else{
+        currentStage.value = 2;
         if (!user.isLogin) {
           btnClickable.value = true;
           statusText.value = "请先登录";
