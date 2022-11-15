@@ -7,7 +7,7 @@ const router = createRouter({
             path: "/",
             name: "home",
             component: () => import("views/home/index.vue"),
-            meta: { title: "晋元数字" },
+            meta: { title: "启源数字" },
             children: [
                 {
                     path: "",
@@ -172,7 +172,7 @@ import { checkSession } from "../api";
 
 NProgress.configure({ easing: "ease", speed: 500, showSpinner: false });
 
-const defaultTitle = "晋元数藏";
+const defaultTitle = "启源数字";
 router.beforeEach(async (to, from, next) => {
     // console.log(to, from)
     NProgress.start();

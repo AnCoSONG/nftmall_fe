@@ -8,7 +8,7 @@
             <CellItem text="关于BSN文昌链" right-icon="arrow"
                 @click="router.push({ path: '/doc', query: { t: '关于BSN文昌链' } })">
             </CellItem>
-            <CellItem text="关于晋元数字" right-icon="arrow" @click="router.push({ path: '/doc', query: { t: '关于晋元数字' } })">
+            <CellItem :text="'关于' + app.title" right-icon="arrow" @click="router.push({ path: '/doc', query: { t: '关于晋元数字' } })">
             </CellItem>
             <CellItem text="商务合作" right-icon="arrow" @click="onCooperation"></CellItem>
             <!-- <CellItem text="开启开发者模式" right-icon="arrow" v-if="user.data.role === 'official'"></CellItem> -->
@@ -25,8 +25,10 @@ import { useRouter } from 'vue-router';
 import { Dialog, Notify } from 'vant';
 import { useUserStore } from '../../stores/user';
 import { ref } from 'vue';
+import { useAppStore } from '../../stores/app';
 const user = useUserStore();
 const router = useRouter();
+const app = useAppStore()
 
 const logoutLoading = ref(false);
 const onCooperation = () => {

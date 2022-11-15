@@ -4,8 +4,8 @@ import * as api from "../../api";
 export const useAppStore = defineStore("app", {
     state: () => {
         return {
-            title: "晋元数字",
-            mall_name: "晋元数字馆",
+            title: "启源数字",
+            mall_name: "启源数字馆",
             isWx: false,
             openid: '',
         };
