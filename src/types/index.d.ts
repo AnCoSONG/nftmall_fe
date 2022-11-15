@@ -1,5 +1,7 @@
 // todo: 调整type内容，保留最需要的
 // todo: 根据后端调整
+// @ts-ignore
+
 declare type Tag = {
     name: string;
     mode?: DisplayMode;
@@ -28,7 +30,7 @@ declare namespace WeixinJSBridge {
 declare type SupportPayment = "weixin" | "alipay";
 declare type PaymentStatus = "unpaid" | "paid" | "canceled";
 declare type onChainStatus = "success" | "processing" | "failed" | "pending";
-declare type ProductAttribute = "normal" | "gift";
+declare type ProductAttribute = "normal" | "gift" | "notShowLottery";
 
 declare type Genre = {
     id: number;

@@ -13,8 +13,8 @@
                     <van-config-provider :theme-vars="theme.product_timeline">
                         <van-steps active-color="#E5E798" :active="currentActive" inactive-color="#888">
                             <van-step>藏品上架</van-step>
-                            <van-step>抽签开放</van-step>
-                            <van-step>抽签结束</van-step>
+                            <van-step v-if="product.attribute != 'notShowLottery'">抽签开放</van-step>
+                            <van-step v-if="product.attribute != 'notShowLottery'">抽签结束</van-step>
                             <van-step>开放抢购</van-step>
                         </van-steps>
                     </van-config-provider>
@@ -26,11 +26,11 @@
                                 <div>藏品上架</div>
                                 <div>{{ productCreateTimeFormat }}</div>
                             </van-step>
-                            <van-step>
+                            <van-step v-if="product.attribute != 'notShowLottery'">
                                 <div>抽签开放</div>
                                 <div>{{ drawTimeFormat }}</div>
                             </van-step>
-                            <van-step>
+                            <van-step v-if="product.attribute != 'notShowLottery'">
                                 <div>抽签结束</div>
                                 <div>{{ drawEndTimeFormat }}</div>
                             </van-step>
@@ -431,6 +431,24 @@ watchEffect(() => {
         product.value.draw_end_timestamp
     ).valueOf();
     const sale_timestamp = dayjs(product.value.sale_timestamp).valueOf();
+    if (product.value.attribute === 'notShowLottery') {
+      if (now < sale_timestamp){
+        currentStage.value = 0;
+        btnClickable.value = false;
+        statusText.value = "敬请期待";
+      }else{
+        currentStage.value = 2;
+        if (!user.isLogin) {
+          btnClickable.value = true;
+          statusText.value = "请先登录";
+        } else {
+          btnClickable.value = true
+          statusText.value = '购买'
+        }
+      }
+      return;
+    }
+
     if (draw_timestamp - now >= 24 * 60 * 60 * 1000) {
         currentStage.value = 0;
         btnClickable.value = false;
@@ -737,7 +755,7 @@ const onBtnClick = async () => {
     top: px2rem(-60);
     transition: opacity 0.3s ease-in-out;
     z-index: 0;
-    // z-index: 
+    // z-index:
 }
 
 .product {
